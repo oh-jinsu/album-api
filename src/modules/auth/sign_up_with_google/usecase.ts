@@ -24,10 +24,10 @@ export class SignUpWithGoogleUseCase {
   ) {}
 
   async execute({ idToken }: Params): Promise<UseCaseResult<Result>> {
-    const isVerifiedWithGoogle = await this.googleAuthProvider.verify(idToken);
+    const isVerifiedResult = await this.googleAuthProvider.verify(idToken);
 
-    if (!isVerifiedWithGoogle) {
-      return new UseCaseException(0, '유효하지 않은 인증정보입니다.');
+    if (isVerifiedResult.isError()) {
+      return new UseCaseException(1, '유효하지 않은 인증정보입니다.');
     }
 
     const resultForEmail = await this.googleAuthProvider.extractEmail(idToken);
@@ -47,7 +47,7 @@ export class SignUpWithGoogleUseCase {
     const exists = existenceResult.value;
 
     if (exists.isSome()) {
-      return new UseCaseException(1, '이미 가입한 이용자입니다.');
+      return new UseCaseException(2, '이미 가입한 이용자입니다.');
     }
 
     const userResult = await this.userRepository.save(email);
