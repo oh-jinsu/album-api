@@ -6,17 +6,15 @@ interface RequestBody {
   idToken: string;
 }
 
-@Controller('auth/signup')
+@Controller('auth/signup/google')
 export class SignUpWithGoogleAdapter extends Adapter {
-  constructor(
-    private readonly signUpWithGoogleUseCase: SignUpWithGoogleUseCase,
-  ) {
+  constructor(private readonly usecase: SignUpWithGoogleUseCase) {
     super();
   }
 
   @Post()
   async receive(@Body() { idToken }: RequestBody) {
-    const result = await this.signUpWithGoogleUseCase.execute({ idToken });
+    const result = await this.usecase.execute({ idToken });
 
     return this.response(result);
   }
