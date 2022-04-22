@@ -5,7 +5,7 @@ interface RequestBody {
   idToken: string;
 }
 
-@Controller('signup')
+@Controller('auth/signup')
 export class SignUpWithGoogleAdapter {
   constructor(
     private readonly signUpWithGoogleUseCase: SignUpWithGoogleUseCase,

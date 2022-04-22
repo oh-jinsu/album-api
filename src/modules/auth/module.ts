@@ -1,10 +1,12 @@
-import { Controller, Module } from '@nestjs/common';
-
-@Controller()
-export class AuthController {}
+import { Module } from '@nestjs/common';
+import { ProviderModule } from 'src/implementations/providers';
+import { RepositoryModule } from 'src/implementations/repositories';
+import { SignUpWithGoogleAdapter } from './sign_up_with_google/adapter';
+import { SignUpWithGoogleUseCase } from './sign_up_with_google/usecase';
 
 @Module({
-  imports: [],
-  controllers: [AuthController],
+  imports: [ProviderModule, RepositoryModule],
+  providers: [SignUpWithGoogleUseCase],
+  controllers: [SignUpWithGoogleAdapter],
 })
 export class AuthModule {}
