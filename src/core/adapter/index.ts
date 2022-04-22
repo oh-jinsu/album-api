@@ -2,16 +2,30 @@ import { HttpException } from '@nestjs/common';
 import { UseCaseException, UseCaseResult } from '../results/usecase';
 
 export abstract class Adapter {
-  response(result: UseCaseResult) {
+  response<T>(result: UseCaseResult<T>) {
     if (result.isException()) {
       return this.responseException(result);
     }
 
     if (result.isOk()) {
-      return result.value;
+      return Adapter.map(result.value);
     }
 
     throw Error();
+  }
+
+  private static map(value: any) {
+    const result = {};
+
+    Object.entries(value).forEach(([key, value]) => {
+      const mappedKey = key.replace(/[A-Z]/, (substring) => {
+        return `_${substring.toLowerCase()}`;
+      });
+
+      result[mappedKey] = value;
+    });
+
+    return result;
   }
 
   responseException(result: UseCaseException) {
