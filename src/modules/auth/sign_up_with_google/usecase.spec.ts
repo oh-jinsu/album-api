@@ -1,6 +1,6 @@
 import { None, Some } from 'src/core/enums/option';
-import { ProviderError, ProviderOk } from 'src/core/results/provider';
-import { RepositoryOk } from 'src/core/results/repository';
+import { ProviderError, ProviderOk } from 'src/core/enums/results/provider';
+import { RepositoryOk } from 'src/core/enums/results/repository';
 import { UserModel } from 'src/declarations/models/user';
 import { SignUpWithGoogleUseCase } from 'src/modules/auth/sign_up_with_google/usecase';
 
