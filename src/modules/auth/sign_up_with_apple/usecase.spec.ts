@@ -1,5 +1,5 @@
 import { None, Some } from 'src/core/enums/option';
-import { ProviderError, ProviderOk } from 'src/core/enums/results/provider';
+import { ProviderOk } from 'src/core/enums/results/provider';
 import { RepositoryOk } from 'src/core/enums/results/repository';
 import { UserModel } from 'src/declarations/models/user';
 import { SignUpWithAppleUseCase } from './usecase';
@@ -7,29 +7,30 @@ import { SignUpWithAppleUseCase } from './usecase';
 describe('sign_up_usecase_test', () => {
   const userRepository = {
     find: jest.fn(),
-    findByEmail: jest.fn(),
+    findById: jest.fn(),
     save: jest.fn(),
   };
 
   const appleAuthProvider = {
     verify: jest.fn(),
-    extractEmail: jest.fn(),
+    extractClaim: jest.fn(),
   };
 
   const usecase = new SignUpWithAppleUseCase(userRepository, appleAuthProvider);
 
   it('should be defined', () => {
-    appleAuthProvider.verify.mockResolvedValue(new ProviderOk(null));
+    appleAuthProvider.verify.mockResolvedValue(new ProviderOk(true));
 
-    appleAuthProvider.extractEmail.mockResolvedValue(new ProviderOk('email'));
+    appleAuthProvider.extractClaim.mockResolvedValue(new ProviderOk('email'));
 
-    userRepository.findByEmail.mockResolvedValue(new RepositoryOk(new None()));
+    userRepository.findById.mockResolvedValue(new RepositoryOk(new None()));
 
     expect(usecase).toBeDefined();
   });
 
   it('should fail for a invalid id token', async () => {
-    appleAuthProvider.verify.mockResolvedValueOnce(new ProviderError(''));
+    appleAuthProvider.verify.mockResolvedValueOnce(new ProviderOk(false));
+
     const idToken = 'an id token';
 
     const result = await usecase.execute({ idToken });
@@ -44,7 +45,7 @@ describe('sign_up_usecase_test', () => {
   });
 
   it('should fail for a existing user', async () => {
-    userRepository.findByEmail.mockResolvedValueOnce(
+    userRepository.findById.mockResolvedValueOnce(
       new RepositoryOk(new Some(null)),
     );
 
@@ -65,7 +66,7 @@ describe('sign_up_usecase_test', () => {
     userRepository.save.mockResolvedValueOnce(
       new RepositoryOk(
         new UserModel({
-          id: 1,
+          id: '1',
           email: 'email',
           refreshToken: null,
           updatedAt: new Date(),
@@ -82,7 +83,7 @@ describe('sign_up_usecase_test', () => {
       fail();
     }
 
-    expect(result.value.id).toBe(1);
+    expect(result.value.id).toBeDefined();
 
     expect(result.value.email).toBe('email');
   });

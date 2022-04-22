@@ -1,5 +1,5 @@
 export class UserModel {
-  public readonly id: number;
+  public readonly id: string;
   public readonly email: string;
   public readonly refreshToken?: string;
   public readonly updatedAt: Date;
@@ -12,7 +12,7 @@ export class UserModel {
     updatedAt,
     createdAt,
   }: {
-    id: number;
+    id: string;
     email: string;
     refreshToken: string;
     updatedAt: Date;

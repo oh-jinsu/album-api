@@ -4,9 +4,9 @@ export interface ProviderResult<T = any> {
 }
 
 export class ProviderOk<T = any> implements ProviderResult<T> {
-  public readonly value: any;
+  public readonly value: T;
 
-  constructor(value: any) {
+  constructor(value: T) {
     this.value = value;
   }
 

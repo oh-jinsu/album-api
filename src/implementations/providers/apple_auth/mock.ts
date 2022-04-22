@@ -2,6 +2,7 @@ import { HttpService } from '@nestjs/axios';
 import { Injectable } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
 import { ProviderResult } from 'src/core/enums/results/provider';
+import { AppleClaim } from 'src/declarations/models/apple_claim';
 import { AppleAuthProvider } from 'src/declarations/providers/apple_auth';
 import { AppleAuthProviderImpl } from '.';
 
@@ -16,11 +17,11 @@ export class MockAppleAuthProvider implements AppleAuthProvider {
     this.forProduction = new AppleAuthProviderImpl(httpService, jwtService);
   }
 
-  verify(idToken: string): Promise<ProviderResult<never>> {
+  verify(idToken: string): Promise<ProviderResult<boolean>> {
     return this.forProduction.verify(idToken);
   }
 
-  extractEmail(idToken: string): Promise<ProviderResult<string>> {
-    return this.forProduction.extractEmail(idToken);
+  extractClaim(idToken: string): Promise<ProviderResult<AppleClaim>> {
+    return this.forProduction.extractClaim(idToken);
   }
 }

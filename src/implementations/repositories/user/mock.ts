@@ -23,13 +23,14 @@ export class MockUserRepository implements UserRepository {
     return this.forProduction.find();
   }
 
-  async findByEmail(
-    email: string,
-  ): Promise<RepositoryResult<Option<UserModel>>> {
-    return this.forProduction.findByEmail(email);
+  async findById(email: string): Promise<RepositoryResult<Option<UserModel>>> {
+    return this.forProduction.findById(email);
   }
 
-  async save(email: string): Promise<RepositoryResult<UserModel>> {
-    return this.forProduction.save(email);
+  async save(dto: {
+    id: string;
+    email?: string;
+  }): Promise<RepositoryResult<UserModel>> {
+    return this.forProduction.save(dto);
   }
 }

@@ -1,5 +1,5 @@
 import { None, Some } from 'src/core/enums/option';
-import { ProviderError, ProviderOk } from 'src/core/enums/results/provider';
+import { ProviderOk } from 'src/core/enums/results/provider';
 import { RepositoryOk } from 'src/core/enums/results/repository';
 import { UserModel } from 'src/declarations/models/user';
 import { SignUpWithGoogleUseCase } from 'src/modules/auth/sign_up_with_google/usecase';
@@ -7,13 +7,13 @@ import { SignUpWithGoogleUseCase } from 'src/modules/auth/sign_up_with_google/us
 describe('sign_up_usecase_test', () => {
   const userRepository = {
     find: jest.fn(),
-    findByEmail: jest.fn(),
+    findById: jest.fn(),
     save: jest.fn(),
   };
 
   const googleAuthProvider = {
     verify: jest.fn(),
-    extractEmail: jest.fn(),
+    extractClaim: jest.fn(),
   };
 
   const usecase = new SignUpWithGoogleUseCase(
@@ -22,17 +22,18 @@ describe('sign_up_usecase_test', () => {
   );
 
   it('should be defined', () => {
-    googleAuthProvider.verify.mockResolvedValue(new ProviderOk(null));
+    googleAuthProvider.verify.mockResolvedValue(new ProviderOk(true));
 
-    googleAuthProvider.extractEmail.mockResolvedValue(new ProviderOk('email'));
+    googleAuthProvider.extractClaim.mockResolvedValue(new ProviderOk('email'));
 
-    userRepository.findByEmail.mockResolvedValue(new RepositoryOk(new None()));
+    userRepository.findById.mockResolvedValue(new RepositoryOk(new None()));
 
     expect(usecase).toBeDefined();
   });
 
   it('should fail for a invalid id token', async () => {
-    googleAuthProvider.verify.mockResolvedValueOnce(new ProviderError(''));
+    googleAuthProvider.verify.mockResolvedValueOnce(new ProviderOk(false));
+
     const idToken = 'an id token';
 
     const result = await usecase.execute({ idToken });
@@ -47,7 +48,7 @@ describe('sign_up_usecase_test', () => {
   });
 
   it('should fail for a existing user', async () => {
-    userRepository.findByEmail.mockResolvedValueOnce(
+    userRepository.findById.mockResolvedValueOnce(
       new RepositoryOk(new Some(null)),
     );
 
@@ -68,7 +69,7 @@ describe('sign_up_usecase_test', () => {
     userRepository.save.mockResolvedValueOnce(
       new RepositoryOk(
         new UserModel({
-          id: 1,
+          id: '1',
           email: 'email',
           refreshToken: null,
           updatedAt: new Date(),
@@ -85,7 +86,7 @@ describe('sign_up_usecase_test', () => {
       fail();
     }
 
-    expect(result.value.id).toBe(1);
+    expect(result.value.id).toBeDefined();
 
     expect(result.value.email).toBe('email');
   });

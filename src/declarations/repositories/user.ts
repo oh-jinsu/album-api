@@ -5,9 +5,10 @@ import { UserModel } from 'src/declarations/models/user';
 export abstract class UserRepository {
   abstract find(): Promise<RepositoryResult<UserModel[]>>;
 
-  abstract findByEmail(
-    key: string,
-  ): Promise<RepositoryResult<Option<UserModel>>>;
+  abstract findById(key: string): Promise<RepositoryResult<Option<UserModel>>>;
 
-  abstract save(email: string): Promise<RepositoryResult<UserModel>>;
+  abstract save(dto: {
+    id: string;
+    email?: string;
+  }): Promise<RepositoryResult<UserModel>>;
 }

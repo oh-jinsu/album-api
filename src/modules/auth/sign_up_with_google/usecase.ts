@@ -12,7 +12,7 @@ export interface Params {
 }
 
 export interface Result {
-  id: number;
+  id: string;
   email: string;
   createdAt: Date;
 }
@@ -27,19 +27,23 @@ export class SignUpWithGoogleUseCase {
   async execute({ idToken }: Params): Promise<UseCaseResult<Result>> {
     const isVerifiedResult = await this.googleAuthProvider.verify(idToken);
 
-    if (isVerifiedResult.isError()) {
-      return new UseCaseException(1, '유효하지 않은 인증정보입니다.');
-    }
-
-    const resultForEmail = await this.googleAuthProvider.extractEmail(idToken);
-
-    if (!resultForEmail.isOk()) {
+    if (!isVerifiedResult.isOk()) {
       return new UseCaseException(1000, '예기치 못한 오류입니다.');
     }
 
-    const email = resultForEmail.value;
+    if (!isVerifiedResult.value) {
+      return new UseCaseException(1, '유효하지 않은 인증정보입니다.');
+    }
 
-    const existenceResult = await this.userRepository.findByEmail(email);
+    const resultForClaim = await this.googleAuthProvider.extractClaim(idToken);
+
+    if (!resultForClaim.isOk()) {
+      return new UseCaseException(1000, '예기치 못한 오류입니다.');
+    }
+
+    const { id, email } = resultForClaim.value;
+
+    const existenceResult = await this.userRepository.findById(id);
 
     if (!existenceResult.isOk()) {
       return new UseCaseException(1000, '예기치 못한 오류입니다.');
@@ -51,7 +55,7 @@ export class SignUpWithGoogleUseCase {
       return new UseCaseException(2, '이미 가입한 이용자입니다.');
     }
 
-    const userResult = await this.userRepository.save(email);
+    const userResult = await this.userRepository.save({ id, email });
 
     if (!userResult.isOk()) {
       return new UseCaseException(1000, '예기치 못한 오류입니다.');

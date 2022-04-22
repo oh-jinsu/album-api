@@ -26,8 +26,8 @@ export class UserRepositoryImpl implements UserRepository {
     return new RepositoryOk(result);
   }
 
-  async findByEmail(key: string): Promise<RepositoryResult<Option<UserModel>>> {
-    const entity = await this.adaptee.findOne({ email: key });
+  async findById(key: string): Promise<RepositoryResult<Option<UserModel>>> {
+    const entity = await this.adaptee.findOne({ id: key });
 
     if (!entity) {
       return new RepositoryOk(new None());
@@ -38,8 +38,14 @@ export class UserRepositoryImpl implements UserRepository {
     return new RepositoryOk(new Some(result));
   }
 
-  async save(email: string): Promise<RepositoryResult<UserModel>> {
-    const newone = this.adaptee.create({ email });
+  async save({
+    id,
+    email,
+  }: {
+    id: string;
+    email?: string;
+  }): Promise<RepositoryResult<UserModel>> {
+    const newone = this.adaptee.create({ id, email });
 
     const entity = await this.adaptee.save(newone);
 

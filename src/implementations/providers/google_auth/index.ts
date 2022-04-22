@@ -5,6 +5,7 @@ import {
   ProviderOk,
   ProviderResult,
 } from 'src/core/enums/results/provider';
+import { GoogleClaim } from 'src/declarations/models/google_claim';
 import { GoogleAuthProvider } from 'src/declarations/providers/google_auth';
 
 @Injectable()
@@ -13,29 +14,34 @@ export class GoogleAuthProviderImpl implements GoogleAuthProvider {
 
   private client = new OAuth2Client(this.clientId);
 
-  async verify(idToken: string): Promise<ProviderResult<never>> {
+  async verify(idToken: string): Promise<ProviderResult<boolean>> {
     try {
       await this.client.verifyIdToken({
         idToken,
         audience: this.clientId,
       });
 
-      return new ProviderOk(null);
+      return new ProviderOk(true);
     } catch (e) {
-      return new ProviderError('Your token is not valid');
+      return new ProviderOk(false);
     }
   }
 
-  async extractEmail(idToken: string): Promise<ProviderResult<string>> {
+  async extractClaim(idToken: string): Promise<ProviderResult<GoogleClaim>> {
     try {
       const ticket = await this.client.verifyIdToken({
         idToken,
         audience: this.clientId,
       });
 
-      const { email } = ticket.getPayload();
+      const { sub: id, email } = ticket.getPayload();
 
-      return new ProviderOk(email);
+      const result = new GoogleClaim({
+        id,
+        email,
+      });
+
+      return new ProviderOk(result);
     } catch (e) {
       return new ProviderError('Your token is not valid');
     }
