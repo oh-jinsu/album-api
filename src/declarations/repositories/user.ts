@@ -1,5 +1,5 @@
-import { Option } from 'src/core/option';
-import { RepositoryResult } from 'src/core/results/repository';
+import { Option } from 'src/core/enums/option';
+import { RepositoryResult } from 'src/core/enums/results/repository';
 import { UserModel } from 'src/declarations/models/user';
 
 export abstract class UserRepository {

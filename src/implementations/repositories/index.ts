@@ -1,6 +1,6 @@
 import { Global, Module } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
-import { isProduction } from 'src/core/environments';
+import { isProduction } from 'src/core/environment';
 import { UserRepository } from 'src/declarations/repositories/user';
 import { UserRepositoryImpl } from './user';
 import { UserEntity } from './user/entity';

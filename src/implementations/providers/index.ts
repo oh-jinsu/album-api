@@ -1,6 +1,6 @@
 import { HttpModule } from '@nestjs/axios';
 import { Global, Module } from '@nestjs/common';
-import { isProduction } from 'src/core/environments';
+import { isProduction } from 'src/core/environment';
 import { GoogleAuthProvider } from 'src/declarations/providers/google_auth';
 import { GoogleAuthProviderImpl } from './google_auth';
 import { MockGoogleAuthProvider } from './google_auth/mock';

@@ -3,7 +3,7 @@ import {
   UseCaseException,
   UseCaseOk,
   UseCaseResult,
-} from 'src/core/results/usecase';
+} from 'src/core/enums/results/usecase';
 import { GoogleAuthProvider } from 'src/declarations/providers/google_auth';
 import { UserRepository } from 'src/declarations/repositories/user';
 

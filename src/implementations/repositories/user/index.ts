@@ -1,7 +1,10 @@
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { None, Option, Some } from 'src/core/option';
-import { RepositoryOk, RepositoryResult } from 'src/core/results/repository';
+import { None, Option, Some } from 'src/core/enums/option';
+import {
+  RepositoryOk,
+  RepositoryResult,
+} from 'src/core/enums/results/repository';
 import { UserModel } from 'src/declarations/models/user';
 import { UserRepository } from 'src/declarations/repositories/user';
 import { Repository } from 'typeorm';

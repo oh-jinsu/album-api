@@ -4,7 +4,7 @@ import {
   ProviderError,
   ProviderOk,
   ProviderResult,
-} from 'src/core/results/provider';
+} from 'src/core/enums/results/provider';
 import { GoogleAuthProvider } from 'src/declarations/providers/google_auth';
 
 @Injectable()

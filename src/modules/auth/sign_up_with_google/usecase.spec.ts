@@ -1,4 +1,4 @@
-import { None, Some } from 'src/core/option';
+import { None, Some } from 'src/core/enums/option';
 import { ProviderError, ProviderOk } from 'src/core/results/provider';
 import { RepositoryOk } from 'src/core/results/repository';
 import { UserModel } from 'src/declarations/models/user';

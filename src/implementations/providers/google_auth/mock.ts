@@ -1,4 +1,4 @@
-import { ProviderResult } from 'src/core/results/provider';
+import { ProviderResult } from 'src/core/enums/results/provider';
 import { GoogleAuthProvider } from 'src/declarations/providers/google_auth';
 import { GoogleAuthProviderImpl } from '.';
 
