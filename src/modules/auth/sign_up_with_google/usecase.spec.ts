@@ -66,7 +66,15 @@ describe('sign_up_usecase_test', () => {
 
   it('should sccess', async () => {
     userRepository.save.mockResolvedValueOnce(
-      new RepositoryOk(new UserModel({ id: 1, email: 'email' })),
+      new RepositoryOk(
+        new UserModel({
+          id: 1,
+          email: 'email',
+          refreshToken: null,
+          updatedAt: new Date(),
+          createdAt: new Date(),
+        }),
+      ),
     );
 
     const idToken = 'an id token';

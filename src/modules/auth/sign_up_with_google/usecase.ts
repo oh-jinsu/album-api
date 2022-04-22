@@ -14,6 +14,7 @@ export interface Params {
 export interface Result {
   id: number;
   email: string;
+  createdAt: Date;
 }
 
 @Injectable()
@@ -61,6 +62,7 @@ export class SignUpWithGoogleUseCase {
     return new UseCaseOk({
       id: user.id,
       email: user.email,
+      createdAt: user.createdAt,
     });
   }
 }

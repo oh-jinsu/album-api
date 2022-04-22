@@ -4,9 +4,9 @@ export interface RepositoryResult<T = any> {
 }
 
 export class RepositoryOk<T = any> implements RepositoryResult<T> {
-  public readonly value: any;
+  public readonly value: T;
 
-  constructor(value: any) {
+  constructor(value: T) {
     this.value = value;
   }
 
