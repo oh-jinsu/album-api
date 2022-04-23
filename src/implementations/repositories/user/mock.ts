@@ -1,7 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Option } from 'src/core/enums/option';
-import { RepositoryResult } from 'src/core/enums/results/repository';
 import { UserModel } from 'src/declarations/models/user';
 import { UserRepository } from 'src/declarations/repositories/user';
 import { Repository } from 'typeorm';
@@ -19,18 +18,15 @@ export class MockUserRepository implements UserRepository {
     this.forProduction = new UserRepositoryImpl(adaptee);
   }
 
-  async find(): Promise<RepositoryResult<UserModel[]>> {
+  async find(): Promise<UserModel[]> {
     return this.forProduction.find();
   }
 
-  async findById(email: string): Promise<RepositoryResult<Option<UserModel>>> {
+  async findById(email: string): Promise<Option<UserModel>> {
     return this.forProduction.findById(email);
   }
 
-  async save(dto: {
-    id: string;
-    email?: string;
-  }): Promise<RepositoryResult<UserModel>> {
+  async save(dto: { id: string; email?: string }): Promise<UserModel> {
     return this.forProduction.save(dto);
   }
 }

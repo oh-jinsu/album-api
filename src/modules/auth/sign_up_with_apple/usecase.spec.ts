@@ -1,6 +1,4 @@
 import { None, Some } from 'src/core/enums/option';
-import { ProviderOk } from 'src/core/enums/results/provider';
-import { RepositoryOk } from 'src/core/enums/results/repository';
 import { UserModel } from 'src/declarations/models/user';
 import { SignUpWithAppleUseCase } from './usecase';
 
@@ -19,17 +17,17 @@ describe('sign_up_usecase_test', () => {
   const usecase = new SignUpWithAppleUseCase(userRepository, appleAuthProvider);
 
   it('should be defined', () => {
-    appleAuthProvider.verify.mockResolvedValue(new ProviderOk(true));
+    appleAuthProvider.verify.mockResolvedValue(true);
 
-    appleAuthProvider.extractClaim.mockResolvedValue(new ProviderOk('email'));
+    appleAuthProvider.extractClaim.mockResolvedValue('email');
 
-    userRepository.findById.mockResolvedValue(new RepositoryOk(new None()));
+    userRepository.findById.mockResolvedValue(new None());
 
     expect(usecase).toBeDefined();
   });
 
   it('should fail for a invalid id token', async () => {
-    appleAuthProvider.verify.mockResolvedValueOnce(new ProviderOk(false));
+    appleAuthProvider.verify.mockResolvedValueOnce(false);
 
     const idToken = 'an id token';
 
@@ -45,9 +43,7 @@ describe('sign_up_usecase_test', () => {
   });
 
   it('should fail for a existing user', async () => {
-    userRepository.findById.mockResolvedValueOnce(
-      new RepositoryOk(new Some(null)),
-    );
+    userRepository.findById.mockResolvedValueOnce(new Some(null));
 
     const idToken = 'an id token';
 
@@ -64,15 +60,13 @@ describe('sign_up_usecase_test', () => {
 
   it('should sccess', async () => {
     userRepository.save.mockResolvedValueOnce(
-      new RepositoryOk(
-        new UserModel({
-          id: '1',
-          email: 'email',
-          refreshToken: null,
-          updatedAt: new Date(),
-          createdAt: new Date(),
-        }),
-      ),
+      new UserModel({
+        id: '1',
+        email: 'email',
+        refreshToken: null,
+        updatedAt: new Date(),
+        createdAt: new Date(),
+      }),
     );
 
     const idToken = 'an id token';

@@ -1,10 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { None, Option, Some } from 'src/core/enums/option';
-import {
-  RepositoryOk,
-  RepositoryResult,
-} from 'src/core/enums/results/repository';
 import { UserModel } from 'src/declarations/models/user';
 import { UserRepository } from 'src/declarations/repositories/user';
 import { Repository } from 'typeorm';
@@ -18,24 +14,24 @@ export class UserRepositoryImpl implements UserRepository {
     private readonly adaptee: Repository<UserEntity>,
   ) {}
 
-  async find(): Promise<RepositoryResult<UserModel[]>> {
+  async find(): Promise<UserModel[]> {
     const entities = await this.adaptee.find();
 
     const result = entities.map(UserMapper.toModel);
 
-    return new RepositoryOk(result);
+    return result;
   }
 
-  async findById(key: string): Promise<RepositoryResult<Option<UserModel>>> {
+  async findById(key: string): Promise<Option<UserModel>> {
     const entity = await this.adaptee.findOne({ id: key });
 
     if (!entity) {
-      return new RepositoryOk(new None());
+      return new None();
     }
 
     const result = UserMapper.toModel(entity);
 
-    return new RepositoryOk(new Some(result));
+    return new Some(result);
   }
 
   async save({
@@ -44,13 +40,13 @@ export class UserRepositoryImpl implements UserRepository {
   }: {
     id: string;
     email?: string;
-  }): Promise<RepositoryResult<UserModel>> {
+  }): Promise<UserModel> {
     const newone = this.adaptee.create({ id, email });
 
     const entity = await this.adaptee.save(newone);
 
     const result = UserMapper.toModel(entity);
 
-    return new RepositoryOk(result);
+    return result;
   }
 }

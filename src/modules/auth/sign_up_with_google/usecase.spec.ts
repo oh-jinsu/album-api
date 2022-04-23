@@ -1,6 +1,4 @@
 import { None, Some } from 'src/core/enums/option';
-import { ProviderOk } from 'src/core/enums/results/provider';
-import { RepositoryOk } from 'src/core/enums/results/repository';
 import { UserModel } from 'src/declarations/models/user';
 import { SignUpWithGoogleUseCase } from 'src/modules/auth/sign_up_with_google/usecase';
 
@@ -22,17 +20,17 @@ describe('sign_up_usecase_test', () => {
   );
 
   it('should be defined', () => {
-    googleAuthProvider.verify.mockResolvedValue(new ProviderOk(true));
+    googleAuthProvider.verify.mockResolvedValue(true);
 
-    googleAuthProvider.extractClaim.mockResolvedValue(new ProviderOk('email'));
+    googleAuthProvider.extractClaim.mockResolvedValue('email');
 
-    userRepository.findById.mockResolvedValue(new RepositoryOk(new None()));
+    userRepository.findById.mockResolvedValue(new None());
 
     expect(usecase).toBeDefined();
   });
 
   it('should fail for a invalid id token', async () => {
-    googleAuthProvider.verify.mockResolvedValueOnce(new ProviderOk(false));
+    googleAuthProvider.verify.mockResolvedValueOnce(false);
 
     const idToken = 'an id token';
 
@@ -48,9 +46,7 @@ describe('sign_up_usecase_test', () => {
   });
 
   it('should fail for a existing user', async () => {
-    userRepository.findById.mockResolvedValueOnce(
-      new RepositoryOk(new Some(null)),
-    );
+    userRepository.findById.mockResolvedValueOnce(new Some(null));
 
     const idToken = 'an id token';
 
@@ -67,15 +63,13 @@ describe('sign_up_usecase_test', () => {
 
   it('should sccess', async () => {
     userRepository.save.mockResolvedValueOnce(
-      new RepositoryOk(
-        new UserModel({
-          id: '1',
-          email: 'email',
-          refreshToken: null,
-          updatedAt: new Date(),
-          createdAt: new Date(),
-        }),
-      ),
+      new UserModel({
+        id: '1',
+        email: 'email',
+        refreshToken: null,
+        updatedAt: new Date(),
+        createdAt: new Date(),
+      }),
     );
 
     const idToken = 'an id token';

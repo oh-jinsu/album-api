@@ -25,43 +25,21 @@ export class SignUpWithAppleUseCase {
   ) {}
 
   async execute({ idToken }: Params): Promise<UseCaseResult<Result>> {
-    const isVerifiedResult = await this.appleAuthProvider.verify(idToken);
+    const isVerified = await this.appleAuthProvider.verify(idToken);
 
-    if (!isVerifiedResult.isOk()) {
-      return new UseCaseException(1000, '예기치 못한 오류입니다.');
-    }
-
-    if (!isVerifiedResult.value) {
+    if (!isVerified) {
       return new UseCaseException(1, '유효하지 않은 인증정보입니다.');
     }
 
-    const resultForClaim = await this.appleAuthProvider.extractClaim(idToken);
+    const { id, email } = await this.appleAuthProvider.extractClaim(idToken);
 
-    if (!resultForClaim.isOk()) {
-      return new UseCaseException(1000, '예기치 못한 오류입니다.');
-    }
+    const option = await this.userRepository.findById(id);
 
-    const { id, email } = resultForClaim.value;
-
-    const existenceResult = await this.userRepository.findById(id);
-
-    if (!existenceResult.isOk()) {
-      return new UseCaseException(1000, '예기치 못한 오류입니다.');
-    }
-
-    const exists = existenceResult.value;
-
-    if (exists.isSome()) {
+    if (option.isSome()) {
       return new UseCaseException(2, '이미 가입한 이용자입니다.');
     }
 
-    const userResult = await this.userRepository.save({ id, email });
-
-    if (!userResult.isOk()) {
-      return new UseCaseException(1000, '예기치 못한 오류입니다.');
-    }
-
-    const user = userResult.value;
+    const user = await this.userRepository.save({ id, email });
 
     return new UseCaseOk({
       id: user.id,

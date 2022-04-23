@@ -1,11 +1,6 @@
 import { HttpService } from '@nestjs/axios';
 import { Injectable } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
-import {
-  ProviderError,
-  ProviderOk,
-  ProviderResult,
-} from 'src/core/enums/results/provider';
 import { AppleAuthProvider } from 'src/declarations/providers/apple_auth';
 import * as NodeRSA from 'node-rsa';
 import { AppleClaim } from 'src/declarations/models/apple_claim';
@@ -17,7 +12,7 @@ export class AppleAuthProviderImpl implements AppleAuthProvider {
     private readonly jwtService: JwtService,
   ) {}
 
-  async verify(idToken: string): Promise<ProviderResult<boolean>> {
+  async verify(idToken: string): Promise<boolean> {
     const { keys } = await new Promise<any>((resolve, reject) =>
       this.httpService.get('https://appleid.apple.com/auth/keys').subscribe({
         next: (value) => resolve(value.data),
@@ -33,7 +28,7 @@ export class AppleAuthProviderImpl implements AppleAuthProvider {
     const key = keys.find(({ kid }) => kid === header.kid);
 
     if (!key) {
-      return new ProviderOk(false);
+      return false;
     }
 
     const rsa = new NodeRSA();
@@ -59,28 +54,24 @@ export class AppleAuthProviderImpl implements AppleAuthProvider {
         audience,
       });
 
-      return new ProviderOk(true);
+      return true;
     } catch {
-      return new ProviderOk(false);
+      return false;
     }
   }
 
-  async extractClaim(idToken: string): Promise<ProviderResult<AppleClaim>> {
-    try {
-      const payload = this.jwtService.decode(idToken, {
-        json: true,
-      }) as { [key: string]: any };
+  async extractClaim(idToken: string): Promise<AppleClaim> {
+    const payload = this.jwtService.decode(idToken, {
+      json: true,
+    }) as { [key: string]: any };
 
-      const { sub: id, email } = payload;
+    const { sub: id, email } = payload;
 
-      const result = new AppleClaim({
-        id,
-        email: email,
-      });
+    const result = new AppleClaim({
+      id,
+      email: email,
+    });
 
-      return new ProviderOk(result);
-    } catch {
-      return new ProviderError('failed to decode');
-    }
+    return result;
   }
 }
