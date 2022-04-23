@@ -1,18 +1,13 @@
 import { None, Some } from "src/core/enums/option";
 import { UserModel } from "src/declarations/models/user";
+import { MockGoogleAuthProvider } from "src/implementations/providers/google_auth/mock";
+import { MockUserRepository } from "src/implementations/repositories/user/mock";
 import { SignUpWithGoogleUseCase } from "src/modules/auth/sign_up_with_google/usecase";
 
 describe("sign_up_usecase_test", () => {
-  const userRepository = {
-    find: jest.fn(),
-    findById: jest.fn(),
-    save: jest.fn(),
-  };
+  const userRepository = new MockUserRepository();
 
-  const googleAuthProvider = {
-    verify: jest.fn(),
-    extractClaim: jest.fn(),
-  };
+  const googleAuthProvider = new MockGoogleAuthProvider();
 
   const usecase = new SignUpWithGoogleUseCase(
     userRepository,

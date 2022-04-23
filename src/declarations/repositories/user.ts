@@ -7,4 +7,9 @@ export abstract class UserRepository {
   abstract findById(key: string): Promise<Option<UserModel>>;
 
   abstract save(dto: { id: string; email?: string }): Promise<UserModel>;
+
+  abstract update(
+    id: string,
+    dto: Partial<Omit<UserModel, "id" | "updatedAt" | "createdAt">>,
+  ): Promise<UserModel>;
 }

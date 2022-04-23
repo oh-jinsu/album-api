@@ -1,10 +1,8 @@
 import { Global, Module } from "@nestjs/common";
 import { TypeOrmModule } from "@nestjs/typeorm";
-import { isProduction } from "src/core/environment";
 import { UserRepository } from "src/declarations/repositories/user";
 import { UserRepositoryImpl } from "./user";
 import { UserEntity } from "./user/entity";
-import { MockUserRepository } from "./user/mock";
 
 @Global()
 @Module({
@@ -27,7 +25,7 @@ import { MockUserRepository } from "./user/mock";
   providers: [
     {
       provide: UserRepository,
-      useClass: isProduction ? UserRepositoryImpl : MockUserRepository,
+      useClass: UserRepositoryImpl,
     },
   ],
   exports: [UserRepository],

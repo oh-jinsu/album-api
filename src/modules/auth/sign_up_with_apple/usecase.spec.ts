@@ -1,18 +1,13 @@
 import { None, Some } from "src/core/enums/option";
 import { UserModel } from "src/declarations/models/user";
+import { MockAppleAuthProvider } from "src/implementations/providers/apple_auth/mock";
+import { MockUserRepository } from "src/implementations/repositories/user/mock";
 import { SignUpWithAppleUseCase } from "./usecase";
 
 describe("sign_up_usecase_test", () => {
-  const userRepository = {
-    find: jest.fn(),
-    findById: jest.fn(),
-    save: jest.fn(),
-  };
+  const userRepository = new MockUserRepository();
 
-  const appleAuthProvider = {
-    verify: jest.fn(),
-    extractClaim: jest.fn(),
-  };
+  const appleAuthProvider = new MockAppleAuthProvider();
 
   const usecase = new SignUpWithAppleUseCase(userRepository, appleAuthProvider);
 

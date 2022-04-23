@@ -49,4 +49,17 @@ export class UserRepositoryImpl implements UserRepository {
 
     return result;
   }
+
+  async update(
+    id: string,
+    dto: Partial<Omit<UserModel, "id" | "updatedAt" | "createdAt">>,
+  ): Promise<UserModel> {
+    this.adaptee.update(id, dto);
+
+    const entity = await this.adaptee.findOne({ id });
+
+    const result = UserMapper.toModel(entity);
+
+    return result;
+  }
 }
