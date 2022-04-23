@@ -1,5 +1,5 @@
 import { NestFactory } from "@nestjs/core";
-import { Module } from "@nestjs/common";
+import { Module, ValidationPipe } from "@nestjs/common";
 import { AuthModule } from "./modules/auth/module";
 import { ProviderModule } from "./implementations/providers";
 import { RepositoryModule } from "./implementations/repositories";
@@ -22,6 +22,14 @@ async function bootstrap() {
 
   app.useGlobalFilters(new ErrorFilter());
   app.useGlobalFilters(new HttpExceptionFilter());
+
+  app.useGlobalPipes(
+    new ValidationPipe({
+      whitelist: true,
+    }),
+  );
+
+  app.setGlobalPrefix(process.env.VERSION);
 
   await app.listen(3000);
 }

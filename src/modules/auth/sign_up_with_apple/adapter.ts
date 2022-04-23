@@ -1,9 +1,11 @@
 import { Body, Controller, Post } from "@nestjs/common";
+import { IsNotEmpty } from "class-validator";
 import { Adapter } from "src/core/adapter";
 import { SignUpWithAppleUseCase } from "./usecase";
 
-interface RequestBody {
-  idToken: string;
+export class RequestBody {
+  @IsNotEmpty()
+  id_token: string;
 }
 
 @Controller("auth/signup/apple")
@@ -13,7 +15,7 @@ export class SignUpWithAppleAdapter extends Adapter {
   }
 
   @Post()
-  async receive(@Body() { idToken }: RequestBody) {
+  async receive(@Body() { id_token: idToken }: RequestBody) {
     const result = await this.useCase.execute({ idToken });
 
     return this.response(result);
