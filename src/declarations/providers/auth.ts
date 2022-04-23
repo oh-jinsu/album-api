@@ -1,11 +1,10 @@
-export abstract class AuthProvider {
-  abstract issueAccessToken(option: {
-    sub: string;
-    expiration: number;
-  }): Promise<string>;
+export type IssueTokenOptions = {
+  sub: string;
+  expiration: number;
+};
 
-  abstract issueRefreshToken(option: {
-    sub: string;
-    expiration: number;
-  }): Promise<string>;
+export abstract class AuthProvider {
+  abstract issueAccessToken(option: IssueTokenOptions): Promise<string>;
+
+  abstract issueRefreshToken(option: IssueTokenOptions): Promise<string>;
 }

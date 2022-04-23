@@ -24,12 +24,12 @@ describe("test the sign in with google usecase", () => {
 
   const hashProvider = new MockHashProvider();
 
-  hashProvider.encode.mockImplementation(async ([value]) => value);
+  hashProvider.encode.mockImplementation(async (value) => value);
 
   const userRepository = new MockUserRepository();
 
   userRepository.findById.mockImplementation(
-    ([id]) =>
+    async (id) =>
       new Some(
         new UserModel({
           id,
@@ -42,7 +42,7 @@ describe("test the sign in with google usecase", () => {
   );
 
   userRepository.update.mockImplementation(
-    ([id, { refreshToken }]) =>
+    async (id, { refreshToken }) =>
       new UserModel({
         id,
         email: "an email",

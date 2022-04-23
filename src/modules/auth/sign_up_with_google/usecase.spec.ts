@@ -1,4 +1,5 @@
 import { None, Some } from "src/core/enums/option";
+import { GoogleClaim } from "src/declarations/models/google_claim";
 import { UserModel } from "src/declarations/models/user";
 import { MockGoogleAuthProvider } from "src/implementations/providers/google_auth/mock";
 import { MockUserRepository } from "src/implementations/repositories/user/mock";
@@ -17,7 +18,12 @@ describe("sign_up_usecase_test", () => {
   it("should be defined", () => {
     googleAuthProvider.verify.mockResolvedValue(true);
 
-    googleAuthProvider.extractClaim.mockResolvedValue("email");
+    googleAuthProvider.extractClaim.mockResolvedValue(
+      new GoogleClaim({
+        id: "an id",
+        email: "an email",
+      }),
+    );
 
     userRepository.findById.mockResolvedValue(new None());
 

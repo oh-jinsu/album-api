@@ -1,11 +1,15 @@
-import { UserRepository } from "src/declarations/repositories/user";
+import { Option } from "src/core/enums/option";
+import { UserModel } from "src/declarations/models/user";
+import {
+  SaveUserDto,
+  UpdateUserDto,
+  UserRepository,
+} from "src/declarations/repositories/user";
 
 export class MockUserRepository implements UserRepository {
-  find = jest.fn();
+  findById = jest.fn<Promise<Option<UserModel>>, [string]>();
 
-  findById = jest.fn();
+  save = jest.fn<Promise<UserModel>, [SaveUserDto]>();
 
-  save = jest.fn();
-
-  update = jest.fn();
+  update = jest.fn<Promise<UserModel>, [string, UpdateUserDto]>();
 }
