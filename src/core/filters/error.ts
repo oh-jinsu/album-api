@@ -1,5 +1,6 @@
 import { ArgumentsHost, Catch, ExceptionFilter } from "@nestjs/common";
 import { Response } from "express";
+import { isProduction } from "../environment";
 
 @Catch(Error)
 export class ErrorFilter implements ExceptionFilter {
@@ -10,7 +11,7 @@ export class ErrorFilter implements ExceptionFilter {
 
     response.status(500).json({
       code: 1000,
-      message: "예기치 못한 오류입니다.",
+      message: isProduction ? "예기치 못한 오류입니다." : exception.message,
     });
   }
 }

@@ -49,7 +49,7 @@ export class HttpExceptionFilter implements ExceptionFilter {
 
     return {
       code: 1001,
-      message: "서비스가 일시적으로 작동하지 않습니다.",
+      message: "알려지지 않은 예외입니다.",
     };
   }
 }
