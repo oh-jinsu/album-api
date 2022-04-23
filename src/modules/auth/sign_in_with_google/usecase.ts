@@ -1,3 +1,4 @@
+import { Injectable } from "@nestjs/common";
 import {
   UseCaseException,
   UseCaseOk,
@@ -17,6 +18,7 @@ interface Result {
   refreshToken: string;
 }
 
+@Injectable()
 export class SignInWithGoogleUseCase {
   constructor(
     private readonly authProvider: AuthProvider,

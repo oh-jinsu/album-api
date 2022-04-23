@@ -1,13 +1,18 @@
 import { HttpException } from "@nestjs/common";
-import {
-  UseCaseException,
-  UseCaseResult,
-} from "src/core/enums/results/usecase";
+import { UseCaseResult } from "src/core/enums/results/usecase";
 
 export abstract class Adapter {
-  response<T>(result: UseCaseResult<T>) {
+  response<T>(result: UseCaseResult<T>): { [key: string]: any } {
     if (result.isException()) {
-      return this.responseException(result);
+      const { code, message } = result;
+
+      throw new HttpException(
+        {
+          code,
+          message,
+        },
+        this.getExceptionStatus(result.code),
+      );
     }
 
     if (result.isOk()) {
@@ -17,7 +22,7 @@ export abstract class Adapter {
     throw Error();
   }
 
-  private static map(value: any) {
+  private static map(value: any): { [key: string]: any } {
     const result = {};
 
     Object.entries(value).forEach(([key, value]) => {
@@ -31,17 +36,5 @@ export abstract class Adapter {
     return result;
   }
 
-  responseException(result: UseCaseException) {
-    const { code, message } = result;
-
-    throw new HttpException(
-      {
-        code,
-        message,
-      },
-      this.getExceptionStatus(result.code),
-    );
-  }
-
-  abstract getExceptionStatus(code: number);
+  abstract getExceptionStatus(code: number): number;
 }

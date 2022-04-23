@@ -21,7 +21,7 @@ export class SignInWithGoogleAdapter extends Adapter {
     return this.response(result);
   }
 
-  getExceptionStatus(code: number) {
+  getExceptionStatus(code: number): number {
     switch (code) {
       case 1:
         return 400;
