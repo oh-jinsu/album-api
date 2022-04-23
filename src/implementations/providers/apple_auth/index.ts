@@ -1,9 +1,9 @@
-import { HttpService } from '@nestjs/axios';
-import { Injectable } from '@nestjs/common';
-import { JwtService } from '@nestjs/jwt';
-import { AppleAuthProvider } from 'src/declarations/providers/apple_auth';
-import * as NodeRSA from 'node-rsa';
-import { AppleClaim } from 'src/declarations/models/apple_claim';
+import { HttpService } from "@nestjs/axios";
+import { Injectable } from "@nestjs/common";
+import { JwtService } from "@nestjs/jwt";
+import { AppleAuthProvider } from "src/declarations/providers/apple_auth";
+import * as NodeRSA from "node-rsa";
+import { AppleClaim } from "src/declarations/models/apple_claim";
 
 @Injectable()
 export class AppleAuthProviderImpl implements AppleAuthProvider {
@@ -14,7 +14,7 @@ export class AppleAuthProviderImpl implements AppleAuthProvider {
 
   async verify(idToken: string): Promise<boolean> {
     const { keys } = await new Promise<any>((resolve, reject) =>
-      this.httpService.get('https://appleid.apple.com/auth/keys').subscribe({
+      this.httpService.get("https://appleid.apple.com/auth/keys").subscribe({
         next: (value) => resolve(value.data),
         error: (error) => reject(error),
       }),
@@ -34,15 +34,15 @@ export class AppleAuthProviderImpl implements AppleAuthProvider {
     const rsa = new NodeRSA();
 
     rsa.importKey({
-      n: Buffer.from(key.n, 'base64'),
-      e: Buffer.from(key.e, 'base64'),
+      n: Buffer.from(key.n, "base64"),
+      e: Buffer.from(key.e, "base64"),
     });
 
-    const publicKey = rsa.exportKey('public');
+    const publicKey = rsa.exportKey("public");
 
     const algorithms = [header.alg];
 
-    const issuer = 'https://appleid.apple.com';
+    const issuer = "https://appleid.apple.com";
 
     const audience = process.env.JWT_AUDIENCE;
 

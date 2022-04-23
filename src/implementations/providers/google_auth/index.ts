@@ -1,7 +1,7 @@
-import { Injectable } from '@nestjs/common';
-import { OAuth2Client } from 'google-auth-library';
-import { GoogleClaim } from 'src/declarations/models/google_claim';
-import { GoogleAuthProvider } from 'src/declarations/providers/google_auth';
+import { Injectable } from "@nestjs/common";
+import { OAuth2Client } from "google-auth-library";
+import { GoogleClaim } from "src/declarations/models/google_claim";
+import { GoogleAuthProvider } from "src/declarations/providers/google_auth";
 
 @Injectable()
 export class GoogleAuthProviderImpl implements GoogleAuthProvider {

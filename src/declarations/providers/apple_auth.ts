@@ -1,4 +1,4 @@
-import { AppleClaim } from '../models/apple_claim';
+import { AppleClaim } from "../models/apple_claim";
 
 export abstract class AppleAuthProvider {
   abstract verify(idToken: string): Promise<boolean>;

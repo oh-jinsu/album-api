@@ -1,9 +1,9 @@
-import { NestFactory } from '@nestjs/core';
-import { Module } from '@nestjs/common';
-import { AuthModule } from './modules/auth/module';
-import { ProviderModule } from './implementations/providers';
-import { RepositoryModule } from './implementations/repositories';
-import { ConfigModule } from '@nestjs/config';
+import { NestFactory } from "@nestjs/core";
+import { Module } from "@nestjs/common";
+import { AuthModule } from "./modules/auth/module";
+import { ProviderModule } from "./implementations/providers";
+import { RepositoryModule } from "./implementations/repositories";
+import { ConfigModule } from "@nestjs/config";
 
 @Module({
   imports: [

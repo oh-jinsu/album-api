@@ -1,11 +1,11 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable } from "@nestjs/common";
 import {
   UseCaseException,
   UseCaseOk,
   UseCaseResult,
-} from 'src/core/enums/results/usecase';
-import { AppleAuthProvider } from 'src/declarations/providers/apple_auth';
-import { UserRepository } from 'src/declarations/repositories/user';
+} from "src/core/enums/results/usecase";
+import { AppleAuthProvider } from "src/declarations/providers/apple_auth";
+import { UserRepository } from "src/declarations/repositories/user";
 
 export interface Params {
   idToken: string;
@@ -28,7 +28,7 @@ export class SignUpWithAppleUseCase {
     const isVerified = await this.appleAuthProvider.verify(idToken);
 
     if (!isVerified) {
-      return new UseCaseException(1, '유효하지 않은 인증정보입니다.');
+      return new UseCaseException(1, "유효하지 않은 인증정보입니다.");
     }
 
     const { id, email } = await this.appleAuthProvider.extractClaim(idToken);
@@ -36,7 +36,7 @@ export class SignUpWithAppleUseCase {
     const option = await this.userRepository.findById(id);
 
     if (option.isSome()) {
-      return new UseCaseException(2, '이미 가입한 이용자입니다.');
+      return new UseCaseException(2, "이미 가입한 이용자입니다.");
     }
 
     const user = await this.userRepository.save({ id, email });

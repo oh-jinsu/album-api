@@ -1,4 +1,4 @@
-import { GoogleClaim } from '../models/google_claim';
+import { GoogleClaim } from "../models/google_claim";
 
 export abstract class GoogleAuthProvider {
   abstract verify(idToken: string): Promise<boolean>;

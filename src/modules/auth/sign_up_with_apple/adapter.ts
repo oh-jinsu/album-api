@@ -1,12 +1,12 @@
-import { Body, Controller, Post } from '@nestjs/common';
-import { Adapter } from 'src/core/adapter';
-import { SignUpWithAppleUseCase } from './usecase';
+import { Body, Controller, Post } from "@nestjs/common";
+import { Adapter } from "src/core/adapter";
+import { SignUpWithAppleUseCase } from "./usecase";
 
 interface RequestBody {
   idToken: string;
 }
 
-@Controller('auth/signup/apple')
+@Controller("auth/signup/apple")
 export class SignUpWithAppleAdapter extends Adapter {
   constructor(private readonly useCase: SignUpWithAppleUseCase) {
     super();

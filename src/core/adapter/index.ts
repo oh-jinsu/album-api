@@ -1,8 +1,8 @@
-import { HttpException } from '@nestjs/common';
+import { HttpException } from "@nestjs/common";
 import {
   UseCaseException,
   UseCaseResult,
-} from 'src/core/enums/results/usecase';
+} from "src/core/enums/results/usecase";
 
 export abstract class Adapter {
   response<T>(result: UseCaseResult<T>) {

@@ -16,6 +16,8 @@ module.exports = {
   },
   ignorePatterns: ['.eslintrc.js'],
   rules: {
+    "prettier/prettier": [ "error", { "singleQuote": false }],
+    "quotes": ["error", "double"],
     '@typescript-eslint/no-unused-vars': ['error'],
     '@typescript-eslint/interface-name-prefix': 'off',
     '@typescript-eslint/explicit-function-return-type': 'off',

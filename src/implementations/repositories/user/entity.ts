@@ -4,7 +4,7 @@ import {
   Entity,
   PrimaryColumn,
   UpdateDateColumn,
-} from 'typeorm';
+} from "typeorm";
 
 @Entity()
 export class UserEntity {

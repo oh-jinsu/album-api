@@ -1,12 +1,12 @@
-import { Body, Controller, Post } from '@nestjs/common';
-import { Adapter } from 'src/core/adapter';
-import { SignUpWithGoogleUseCase } from './usecase';
+import { Body, Controller, Post } from "@nestjs/common";
+import { Adapter } from "src/core/adapter";
+import { SignUpWithGoogleUseCase } from "./usecase";
 
 interface RequestBody {
   idToken: string;
 }
 
-@Controller('auth/signup/google')
+@Controller("auth/signup/google")
 export class SignUpWithGoogleAdapter extends Adapter {
   constructor(private readonly usecase: SignUpWithGoogleUseCase) {
     super();
