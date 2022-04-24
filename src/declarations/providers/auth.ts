@@ -2,7 +2,6 @@ import { Claim } from "../models/claim";
 
 export type IssueTokenOptions = {
   sub: string;
-  expiration: number;
 };
 
 export abstract class AuthProvider {

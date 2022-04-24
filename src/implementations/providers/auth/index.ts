@@ -1,5 +1,6 @@
 import { Injectable } from "@nestjs/common";
 import { JwtService } from "@nestjs/jwt";
+import { isProduction } from "src/core/environment";
 import { Claim } from "src/declarations/models/claim";
 import {
   AuthProvider,
@@ -10,10 +11,7 @@ import {
 export class AuthProviderImpl implements AuthProvider {
   constructor(private readonly jwtService: JwtService) {}
 
-  async issueAccessToken({
-    sub,
-    expiration,
-  }: IssueTokenOptions): Promise<string> {
+  async issueAccessToken({ sub }: IssueTokenOptions): Promise<string> {
     return this.jwtService.sign(
       {},
       {
@@ -21,7 +19,9 @@ export class AuthProviderImpl implements AuthProvider {
         issuer: process.env.JWT_ISSUER,
         audience: process.env.JWT_AUDIENCE,
         secret: process.env.JWT_SECRET_ACCESS_TOKEN,
-        expiresIn: expiration,
+        expiresIn: isProduction
+          ? process.env.JWT_EXPIRES_IN_ACCESS_TOKEN
+          : process.env.JWT_EXPIRES_IN_ACCESS_TOKEN_FOR_DEV,
       },
     );
   }
@@ -40,10 +40,7 @@ export class AuthProviderImpl implements AuthProvider {
     }
   }
 
-  async issueRefreshToken({
-    sub,
-    expiration,
-  }: IssueTokenOptions): Promise<string> {
+  async issueRefreshToken({ sub }: IssueTokenOptions): Promise<string> {
     return this.jwtService.sign(
       {},
       {
@@ -51,7 +48,9 @@ export class AuthProviderImpl implements AuthProvider {
         issuer: process.env.JWT_ISSUER,
         audience: process.env.JWT_AUDIENCE,
         secret: process.env.JWT_SECRET_REFRESH_TOKEN,
-        expiresIn: expiration,
+        expiresIn: isProduction
+          ? process.env.JWT_EXPIRES_IN_REFRESH_TOKEN
+          : process.env.JWT_EXPIRES_IN_REFRESH_TOKEN_FOR_DEV,
       },
     );
   }

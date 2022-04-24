@@ -50,7 +50,6 @@ export class RefreshAuthUseCase {
 
     const accessToken = await this.authProvider.issueAccessToken({
       sub: id,
-      expiration: 1000 * 60 * 1,
     });
 
     return new UseCaseOk({

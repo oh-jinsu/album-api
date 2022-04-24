@@ -44,12 +44,10 @@ export class SignInWithGoogleUseCase {
 
     const accessToken = await this.authProvider.issueAccessToken({
       sub: id,
-      expiration: 1000 * 60 * 1,
     });
 
     const refreshToken = await this.authProvider.issueRefreshToken({
       sub: id,
-      expiration: 1000 * 60 * 60 * 24 * 365,
     });
 
     const hashedRefreshToken = await this.hashProvider.encode(refreshToken);
