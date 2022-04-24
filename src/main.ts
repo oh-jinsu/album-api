@@ -20,8 +20,7 @@ class AppModule {}
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
 
-  app.useGlobalFilters(new ErrorFilter());
-  app.useGlobalFilters(new HttpExceptionFilter());
+  app.useGlobalFilters(new ErrorFilter(), new HttpExceptionFilter());
 
   app.useGlobalPipes(
     new ValidationPipe({
