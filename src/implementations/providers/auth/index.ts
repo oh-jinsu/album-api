@@ -1,5 +1,6 @@
 import { Injectable } from "@nestjs/common";
 import { JwtService } from "@nestjs/jwt";
+import { Claim } from "src/declarations/models/claim";
 import {
   AuthProvider,
   IssueTokenOptions,
@@ -25,6 +26,20 @@ export class AuthProviderImpl implements AuthProvider {
     );
   }
 
+  async verifyAccessToken(token: string): Promise<boolean> {
+    try {
+      this.jwtService.verify(token, {
+        issuer: process.env.JWT_ISSUER,
+        audience: process.env.JWT_AUDIENCE,
+        secret: process.env.JWT_SECRET_ACCESS_TOKEN,
+      });
+
+      return true;
+    } catch {
+      return false;
+    }
+  }
+
   async issueRefreshToken({
     sub,
     expiration,
@@ -39,5 +54,25 @@ export class AuthProviderImpl implements AuthProvider {
         expiresIn: expiration,
       },
     );
+  }
+
+  async verifyRefreshToken(token: string): Promise<boolean> {
+    try {
+      this.jwtService.verify(token, {
+        issuer: process.env.JWT_ISSUER,
+        audience: process.env.JWT_AUDIENCE,
+        secret: process.env.JWT_SECRET_REFRESH_TOKEN,
+      });
+
+      return true;
+    } catch {
+      return false;
+    }
+  }
+
+  async extractClaim(token: string): Promise<Claim> {
+    const { sub } = this.jwtService.decode(token);
+
+    return new Claim({ id: sub });
   }
 }
