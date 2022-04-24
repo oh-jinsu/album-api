@@ -1,5 +1,5 @@
 import { ImageProvider } from "src/declarations/providers/image";
-import { s3 } from "../storage/s3";
+import { s3 } from "../../storage/s3";
 
 export class ImageProviderImpl implements ImageProvider {
   async put(filename: string, buffer: Buffer, mimetype: string): Promise<void> {
