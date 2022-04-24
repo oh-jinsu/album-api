@@ -1,5 +1,6 @@
 import { Global, Module } from "@nestjs/common";
 import { TypeOrmModule } from "@nestjs/typeorm";
+import { isProduction } from "src/core/environment";
 import { UserRepository } from "src/declarations/repositories/user";
 import { UserRepositoryImpl } from "./user";
 import { UserEntity } from "./user/entity";
@@ -17,7 +18,7 @@ import { UserEntity } from "./user/entity";
         database: process.env.DATABASE,
         entities: [UserEntity],
         synchronize: true,
-        dropSchema: true,
+        dropSchema: !isProduction,
       }),
     }),
     TypeOrmModule.forFeature([UserEntity]),
