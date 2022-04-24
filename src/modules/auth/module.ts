@@ -2,6 +2,7 @@ import { Module } from "@nestjs/common";
 import { RefreshAuthModule } from "./refresh/module";
 import { SignInWithAppleModule } from "./sign_in_with_apple/module";
 import { SignInWithGoogleModule } from "./sign_in_with_google/module";
+import { SignOutModule } from "./sign_out/module";
 import { SignUpWithAppleModule } from "./sign_up_with_apple/module";
 import { SignUpWithGoogleModule } from "./sign_up_with_google/module";
 
@@ -12,6 +13,7 @@ import { SignUpWithGoogleModule } from "./sign_up_with_google/module";
     SignUpWithAppleModule,
     SignUpWithGoogleModule,
     RefreshAuthModule,
+    SignOutModule,
   ],
 })
 export class AuthModule {}
