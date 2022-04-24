@@ -23,6 +23,10 @@ export abstract class Adapter {
   }
 
   private static map(value: any): { [key: string]: any } {
+    if (value == null) {
+      return null;
+    }
+
     const result = {};
 
     Object.entries(value).forEach(([key, value]) => {
