@@ -104,7 +104,7 @@ describe("test a sign out usecase", () => {
     expect(result.message).toBe("이미 로그아웃한 이용자입니다.");
   });
 
-  it("should success", async () => {
+  it("should be ok", async () => {
     const accessToken = "an access token";
 
     const result = await usecase.execute({ accessToken });

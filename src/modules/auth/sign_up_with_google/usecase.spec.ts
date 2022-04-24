@@ -62,7 +62,7 @@ describe("sign_up_usecase_test", () => {
     expect(result.message).toBe("이미 가입한 이용자입니다.");
   });
 
-  it("should sccess", async () => {
+  it("should return an user information", async () => {
     userRepository.save.mockResolvedValueOnce(
       new UserModel({
         id: "1",

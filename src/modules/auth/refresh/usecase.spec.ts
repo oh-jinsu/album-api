@@ -9,6 +9,8 @@ import { RefreshAuthUseCase } from "./usecase";
 describe("test the refresh auth usecase", () => {
   const authProvider = new MockAuthProvider();
 
+  authProvider.issueAccessToken.mockResolvedValue("a refresh token");
+
   authProvider.verifyRefreshToken.mockResolvedValue(true);
 
   authProvider.extractClaim.mockResolvedValue(new Claim({ id: "an id" }));
@@ -88,5 +90,17 @@ describe("test the refresh auth usecase", () => {
     expect(result.code).toBe(3);
 
     expect(result.message).toBe("폐기된 인증정보입니다.");
+  });
+
+  it("should return new access token", async () => {
+    const refreshToken = "a refresh token";
+
+    const result = await usecase.execute({ refreshToken });
+
+    if (!result.isOk()) {
+      fail();
+    }
+
+    expect(result.value.accessToken).toBeDefined();
   });
 });
