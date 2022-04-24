@@ -6,6 +6,7 @@ import { RepositoryModule } from "./implementations/repositories";
 import { ConfigModule } from "@nestjs/config";
 import { HttpExceptionFilter } from "./core/filters/http";
 import { ErrorFilter } from "./core/filters/error";
+import { UtilModule } from "./modules/util/module";
 
 @Module({
   imports: [
@@ -13,6 +14,7 @@ import { ErrorFilter } from "./core/filters/error";
     ProviderModule,
     RepositoryModule,
     AuthModule,
+    UtilModule,
   ],
 })
 class AppModule {}
