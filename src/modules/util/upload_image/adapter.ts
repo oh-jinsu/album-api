@@ -1,5 +1,6 @@
 import {
   Controller,
+  Headers,
   Post,
   UploadedFile,
   UseInterceptors,
@@ -17,9 +18,14 @@ export class UploadImageAdapter extends Adapter {
 
   @Post()
   @UseInterceptors(FileInterceptor("file"))
-  async receive(@UploadedFile() { buffer, mimetype }: Express.Multer.File) {
+  async receive(
+    @Headers("Authorization") authorization: string,
+    @UploadedFile() { buffer, mimetype }: Express.Multer.File,
+  ) {
+    const accessToken = authorization.split(" ")[1];
+
     const result = await this.usecase.execute({
-      accessToken: "accessToken",
+      accessToken,
       buffer,
       mimetype,
     });
