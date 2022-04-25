@@ -1,5 +1,6 @@
 import { Injectable } from "@nestjs/common";
 import { InjectRepository } from "@nestjs/typeorm";
+import { None, Option, Some } from "src/core/enums/option";
 import { PhotoModel } from "src/declarations/models/photo";
 import {
   PhotoRepository,
@@ -25,6 +26,24 @@ export class PhotoRepositoryImpl implements PhotoRepository {
     const entities = await this.adaptee.find({ albumId });
 
     return entities.map(PhotoMapper.toModel);
+  }
+
+  async findLatestByAlbumId(albumId: string): Promise<Option<PhotoModel>> {
+    const entities = await this.adaptee.find({
+      where: {
+        albumId,
+      },
+      order: {
+        createdAt: "DESC",
+      },
+      take: 1,
+    });
+
+    if (entities.length === 0) {
+      return new None();
+    }
+
+    return new Some(PhotoMapper.toModel(entities[0]));
   }
 
   async save(dto: SavePhotoDto): Promise<PhotoModel> {

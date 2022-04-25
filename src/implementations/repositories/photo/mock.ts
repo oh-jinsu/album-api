@@ -1,3 +1,4 @@
+import { Option } from "src/core/enums/option";
 import { PhotoModel } from "src/declarations/models/photo";
 import {
   PhotoRepository,
@@ -9,6 +10,8 @@ export class MockPhotoRepository implements PhotoRepository {
   countByAlbumId = jest.fn<Promise<number>, [string]>();
 
   findByAlbumId = jest.fn<Promise<PhotoModel[]>, [string]>();
+
+  findLatestByAlbumId = jest.fn<Promise<Option<PhotoModel>>, [string]>();
 
   save = jest.fn<Promise<PhotoModel>, [SavePhotoDto]>();
 

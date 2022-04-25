@@ -1,3 +1,4 @@
+import { Option } from "src/core/enums/option";
 import { PhotoModel } from "../models/photo";
 
 export type SavePhotoDto = {
@@ -15,6 +16,8 @@ export abstract class PhotoRepository {
   abstract countByAlbumId(albumId: string): Promise<number>;
 
   abstract findByAlbumId(albumId: string): Promise<PhotoModel[]>;
+
+  abstract findLatestByAlbumId(albumId: string): Promise<Option<PhotoModel>>;
 
   abstract save(dto: SavePhotoDto): Promise<PhotoModel>;
 
