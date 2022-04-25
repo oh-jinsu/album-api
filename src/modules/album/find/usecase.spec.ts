@@ -5,9 +5,9 @@ import { PhotoModel } from "src/declarations/models/photo";
 import { MockAuthProvider } from "src/implementations/providers/auth/mock";
 import { MockAlbumRepository } from "src/implementations/repositories/album/mock";
 import { MockPhotoRepository } from "src/implementations/repositories/photo/mock";
-import { FindAlbumUseCase } from "./usecase";
+import { FindAlbumsUseCase } from "./usecase";
 
-describe("test the find album usecase", () => {
+describe("test the find albums usecase", () => {
   const authProvider = new MockAuthProvider();
 
   authProvider.verifyAccessToken.mockResolvedValue(true);
@@ -49,7 +49,7 @@ describe("test the find album usecase", () => {
       ),
   );
 
-  const usecase = new FindAlbumUseCase(
+  const usecase = new FindAlbumsUseCase(
     authProvider,
     albumRepository,
     photoRepository,

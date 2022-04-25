@@ -7,6 +7,7 @@ import { ConfigModule } from "@nestjs/config";
 import { HttpExceptionFilter } from "./core/filters/http";
 import { ErrorFilter } from "./core/filters/error";
 import { UtilModule } from "./modules/util/module";
+import { AlbumModule } from "./modules/album";
 
 @Module({
   imports: [
@@ -14,6 +15,7 @@ import { UtilModule } from "./modules/util/module";
     ProviderModule,
     RepositoryModule,
     AuthModule,
+    AlbumModule,
     UtilModule,
   ],
 })

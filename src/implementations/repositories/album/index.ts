@@ -7,7 +7,7 @@ import {
   SaveAlbumDto,
   UpdateAlbumDto,
 } from "src/declarations/repositories/album";
-import { LessThan, Repository } from "typeorm";
+import { LessThanOrEqual, Repository } from "typeorm";
 import { AlbumEntity } from "./entity";
 import { AlbumMapper } from "./mapper";
 
@@ -30,15 +30,16 @@ export class AlbumRepositoryImpl implements AlbumRepository {
     const query = await this.adaptee.find({
       where: {
         userId,
-        createdAt: LessThan(date),
+        createdAt: LessThanOrEqual(date),
       },
       order: {
         createdAt: "DESC",
       },
+      skip: 0,
       take: limit + 1,
     });
 
-    const last = query.length == limit + 1 && query.pop();
+    const last = Number(query.length) === limit + 1 ? query.pop() : null;
 
     return { next: last?.id, items: query.map(AlbumMapper.toModel) };
   }

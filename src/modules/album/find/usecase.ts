@@ -1,3 +1,4 @@
+import { Injectable } from "@nestjs/common";
 import {
   UseCaseException,
   UseCaseOk,
@@ -28,7 +29,8 @@ export interface Result {
   items: ResultItem[];
 }
 
-export class FindAlbumUseCase {
+@Injectable()
+export class FindAlbumsUseCase {
   constructor(
     private readonly authProvider: AuthProvider,
     private readonly albumRepository: AlbumRepository,
@@ -74,7 +76,7 @@ export class FindAlbumUseCase {
 
     const option = await this.photoRepository.findLatestByAlbumId(id);
 
-    const cover = option.isSome() && option.value.imageUri;
+    const cover = option.isSome() ? option.value.imageUri : null;
 
     return {
       id,

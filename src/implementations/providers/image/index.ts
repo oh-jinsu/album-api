@@ -11,11 +11,10 @@ export class ImageProviderImpl implements ImageProvider {
           Body: buffer,
           ContentType: mimetype,
         },
-        (error, data) => {
+        (error) => {
           if (error) {
             reject(error);
           } else {
-            console.log(data);
             resolve(null);
           }
         },
