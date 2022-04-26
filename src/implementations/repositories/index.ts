@@ -2,11 +2,14 @@ import { Global, Module } from "@nestjs/common";
 import { TypeOrmModule } from "@nestjs/typeorm";
 import { isProduction } from "src/core/environment";
 import { AlbumRepository } from "src/declarations/repositories/album";
+import { FriendRepository } from "src/declarations/repositories/friend";
 import { ImageRepository } from "src/declarations/repositories/image";
 import { PhotoRepository } from "src/declarations/repositories/photo";
 import { UserRepository } from "src/declarations/repositories/user";
 import { AlbumRepositoryImpl } from "./album";
 import { AlbumEntity } from "./album/entity";
+import { FriendRepositoryImpl } from "./friend";
+import { FriendEntity } from "./friend/entity";
 import { ImageRepositoryImpl } from "./image";
 import { ImageEntity } from "./image/entity";
 import { PhotoRepositoryImpl } from "./photo";
@@ -25,7 +28,13 @@ import { UserEntity } from "./user/entity";
         username: process.env.DATABASE_USERNAME,
         password: process.env.DATABASE_PASSWORD,
         database: process.env.DATABASE,
-        entities: [UserEntity, AlbumEntity, PhotoEntity, ImageEntity],
+        entities: [
+          UserEntity,
+          AlbumEntity,
+          PhotoEntity,
+          FriendEntity,
+          ImageEntity,
+        ],
         synchronize: true,
         dropSchema: !isProduction,
       }),
@@ -34,6 +43,7 @@ import { UserEntity } from "./user/entity";
       UserEntity,
       AlbumEntity,
       PhotoEntity,
+      FriendEntity,
       ImageEntity,
     ]),
   ],
@@ -51,10 +61,20 @@ import { UserEntity } from "./user/entity";
       useClass: PhotoRepositoryImpl,
     },
     {
+      provide: FriendRepository,
+      useClass: FriendRepositoryImpl,
+    },
+    {
       provide: ImageRepository,
       useClass: ImageRepositoryImpl,
     },
   ],
-  exports: [UserRepository, AlbumRepository, PhotoRepository, ImageRepository],
+  exports: [
+    UserRepository,
+    AlbumRepository,
+    PhotoRepository,
+    FriendRepository,
+    ImageRepository,
+  ],
 })
 export class RepositoryModule {}
