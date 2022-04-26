@@ -3,10 +3,12 @@ import { AlbumModel } from "src/declarations/models/album";
 import { ClaimModel } from "src/declarations/models/claim";
 import { FriendModel } from "src/declarations/models/friend";
 import { PhotoModel } from "src/declarations/models/photo";
+import { UserModel } from "src/declarations/models/user";
 import { MockAuthProvider } from "src/implementations/providers/auth/mock";
 import { MockAlbumRepository } from "src/implementations/repositories/album/mock";
 import { MockFriendRepository } from "src/implementations/repositories/friend/mock";
 import { MockPhotoRepository } from "src/implementations/repositories/photo/mock";
+import { MockUserRepository } from "src/implementations/repositories/user/mock";
 import { FindAlbumsUseCase } from "./usecase";
 
 describe("test the find albums usecase", () => {
@@ -60,8 +62,25 @@ describe("test the find albums usecase", () => {
           id: `an id ${i.toString()}`,
           userId: `an user id ${i.toString()}`,
           albumId,
+          createdAt: new Date(),
         }),
     ),
+  );
+
+  const userRepository = new MockUserRepository();
+
+  userRepository.findById.mockImplementation(
+    async (id: string) =>
+      new Some(
+        new UserModel({
+          id,
+          email: "an email",
+          avatar: "an avatar",
+          refreshToken: "a refresh token",
+          updatedAt: new Date(),
+          createdAt: new Date(),
+        }),
+      ),
   );
 
   const usecase = new FindAlbumsUseCase(
@@ -69,6 +88,7 @@ describe("test the find albums usecase", () => {
     albumRepository,
     photoRepository,
     friendRepository,
+    userRepository,
   );
 
   it("should be defined", () => {

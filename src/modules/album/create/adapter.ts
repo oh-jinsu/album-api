@@ -30,6 +30,8 @@ export class CreateAlbumAdapter extends Adapter {
     switch (code) {
       case 1:
         return 401;
+      case 2:
+        return 404;
       default:
         return 500;
     }

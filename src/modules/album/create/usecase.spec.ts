@@ -1,11 +1,13 @@
-import { None } from "src/core/enums/option";
+import { None, Some } from "src/core/enums/option";
 import { AlbumModel } from "src/declarations/models/album";
 import { ClaimModel } from "src/declarations/models/claim";
 import { FriendModel } from "src/declarations/models/friend";
+import { UserModel } from "src/declarations/models/user";
 import { MockAuthProvider } from "src/implementations/providers/auth/mock";
 import { MockAlbumRepository } from "src/implementations/repositories/album/mock";
 import { MockFriendRepository } from "src/implementations/repositories/friend/mock";
 import { MockPhotoRepository } from "src/implementations/repositories/photo/mock";
+import { MockUserRepository } from "src/implementations/repositories/user/mock";
 import { CreateAlbumUseCase } from "./usecase";
 
 describe("test the create album usecase", () => {
@@ -42,7 +44,24 @@ describe("test the create album usecase", () => {
         id: "an id",
         userId,
         albumId,
+        createdAt: new Date(),
       }),
+  );
+
+  const userRepository = new MockUserRepository();
+
+  userRepository.findById.mockImplementation(
+    async (id: string) =>
+      new Some(
+        new UserModel({
+          id,
+          email: "an email",
+          avatar: "an avatar",
+          refreshToken: "a refresh token",
+          updatedAt: new Date(),
+          createdAt: new Date(),
+        }),
+      ),
   );
 
   const usecase = new CreateAlbumUseCase(
@@ -50,6 +69,7 @@ describe("test the create album usecase", () => {
     photoRepository,
     friendRepository,
     albumRepository,
+    userRepository,
   );
 
   it("should be defined", () => {
@@ -74,7 +94,25 @@ describe("test the create album usecase", () => {
     expect(result.message).toBe("유효하지 않은 인증정보입니다.");
   });
 
-  it("should fail for an invalid access token", async () => {
+  it("should fail for an absent user", async () => {
+    userRepository.findById.mockResolvedValueOnce(new None());
+
+    const accessToken = "an access token";
+
+    const title = "a title";
+
+    const result = await usecase.execute({ accessToken, title });
+
+    if (!result.isException()) {
+      fail();
+    }
+
+    expect(result.code).toBe(2);
+
+    expect(result.message).toBe("이용자를 찾지 못했습니다.");
+  });
+
+  it("should be ok", async () => {
     const accessToken = "an access token";
 
     const title = "a title";

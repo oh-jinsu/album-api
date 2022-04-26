@@ -8,10 +8,18 @@ import { AuthProvider } from "src/declarations/providers/auth";
 import { AlbumRepository } from "src/declarations/repositories/album";
 import { FriendRepository } from "src/declarations/repositories/friend";
 import { PhotoRepository } from "src/declarations/repositories/photo";
+import { UserRepository } from "src/declarations/repositories/user";
 
 export interface Params {
   accessToken: string;
   title: string;
+}
+
+export interface UserResult {
+  id: string;
+  email?: string;
+  avatar: string;
+  joinedAt: Date;
 }
 
 export interface Result {
@@ -19,7 +27,7 @@ export interface Result {
   title: string;
   photoCount: number;
   cover?: string;
-  friendIds: string[];
+  users: UserResult[];
   updatedAt: Date;
   createdAt: Date;
 }
@@ -31,6 +39,7 @@ export class CreateAlbumUseCase {
     private readonly photoRepository: PhotoRepository,
     private readonly friendRepository: FriendRepository,
     private readonly albumRepository: AlbumRepository,
+    private readonly userRepository: UserRepository,
   ) {}
 
   async execute({
@@ -55,18 +64,37 @@ export class CreateAlbumUseCase {
       albumId: album.id,
     });
 
+    const userOption = await this.userRepository.findById(friend.userId);
+
+    if (!userOption.isSome()) {
+      return new UseCaseException(2, "이용자를 찾지 못했습니다.");
+    }
+
+    const user = userOption.value;
+
     const photoCount = await this.photoRepository.countByAlbumId(album.id);
 
-    const option = await this.photoRepository.findLatestByAlbumId(album.id);
+    const latestPhotoOption = await this.photoRepository.findLatestByAlbumId(
+      album.id,
+    );
 
-    const cover = option.isSome() ? option.value.imageUri : null;
+    const cover = latestPhotoOption.isSome()
+      ? latestPhotoOption.value.imageUri
+      : null;
 
     return new UseCaseOk({
       id: album.id,
       title: album.title,
       photoCount,
       cover,
-      friendIds: [friend.userId],
+      users: [
+        {
+          id: user.id,
+          email: user.email,
+          avatar: user.avatar,
+          joinedAt: friend.createdAt,
+        },
+      ],
       updatedAt: album.updatedAt,
       createdAt: album.createdAt,
     });

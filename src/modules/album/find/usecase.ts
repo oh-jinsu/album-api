@@ -5,10 +5,12 @@ import {
   UseCaseResult,
 } from "src/core/enums/results/usecase";
 import { AlbumModel } from "src/declarations/models/album";
+import { FriendModel } from "src/declarations/models/friend";
 import { AuthProvider } from "src/declarations/providers/auth";
 import { AlbumRepository } from "src/declarations/repositories/album";
 import { FriendRepository } from "src/declarations/repositories/friend";
 import { PhotoRepository } from "src/declarations/repositories/photo";
+import { UserRepository } from "src/declarations/repositories/user";
 
 export interface Params {
   accessToken: string;
@@ -16,12 +18,19 @@ export interface Params {
   limit?: number;
 }
 
+export interface UserResult {
+  id: string;
+  email?: string;
+  avatar: string;
+  joinedAt: Date;
+}
+
 export interface ResultItem {
   id: string;
   title: string;
   photoCount: number;
   cover?: string;
-  friendIds: string[];
+  users: UserResult[];
   updatedAt: Date;
   createdAt: Date;
 }
@@ -38,8 +47,10 @@ export class FindAlbumsUseCase {
     private readonly albumRepository: AlbumRepository,
     private readonly photoRepository: PhotoRepository,
     private readonly friendRepository: FriendRepository,
+    private readonly userRepository: UserRepository,
   ) {
     this.mapAlbum = this.mapAlbum.bind(this);
+    this.mapFriend = this.mapFriend.bind(this);
   }
 
   async execute({
@@ -83,16 +94,38 @@ export class FindAlbumsUseCase {
 
     const friends = await this.friendRepository.findByAlbumId(id);
 
-    const friendIds = friends.map((e) => e.userId);
+    const users = await Promise.all(
+      friends.map(this.mapFriend).filter((e) => e),
+    );
 
     return {
       id,
       title,
       cover,
       photoCount,
-      friendIds,
+      users,
       updatedAt,
       createdAt,
+    };
+  }
+
+  private async mapFriend({
+    userId,
+    createdAt: joinedAt,
+  }: FriendModel): Promise<UserResult | null> {
+    const userOption = await this.userRepository.findById(userId);
+
+    if (!userOption.isSome()) {
+      return null;
+    }
+
+    const { id, email, avatar } = userOption.value;
+
+    return {
+      id,
+      email,
+      avatar,
+      joinedAt,
     };
   }
 }
