@@ -1,5 +1,7 @@
+import { ClaimModel } from "src/declarations/models/claim";
+import { ImageModel } from "src/declarations/models/image";
 import { MockAuthProvider } from "src/implementations/providers/auth/mock";
-import { MockImageProvider } from "src/implementations/providers/image/mock";
+import { MockImageRepository } from "src/implementations/repositories/image/mock";
 import { UploadImageUseCase } from "./usecase";
 
 describe("test the upload image usecase", () => {
@@ -7,13 +9,24 @@ describe("test the upload image usecase", () => {
 
   authProvider.verifyAccessToken.mockResolvedValue(true);
 
-  const imageProvider = new MockImageProvider();
+  authProvider.extractClaim.mockResolvedValue(
+    new ClaimModel({
+      id: "an id",
+    }),
+  );
 
-  imageProvider.put.mockResolvedValue(null);
+  const imageRepository = new MockImageRepository();
 
-  imageProvider.get.mockResolvedValue("an image uri");
+  imageRepository.save.mockImplementation(
+    async ({ userId }) =>
+      new ImageModel({
+        id: "an id",
+        userId: userId,
+        createdAt: new Date(),
+      }),
+  );
 
-  const usecase = new UploadImageUseCase(authProvider, imageProvider);
+  const usecase = new UploadImageUseCase(authProvider, imageRepository);
 
   it("should be defined", () => {
     expect(usecase).toBeDefined();
@@ -52,6 +65,7 @@ describe("test the upload image usecase", () => {
       fail();
     }
 
-    expect(result.value.imageUri).toBeDefined();
+    expect(result.value.id).toBeDefined();
+    expect(result.value.createdAt).toBeDefined();
   });
 });

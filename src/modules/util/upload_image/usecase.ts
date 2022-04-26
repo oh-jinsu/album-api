@@ -5,7 +5,7 @@ import {
   UseCaseResult,
 } from "src/core/enums/results/usecase";
 import { AuthProvider } from "src/declarations/providers/auth";
-import { ImageProvider } from "src/declarations/providers/image";
+import { ImageRepository } from "src/declarations/repositories/image";
 
 export interface Params {
   accessToken: string;
@@ -14,14 +14,15 @@ export interface Params {
 }
 
 export interface Result {
-  imageUri: string;
+  id: string;
+  createdAt: Date;
 }
 
 @Injectable()
 export class UploadImageUseCase {
   constructor(
     private readonly authProvider: AuthProvider,
-    private readonly imageProvider: ImageProvider,
+    private readonly imageRepository: ImageRepository,
   ) {}
 
   async execute({
@@ -35,14 +36,17 @@ export class UploadImageUseCase {
       return new UseCaseException(1, "유효하지 않은 인증정보입니다.");
     }
 
-    const filename = new Date().toISOString();
+    const { id: userId } = await this.authProvider.extractClaim(accessToken);
 
-    await this.imageProvider.put(filename, buffer, mimetype);
-
-    const imageUri = await this.imageProvider.get(filename);
+    const { id, createdAt } = await this.imageRepository.save({
+      userId,
+      buffer,
+      mimetype,
+    });
 
     return new UseCaseOk({
-      imageUri,
+      id,
+      createdAt,
     });
   }
 }
