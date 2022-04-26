@@ -21,12 +21,15 @@ describe("test the refresh auth usecase", () => {
 
   const userRepository = new MockUserRepository();
 
-  userRepository.findById.mockImplementation(
+  userRepository.findOne.mockImplementation(
     async (key: string) =>
       new Some(
         new UserModel({
           id: key,
           email: "an email",
+          from: "somewhere",
+
+          avatar: "an avatar",
           refreshToken: "a refresh token",
           updatedAt: new Date(),
           createdAt: new Date(),
@@ -61,7 +64,7 @@ describe("test the refresh auth usecase", () => {
   });
 
   it("should fail for an absent user", async () => {
-    userRepository.findById.mockResolvedValueOnce(new None());
+    userRepository.findOne.mockResolvedValueOnce(new None());
 
     const refreshToken = "a refresh token";
 

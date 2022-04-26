@@ -33,7 +33,7 @@ export class RefreshAuthUseCase {
 
     const { id } = await this.authProvider.extractClaim(refreshToken);
 
-    const option = await this.userRepository.findById(id);
+    const option = await this.userRepository.findOne(id);
 
     if (!option.isSome()) {
       return new UseCaseException(2, "탈퇴한 이용자입니다.");

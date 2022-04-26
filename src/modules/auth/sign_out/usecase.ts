@@ -27,7 +27,7 @@ export class SignOutUseCase {
 
     const { id } = await this.authProvider.extractClaim(accessToken);
 
-    const option = await this.userRepository.findById(id);
+    const option = await this.userRepository.findOne(id);
 
     if (!option.isSome()) {
       return new UseCaseException(2, "이용자를 찾지 못했습니다.");

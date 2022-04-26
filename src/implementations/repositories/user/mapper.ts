@@ -4,6 +4,7 @@ import { UserEntity } from "./entity";
 export class UserMapper {
   static toModel({
     id,
+    from,
     email,
     avatar,
     refreshToken,
@@ -12,6 +13,7 @@ export class UserMapper {
   }: UserEntity): UserModel {
     return new UserModel({
       id,
+      from,
       email,
       avatar,
       refreshToken,

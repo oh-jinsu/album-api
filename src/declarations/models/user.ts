@@ -1,5 +1,6 @@
 export class UserModel {
   public readonly id: string;
+  public readonly from: string;
   public readonly email: string;
   public readonly avatar: string;
   public readonly refreshToken?: string;
@@ -9,6 +10,7 @@ export class UserModel {
   constructor({
     id,
     email,
+    from,
     avatar,
     refreshToken,
     updatedAt,
@@ -16,12 +18,14 @@ export class UserModel {
   }: {
     id: string;
     email: string;
+    from: string;
     avatar: string;
     refreshToken: string;
     updatedAt: Date;
     createdAt: Date;
   }) {
     this.id = id;
+    this.from = from;
     this.email = email;
     this.avatar = avatar;
     this.refreshToken = refreshToken;

@@ -8,22 +8,22 @@ import { SignUpWithAppleUseCase } from "./usecase";
 describe("sign_up_usecase_test", () => {
   const userRepository = new MockUserRepository();
 
+  userRepository.findOneByFrom.mockResolvedValue(new None());
+
   const appleAuthProvider = new MockAppleAuthProvider();
+
+  appleAuthProvider.verify.mockResolvedValue(true);
+
+  appleAuthProvider.extractClaim.mockResolvedValue(
+    new AppleClaimModel({
+      id: "an id",
+      email: "an email",
+    }),
+  );
 
   const usecase = new SignUpWithAppleUseCase(userRepository, appleAuthProvider);
 
   it("should be defined", () => {
-    appleAuthProvider.verify.mockResolvedValue(true);
-
-    appleAuthProvider.extractClaim.mockResolvedValue(
-      new AppleClaimModel({
-        id: "an id",
-        email: "an email",
-      }),
-    );
-
-    userRepository.findById.mockResolvedValue(new None());
-
     expect(usecase).toBeDefined();
   });
 
@@ -44,7 +44,7 @@ describe("sign_up_usecase_test", () => {
   });
 
   it("should fail for a existing user", async () => {
-    userRepository.findById.mockResolvedValueOnce(new Some(null));
+    userRepository.findOneByFrom.mockResolvedValueOnce(new Some(null));
 
     const idToken = "an id token";
 
@@ -63,7 +63,9 @@ describe("sign_up_usecase_test", () => {
     userRepository.save.mockResolvedValueOnce(
       new UserModel({
         id: "1",
+        from: "somewhere",
         email: "email",
+        avatar: "an avatar",
         refreshToken: null,
         updatedAt: new Date(),
         createdAt: new Date(),

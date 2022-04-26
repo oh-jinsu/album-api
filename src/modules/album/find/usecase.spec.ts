@@ -69,11 +69,12 @@ describe("test the find albums usecase", () => {
 
   const userRepository = new MockUserRepository();
 
-  userRepository.findById.mockImplementation(
+  userRepository.findOne.mockImplementation(
     async (id: string) =>
       new Some(
         new UserModel({
           id,
+          from: "somewhere",
           email: "an email",
           avatar: "an avatar",
           refreshToken: "a refresh token",

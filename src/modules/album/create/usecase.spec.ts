@@ -50,12 +50,13 @@ describe("test the create album usecase", () => {
 
   const userRepository = new MockUserRepository();
 
-  userRepository.findById.mockImplementation(
+  userRepository.findOne.mockImplementation(
     async (id: string) =>
       new Some(
         new UserModel({
           id,
           email: "an email",
+          from: "somewhere",
           avatar: "an avatar",
           refreshToken: "a refresh token",
           updatedAt: new Date(),
@@ -95,7 +96,7 @@ describe("test the create album usecase", () => {
   });
 
   it("should fail for an absent user", async () => {
-    userRepository.findById.mockResolvedValueOnce(new None());
+    userRepository.findOne.mockResolvedValueOnce(new None());
 
     const accessToken = "an access token";
 

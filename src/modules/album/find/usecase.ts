@@ -113,7 +113,7 @@ export class FindAlbumsUseCase {
     userId,
     createdAt: joinedAt,
   }: FriendModel): Promise<UserResult | null> {
-    const userOption = await this.userRepository.findById(userId);
+    const userOption = await this.userRepository.findOne(userId);
 
     if (!userOption.isSome()) {
       return null;

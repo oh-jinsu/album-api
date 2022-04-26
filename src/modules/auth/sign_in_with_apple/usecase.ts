@@ -36,23 +36,27 @@ export class SignInWithAppleUseCase {
 
     const { id } = await this.appleAuthProvider.extractClaim(idToken);
 
-    const option = await this.userRepository.findById(id);
+    const option = await this.userRepository.findOneByFrom(id);
 
     if (!option.isSome()) {
       return new UseCaseException(2, "가입하지 않은 이용자입니다.");
     }
 
+    const { id: userId } = option.value;
+
     const accessToken = await this.authProvider.issueAccessToken({
-      sub: id,
+      sub: userId,
     });
 
     const refreshToken = await this.authProvider.issueRefreshToken({
-      sub: id,
+      sub: userId,
     });
 
     const hashedRefreshToken = await this.hashProvider.encode(refreshToken);
 
-    await this.userRepository.update(id, { refreshToken: hashedRefreshToken });
+    await this.userRepository.update(userId, {
+      refreshToken: hashedRefreshToken,
+    });
 
     return new UseCaseOk({
       accessToken,

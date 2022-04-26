@@ -7,7 +7,9 @@ import {
 } from "src/declarations/repositories/user";
 
 export class MockUserRepository implements UserRepository {
-  findById = jest.fn<Promise<Option<UserModel>>, [string]>();
+  findOne = jest.fn<Promise<Option<UserModel>>, [string]>();
+
+  findOneByFrom = jest.fn<Promise<Option<UserModel>>, [string]>();
 
   save = jest.fn<Promise<UserModel>, [SaveUserDto]>();
 

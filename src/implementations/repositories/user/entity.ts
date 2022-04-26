@@ -11,6 +11,9 @@ export class UserEntity {
   @PrimaryColumn()
   id: string;
 
+  @Column()
+  from: string;
+
   @Column({
     nullable: true,
   })

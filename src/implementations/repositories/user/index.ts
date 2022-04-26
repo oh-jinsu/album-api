@@ -1,8 +1,12 @@
 import { Injectable } from "@nestjs/common";
 import { InjectRepository } from "@nestjs/typeorm";
+import { randomUUID } from "crypto";
 import { None, Option, Some } from "src/core/enums/option";
 import { UserModel } from "src/declarations/models/user";
-import { UserRepository } from "src/declarations/repositories/user";
+import {
+  SaveUserDto,
+  UserRepository,
+} from "src/declarations/repositories/user";
 import { Repository } from "typeorm";
 import { UserEntity } from "./entity";
 import { UserMapper } from "./mapper";
@@ -13,9 +17,8 @@ export class UserRepositoryImpl implements UserRepository {
     @InjectRepository(UserEntity)
     private readonly adaptee: Repository<UserEntity>,
   ) {}
-
-  async findById(key: string): Promise<Option<UserModel>> {
-    const entity = await this.adaptee.findOne({ id: key });
+  async findOne(id: string): Promise<Option<UserModel>> {
+    const entity = await this.adaptee.findOne(id);
 
     if (!entity) {
       return new None();
@@ -26,15 +29,24 @@ export class UserRepositoryImpl implements UserRepository {
     return new Some(result);
   }
 
-  async save({
-    id,
-    email,
-  }: {
-    id: string;
-    email?: string;
-  }): Promise<UserModel> {
+  async findOneByFrom(from: string): Promise<Option<UserModel>> {
+    const entity = await this.adaptee.findOne({ from });
+
+    if (!entity) {
+      return new None();
+    }
+
+    const result = UserMapper.toModel(entity);
+
+    return new Some(result);
+  }
+
+  async save({ from, email }: SaveUserDto): Promise<UserModel> {
+    const id = randomUUID();
+
     const newone = this.adaptee.create({
       id,
+      from,
       avatar: process.env.DEFAULT_AVATAR_ID,
       email,
     });

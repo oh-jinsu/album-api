@@ -15,12 +15,14 @@ describe("test a sign out usecase", () => {
 
   const userRepository = new MockUserRepository();
 
-  userRepository.findById.mockImplementation(
+  userRepository.findOne.mockImplementation(
     async (id: string) =>
       new Some(
         new UserModel({
           id,
+          from: "somewhere",
           email: "an email",
+          avatar: "an avatar",
           refreshToken: "a refresh token",
           updatedAt: new Date(),
           createdAt: new Date(),
@@ -32,7 +34,9 @@ describe("test a sign out usecase", () => {
     async (id: string, option: UpdateUserDto) =>
       new UserModel({
         id,
+        from: "somewhere",
         email: option.email || "an email",
+        avatar: "an avatar",
         refreshToken: option.refreshToken || "a refresh token",
         updatedAt: new Date(),
         createdAt: new Date(),
@@ -62,7 +66,7 @@ describe("test a sign out usecase", () => {
   });
 
   it("should fail for an invalid token", async () => {
-    userRepository.findById.mockResolvedValueOnce(new None());
+    userRepository.findOne.mockResolvedValueOnce(new None());
 
     const accessToken = "an access token";
 
@@ -78,12 +82,14 @@ describe("test a sign out usecase", () => {
   });
 
   it("should fail for a conflict", async () => {
-    userRepository.findById.mockImplementationOnce(
+    userRepository.findOne.mockImplementationOnce(
       async (id: string) =>
         new Some(
           new UserModel({
             id,
+            from: "somewhere",
             email: "an email",
+            avatar: "an avatar",
             refreshToken: null,
             updatedAt: new Date(),
             createdAt: new Date(),

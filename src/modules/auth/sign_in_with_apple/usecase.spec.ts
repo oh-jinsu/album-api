@@ -28,12 +28,14 @@ describe("test the sign in with google usecase", () => {
 
   const userRepository = new MockUserRepository();
 
-  userRepository.findById.mockImplementation(
+  userRepository.findOneByFrom.mockImplementation(
     async (id) =>
       new Some(
         new UserModel({
           id,
+          from: "somewhere",
           email: "an email",
+          avatar: "an avatar",
           refreshToken: "a refreshToken",
           updatedAt: new Date(),
           createdAt: new Date(),
@@ -45,7 +47,10 @@ describe("test the sign in with google usecase", () => {
     async (id, { refreshToken }) =>
       new UserModel({
         id,
+        from: "somewhere",
+
         email: "an email",
+        avatar: "an avatar",
         refreshToken,
         updatedAt: new Date(),
         createdAt: new Date(),
@@ -80,7 +85,7 @@ describe("test the sign in with google usecase", () => {
   });
 
   it("should fail for an absent user", async () => {
-    userRepository.findById.mockResolvedValueOnce(new None());
+    userRepository.findOneByFrom.mockResolvedValueOnce(new None());
 
     const idToken = "an id token";
 

@@ -8,7 +8,18 @@ import { SignUpWithGoogleUseCase } from "src/modules/auth/sign_up_with_google/us
 describe("sign_up_usecase_test", () => {
   const userRepository = new MockUserRepository();
 
+  userRepository.findOneByFrom.mockResolvedValue(new None());
+
   const googleAuthProvider = new MockGoogleAuthProvider();
+
+  googleAuthProvider.verify.mockResolvedValue(true);
+
+  googleAuthProvider.extractClaim.mockResolvedValue(
+    new GoogleClaimModel({
+      id: "an id",
+      email: "an email",
+    }),
+  );
 
   const usecase = new SignUpWithGoogleUseCase(
     userRepository,
@@ -16,17 +27,6 @@ describe("sign_up_usecase_test", () => {
   );
 
   it("should be defined", () => {
-    googleAuthProvider.verify.mockResolvedValue(true);
-
-    googleAuthProvider.extractClaim.mockResolvedValue(
-      new GoogleClaimModel({
-        id: "an id",
-        email: "an email",
-      }),
-    );
-
-    userRepository.findById.mockResolvedValue(new None());
-
     expect(usecase).toBeDefined();
   });
 
@@ -47,7 +47,7 @@ describe("sign_up_usecase_test", () => {
   });
 
   it("should fail for a existing user", async () => {
-    userRepository.findById.mockResolvedValueOnce(new Some(null));
+    userRepository.findOneByFrom.mockResolvedValueOnce(new Some(null));
 
     const idToken = "an id token";
 
@@ -66,7 +66,9 @@ describe("sign_up_usecase_test", () => {
     userRepository.save.mockResolvedValueOnce(
       new UserModel({
         id: "1",
+        from: "somewhere",
         email: "email",
+        avatar: "an avatar",
         refreshToken: null,
         updatedAt: new Date(),
         createdAt: new Date(),

@@ -64,7 +64,7 @@ export class CreateAlbumUseCase {
       albumId: album.id,
     });
 
-    const userOption = await this.userRepository.findById(friend.userId);
+    const userOption = await this.userRepository.findOne(friend.userId);
 
     if (!userOption.isSome()) {
       return new UseCaseException(2, "이용자를 찾지 못했습니다.");
