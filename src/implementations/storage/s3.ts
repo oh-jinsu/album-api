@@ -1,4 +1,5 @@
 import { config, S3 } from "aws-sdk";
+import { isProduction } from "src/core/environment";
 
 config.update({
   region: "ap-northeast-2",
@@ -15,7 +16,9 @@ const getPublicUrl = (
   },
 ) =>
   s3.getSignedUrlPromise("getObject", {
-    Bucket: process.env.AWS_S3_BUCKET_NAME,
+    Bucket: isProduction
+      ? process.env.AWS_S3_BUCKET_NAME
+      : process.env.AWS_S3_BUCKET_NAME_FOR_DEV,
     Key: key,
     Expires: option?.expiration || 60,
   });
@@ -24,7 +27,9 @@ const upload = (key: string, buffer: Buffer, mimetype: string): Promise<void> =>
   new Promise(async (resolve, reject) => {
     s3.upload(
       {
-        Bucket: process.env.AWS_S3_BUCKET_NAME,
+        Bucket: isProduction
+          ? process.env.AWS_S3_BUCKET_NAME
+          : process.env.AWS_S3_BUCKET_NAME_FOR_DEV,
         Key: key,
         Body: buffer,
         ContentType: mimetype,
