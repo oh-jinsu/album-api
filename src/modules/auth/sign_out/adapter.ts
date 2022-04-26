@@ -1,5 +1,6 @@
-import { Controller, Headers, HttpCode, Post } from "@nestjs/common";
+import { Controller, HttpCode, Post } from "@nestjs/common";
 import { Adapter } from "src/core/adapter";
+import { AccessToken } from "src/core/decorators/access_token";
 import { SignOutUseCase } from "./usecase";
 
 @Controller("auth/signout")
@@ -10,9 +11,7 @@ export class SignOutAdapter extends Adapter {
 
   @Post()
   @HttpCode(204)
-  async receive(@Headers("Authorization") authorization: string) {
-    const accessToken = authorization.split(" ")[1];
-
+  async receive(@AccessToken() accessToken: string) {
     const result = await this.usecase.execute({ accessToken });
 
     return this.response(result);

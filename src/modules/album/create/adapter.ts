@@ -1,6 +1,7 @@
-import { Body, Controller, Headers, Post } from "@nestjs/common";
+import { Body, Controller, Post } from "@nestjs/common";
 import { IsNotEmpty, IsString } from "class-validator";
 import { Adapter } from "src/core/adapter";
+import { AccessToken } from "src/core/decorators/access_token";
 import { CreateAlbumUseCase } from "./usecase";
 
 export class RequestBody {
@@ -17,11 +18,9 @@ export class CreateAlbumAdapter extends Adapter {
 
   @Post()
   async receive(
-    @Headers("Authorization") authorization: string,
+    @AccessToken() accessToken: string,
     @Body() { title }: RequestBody,
   ) {
-    const accessToken = authorization.split(" ")[1];
-
     const result = await this.usecase.execute({ accessToken, title });
 
     return this.response(result);

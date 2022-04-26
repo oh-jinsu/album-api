@@ -1,6 +1,5 @@
 import {
   Controller,
-  Headers,
   Post,
   UploadedFile,
   UseInterceptors,
@@ -9,6 +8,7 @@ import { FileInterceptor } from "@nestjs/platform-express";
 import { Adapter } from "src/core/adapter";
 import { Express } from "express";
 import { UploadImageUseCase } from "./usecase";
+import { AccessToken } from "src/core/decorators/access_token";
 
 @Controller("util/image")
 export class UploadImageAdapter extends Adapter {
@@ -19,11 +19,9 @@ export class UploadImageAdapter extends Adapter {
   @Post()
   @UseInterceptors(FileInterceptor("file"))
   async receive(
-    @Headers("Authorization") authorization: string,
+    @AccessToken() accessToken: string,
     @UploadedFile() { buffer, mimetype }: Express.Multer.File,
   ) {
-    const accessToken = authorization.split(" ")[1];
-
     const result = await this.usecase.execute({
       accessToken,
       buffer,

@@ -1,5 +1,6 @@
-import { Controller, Get, Headers, Query } from "@nestjs/common";
+import { Controller, Get, Query } from "@nestjs/common";
 import { Adapter } from "src/core/adapter";
+import { AccessToken } from "src/core/decorators/access_token";
 import { FindAlbumsUseCase } from "./usecase";
 
 @Controller("album")
@@ -10,12 +11,10 @@ export class FindAlbumsAdapter extends Adapter {
 
   @Get()
   async receive(
-    @Headers("Authorization") authorization: string,
+    @AccessToken() accessToken: string,
     @Query("cursor") cursor: string,
     @Query("limit") limit: string,
   ) {
-    const accessToken = authorization.split(" ")[1];
-
     const result = await this.usecase.execute({
       accessToken,
       cursor,
