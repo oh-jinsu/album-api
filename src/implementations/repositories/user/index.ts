@@ -33,7 +33,11 @@ export class UserRepositoryImpl implements UserRepository {
     id: string;
     email?: string;
   }): Promise<UserModel> {
-    const newone = this.adaptee.create({ id, email });
+    const newone = this.adaptee.create({
+      id,
+      avatar: process.env.DEFAULT_AVATAR_ID,
+      email,
+    });
 
     const entity = await this.adaptee.save(newone);
 

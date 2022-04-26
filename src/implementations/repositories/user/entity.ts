@@ -16,6 +16,9 @@ export class UserEntity {
   })
   email: string;
 
+  @Column()
+  avatar: string;
+
   @Column({
     nullable: true,
   })

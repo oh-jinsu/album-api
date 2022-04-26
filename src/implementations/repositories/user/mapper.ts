@@ -5,6 +5,7 @@ export class UserMapper {
   static toModel({
     id,
     email,
+    avatar,
     refreshToken,
     updatedAt,
     createdAt,
@@ -12,6 +13,7 @@ export class UserMapper {
     return new UserModel({
       id,
       email,
+      avatar,
       refreshToken,
       updatedAt,
       createdAt,
