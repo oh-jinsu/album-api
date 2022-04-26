@@ -12,7 +12,7 @@ import { PhotoRepository } from "src/declarations/repositories/photo";
 export interface Params {
   accessToken: string;
   cursor?: string;
-  limit: number;
+  limit?: number;
 }
 
 export interface ResultItem {

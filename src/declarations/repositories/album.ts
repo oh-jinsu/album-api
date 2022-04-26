@@ -12,7 +12,7 @@ export type UpdateAlbumDto = Partial<
 export abstract class AlbumRepository {
   abstract findByUserId(
     userId: string,
-    limit: number,
+    limit?: number,
     cursor?: string,
   ): Promise<{ next?: string; items: AlbumModel[] }>;
 

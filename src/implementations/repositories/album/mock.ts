@@ -8,7 +8,7 @@ import {
 export class MockAlbumRepository implements AlbumRepository {
   findByUserId = jest.fn<
     Promise<{ next?: string; items: AlbumModel[] }>,
-    [string]
+    [string, number, string]
   >();
 
   save = jest.fn<Promise<AlbumModel>, [SaveAlbumDto]>();

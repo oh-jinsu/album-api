@@ -18,7 +18,7 @@ export class FindAlbumsAdapter extends Adapter {
     const result = await this.usecase.execute({
       accessToken,
       cursor,
-      limit: Number(limit),
+      limit: Number(limit) || null,
     });
 
     return this.response(result);

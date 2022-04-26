@@ -20,7 +20,7 @@ export class AlbumRepositoryImpl implements AlbumRepository {
 
   async findByUserId(
     userId: string,
-    limit: number,
+    limit?: number,
     cursor?: string,
   ): Promise<{ next?: string; items: AlbumModel[] }> {
     let date = new Date();
@@ -42,7 +42,7 @@ export class AlbumRepositoryImpl implements AlbumRepository {
         createdAt: "DESC",
       },
       skip: 0,
-      take: limit + 1,
+      take: limit ? limit + 1 : null,
     });
 
     const last = Number(query.length) === limit + 1 ? query.pop() : null;
