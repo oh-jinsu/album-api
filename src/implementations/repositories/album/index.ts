@@ -23,9 +23,15 @@ export class AlbumRepositoryImpl implements AlbumRepository {
     limit: number,
     cursor?: string,
   ): Promise<{ next?: string; items: AlbumModel[] }> {
-    const date = cursor
-      ? (await this.adaptee.findOne(cursor)).createdAt
-      : new Date();
+    let date = new Date();
+
+    if (cursor) {
+      const entity = await this.adaptee.findOne(cursor);
+
+      if (entity) {
+        date = entity.createdAt;
+      }
+    }
 
     const query = await this.adaptee.find({
       where: {
