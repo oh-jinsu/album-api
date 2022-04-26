@@ -1,5 +1,5 @@
 import { None, Some } from "src/core/enums/option";
-import { AppleClaim } from "src/declarations/models/apple_claim";
+import { AppleClaimModel } from "src/declarations/models/apple_claim";
 import { UserModel } from "src/declarations/models/user";
 import { MockAppleAuthProvider } from "src/implementations/providers/apple_auth/mock";
 import { MockAuthProvider } from "src/implementations/providers/auth/mock";
@@ -19,7 +19,7 @@ describe("test the sign in with google usecase", () => {
   appleAuthProvider.verify.mockResolvedValue(true);
 
   appleAuthProvider.extractClaim.mockResolvedValue(
-    new AppleClaim({ id: "an id", email: "an email" }),
+    new AppleClaimModel({ id: "an id", email: "an email" }),
   );
 
   const hashProvider = new MockHashProvider();

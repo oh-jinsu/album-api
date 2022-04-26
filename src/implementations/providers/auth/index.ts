@@ -1,7 +1,7 @@
 import { Injectable } from "@nestjs/common";
 import { JwtService } from "@nestjs/jwt";
 import { isProduction } from "src/core/environment";
-import { Claim } from "src/declarations/models/claim";
+import { ClaimModel } from "src/declarations/models/claim";
 import {
   AuthProvider,
   IssueTokenOptions,
@@ -69,9 +69,9 @@ export class AuthProviderImpl implements AuthProvider {
     }
   }
 
-  async extractClaim(token: string): Promise<Claim> {
+  async extractClaim(token: string): Promise<ClaimModel> {
     const { sub } = this.jwtService.decode(token);
 
-    return new Claim({ id: sub });
+    return new ClaimModel({ id: sub });
   }
 }

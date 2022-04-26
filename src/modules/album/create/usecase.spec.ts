@@ -1,5 +1,5 @@
 import { AlbumModel } from "src/declarations/models/album";
-import { Claim } from "src/declarations/models/claim";
+import { ClaimModel } from "src/declarations/models/claim";
 import { MockAuthProvider } from "src/implementations/providers/auth/mock";
 import { MockAlbumRepository } from "src/implementations/repositories/album/mock";
 import { CreateAlbumUseCase } from "./usecase";
@@ -9,7 +9,7 @@ describe("test the create album usecase", () => {
 
   authProvider.verifyAccessToken.mockResolvedValue(true);
 
-  authProvider.extractClaim.mockResolvedValue(new Claim({ id: "an id " }));
+  authProvider.extractClaim.mockResolvedValue(new ClaimModel({ id: "an id " }));
 
   const albumRepository = new MockAlbumRepository();
 

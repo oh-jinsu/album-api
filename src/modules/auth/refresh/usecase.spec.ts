@@ -1,5 +1,5 @@
 import { None, Some } from "src/core/enums/option";
-import { Claim } from "src/declarations/models/claim";
+import { ClaimModel } from "src/declarations/models/claim";
 import { UserModel } from "src/declarations/models/user";
 import { MockAuthProvider } from "src/implementations/providers/auth/mock";
 import { MockHashProvider } from "src/implementations/providers/hash/mock";
@@ -13,7 +13,7 @@ describe("test the refresh auth usecase", () => {
 
   authProvider.verifyRefreshToken.mockResolvedValue(true);
 
-  authProvider.extractClaim.mockResolvedValue(new Claim({ id: "an id" }));
+  authProvider.extractClaim.mockResolvedValue(new ClaimModel({ id: "an id" }));
 
   const hashProvider = new MockHashProvider();
 

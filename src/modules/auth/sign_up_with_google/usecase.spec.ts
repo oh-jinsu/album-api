@@ -1,5 +1,5 @@
 import { None, Some } from "src/core/enums/option";
-import { GoogleClaim } from "src/declarations/models/google_claim";
+import { GoogleClaimModel } from "src/declarations/models/google_claim";
 import { UserModel } from "src/declarations/models/user";
 import { MockGoogleAuthProvider } from "src/implementations/providers/google_auth/mock";
 import { MockUserRepository } from "src/implementations/repositories/user/mock";
@@ -19,7 +19,7 @@ describe("sign_up_usecase_test", () => {
     googleAuthProvider.verify.mockResolvedValue(true);
 
     googleAuthProvider.extractClaim.mockResolvedValue(
-      new GoogleClaim({
+      new GoogleClaimModel({
         id: "an id",
         email: "an email",
       }),

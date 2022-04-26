@@ -1,5 +1,5 @@
 import { None, Some } from "src/core/enums/option";
-import { AppleClaim } from "src/declarations/models/apple_claim";
+import { AppleClaimModel } from "src/declarations/models/apple_claim";
 import { UserModel } from "src/declarations/models/user";
 import { MockAppleAuthProvider } from "src/implementations/providers/apple_auth/mock";
 import { MockUserRepository } from "src/implementations/repositories/user/mock";
@@ -16,7 +16,7 @@ describe("sign_up_usecase_test", () => {
     appleAuthProvider.verify.mockResolvedValue(true);
 
     appleAuthProvider.extractClaim.mockResolvedValue(
-      new AppleClaim({
+      new AppleClaimModel({
         id: "an id",
         email: "an email",
       }),

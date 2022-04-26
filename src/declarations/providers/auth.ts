@@ -1,4 +1,4 @@
-import { Claim } from "../models/claim";
+import { ClaimModel } from "../models/claim";
 
 export type IssueTokenOptions = {
   sub: string;
@@ -13,5 +13,5 @@ export abstract class AuthProvider {
 
   abstract verifyRefreshToken(token: string): Promise<boolean>;
 
-  abstract extractClaim(token: string): Promise<Claim>;
+  abstract extractClaim(token: string): Promise<ClaimModel>;
 }

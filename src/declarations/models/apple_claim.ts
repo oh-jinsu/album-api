@@ -1,4 +1,4 @@
-export class AppleClaim {
+export class AppleClaimModel {
   public readonly id: string;
   public readonly email?: string;
 

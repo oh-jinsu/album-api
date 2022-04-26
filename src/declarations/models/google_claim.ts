@@ -1,4 +1,4 @@
-export class GoogleClaim {
+export class GoogleClaimModel {
   public readonly id: string;
   public readonly email?: string;
 

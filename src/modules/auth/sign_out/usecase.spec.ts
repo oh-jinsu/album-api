@@ -1,5 +1,5 @@
 import { None, Some } from "src/core/enums/option";
-import { Claim } from "src/declarations/models/claim";
+import { ClaimModel } from "src/declarations/models/claim";
 import { UserModel } from "src/declarations/models/user";
 import { UpdateUserDto } from "src/declarations/repositories/user";
 import { MockAuthProvider } from "src/implementations/providers/auth/mock";
@@ -11,7 +11,7 @@ describe("test a sign out usecase", () => {
 
   authProvider.verifyAccessToken.mockResolvedValue(true);
 
-  authProvider.extractClaim.mockResolvedValue(new Claim({ id: "an id" }));
+  authProvider.extractClaim.mockResolvedValue(new ClaimModel({ id: "an id" }));
 
   const userRepository = new MockUserRepository();
 
