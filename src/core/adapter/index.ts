@@ -16,28 +16,36 @@ export abstract class Adapter {
     }
 
     if (result.isOk()) {
-      return Adapter.map(result.value);
+      return Adapter.mapSnakeCase(result.value);
     }
 
     throw Error();
   }
 
-  private static map(value: any): { [key: string]: any } {
-    if (value == null) {
+  private static mapSnakeCase(value: any): any {
+    if (value === null || value === undefined) {
       return null;
     }
 
-    const result = {};
+    if (Array.isArray(value)) {
+      return value.map(Adapter.mapSnakeCase);
+    }
 
-    Object.entries(value).forEach(([key, value]) => {
-      const mappedKey = key.replace(/[A-Z]/, (substring) => {
-        return `_${substring.toLowerCase()}`;
+    if (value.constructor === Object) {
+      const result = {};
+
+      Object.entries(value).forEach(([key, value]) => {
+        const mappedKey = key.replace(/[A-Z]/, (substring) => {
+          return `_${substring.toLowerCase()}`;
+        });
+
+        result[mappedKey] = Adapter.mapSnakeCase(value);
       });
 
-      result[mappedKey] = value;
-    });
+      return result;
+    }
 
-    return result;
+    return value;
   }
 
   abstract getExceptionStatus(code: number): number;
