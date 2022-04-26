@@ -1,7 +1,11 @@
+import { None } from "src/core/enums/option";
 import { AlbumModel } from "src/declarations/models/album";
 import { ClaimModel } from "src/declarations/models/claim";
+import { FriendModel } from "src/declarations/models/friend";
 import { MockAuthProvider } from "src/implementations/providers/auth/mock";
 import { MockAlbumRepository } from "src/implementations/repositories/album/mock";
+import { MockFriendRepository } from "src/implementations/repositories/friend/mock";
+import { MockPhotoRepository } from "src/implementations/repositories/photo/mock";
 import { CreateAlbumUseCase } from "./usecase";
 
 describe("test the create album usecase", () => {
@@ -24,7 +28,29 @@ describe("test the create album usecase", () => {
       }),
   );
 
-  const usecase = new CreateAlbumUseCase(authProvider, albumRepository);
+  const photoRepository = new MockPhotoRepository();
+
+  photoRepository.countByAlbumId.mockResolvedValue(0);
+
+  photoRepository.findLatestByAlbumId.mockResolvedValue(new None());
+
+  const friendRepository = new MockFriendRepository();
+
+  friendRepository.save.mockImplementation(
+    async ({ userId, albumId }) =>
+      new FriendModel({
+        id: "an id",
+        userId,
+        albumId,
+      }),
+  );
+
+  const usecase = new CreateAlbumUseCase(
+    authProvider,
+    photoRepository,
+    friendRepository,
+    albumRepository,
+  );
 
   it("should be defined", () => {
     expect(usecase).toBeDefined();

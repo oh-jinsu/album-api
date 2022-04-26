@@ -1,9 +1,11 @@
 import { Some } from "src/core/enums/option";
 import { AlbumModel } from "src/declarations/models/album";
 import { ClaimModel } from "src/declarations/models/claim";
+import { FriendModel } from "src/declarations/models/friend";
 import { PhotoModel } from "src/declarations/models/photo";
 import { MockAuthProvider } from "src/implementations/providers/auth/mock";
 import { MockAlbumRepository } from "src/implementations/repositories/album/mock";
+import { MockFriendRepository } from "src/implementations/repositories/friend/mock";
 import { MockPhotoRepository } from "src/implementations/repositories/photo/mock";
 import { FindAlbumsUseCase } from "./usecase";
 
@@ -49,10 +51,24 @@ describe("test the find albums usecase", () => {
       ),
   );
 
+  const friendRepository = new MockFriendRepository();
+
+  friendRepository.findByAlbumId.mockImplementation(async (albumId) =>
+    [...Array(3)].map(
+      (_, i) =>
+        new FriendModel({
+          id: `an id ${i.toString()}`,
+          userId: `an user id ${i.toString()}`,
+          albumId,
+        }),
+    ),
+  );
+
   const usecase = new FindAlbumsUseCase(
     authProvider,
     albumRepository,
     photoRepository,
+    friendRepository,
   );
 
   it("should be defined", () => {

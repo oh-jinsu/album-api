@@ -7,6 +7,7 @@ import {
 import { AlbumModel } from "src/declarations/models/album";
 import { AuthProvider } from "src/declarations/providers/auth";
 import { AlbumRepository } from "src/declarations/repositories/album";
+import { FriendRepository } from "src/declarations/repositories/friend";
 import { PhotoRepository } from "src/declarations/repositories/photo";
 
 export interface Params {
@@ -20,6 +21,7 @@ export interface ResultItem {
   title: string;
   photoCount: number;
   cover?: string;
+  friendIds: string[];
   updatedAt: Date;
   createdAt: Date;
 }
@@ -35,6 +37,7 @@ export class FindAlbumsUseCase {
     private readonly authProvider: AuthProvider,
     private readonly albumRepository: AlbumRepository,
     private readonly photoRepository: PhotoRepository,
+    private readonly friendRepository: FriendRepository,
   ) {
     this.mapAlbum = this.mapAlbum.bind(this);
   }
@@ -78,11 +81,16 @@ export class FindAlbumsUseCase {
 
     const cover = option.isSome() ? option.value.imageUri : null;
 
+    const friends = await this.friendRepository.findByAlbumId(id);
+
+    const friendIds = friends.map((e) => e.userId);
+
     return {
       id,
       title,
       cover,
       photoCount,
+      friendIds,
       updatedAt,
       createdAt,
     };
