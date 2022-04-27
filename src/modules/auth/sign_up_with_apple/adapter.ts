@@ -1,10 +1,10 @@
 import { Body, Controller, Post } from "@nestjs/common";
-import { IsNotEmpty } from "class-validator";
+import { IsString } from "class-validator";
 import { Adapter } from "src/core/adapter";
 import { SignUpWithAppleUseCase } from "./usecase";
 
 export class RequestBody {
-  @IsNotEmpty()
+  @IsString()
   id_token: string;
 }
 

@@ -1,11 +1,10 @@
 import { Body, Controller, Post } from "@nestjs/common";
-import { IsNotEmpty, IsString } from "class-validator";
+import { IsString } from "class-validator";
 import { Adapter } from "src/core/adapter";
 import { AccessToken } from "src/core/decorators/access_token";
 import { CreateAlbumUseCase } from "./usecase";
 
 export class RequestBody {
-  @IsNotEmpty()
   @IsString()
   title: string;
 }

@@ -1,19 +1,18 @@
 import { Body, Controller, Post } from "@nestjs/common";
-import { IsNotEmpty, IsString } from "class-validator";
+import { IsOptional, IsString } from "class-validator";
 import { Adapter } from "src/core/adapter";
 import { AccessToken } from "src/core/decorators/access_token";
 import { CreatePhotoUseCase } from "./usecase";
 
 export class RequestBody {
   @IsString()
-  @IsNotEmpty()
   albumId: string;
 
   @IsString()
-  @IsNotEmpty()
   image: string;
 
   @IsString()
+  @IsOptional()
   description?: string;
 }
 
