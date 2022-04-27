@@ -35,7 +35,7 @@ export abstract class Adapter {
       const result = {};
 
       Object.entries(value).forEach(([key, value]) => {
-        const mappedKey = key.replace(/[A-Z]/, (substring) => {
+        const mappedKey = key.replace(/[A-Z]/g, (substring) => {
           return `_${substring.toLowerCase()}`;
         });
 
