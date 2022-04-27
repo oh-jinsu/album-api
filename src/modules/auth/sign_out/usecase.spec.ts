@@ -60,7 +60,7 @@ describe("test a sign out usecase", () => {
       fail();
     }
 
-    expect(result.code).toBe(1);
+    expect(result.code).toBe(102);
 
     expect(result.message).toBe("유효하지 않은 인증정보입니다.");
   });
@@ -76,7 +76,7 @@ describe("test a sign out usecase", () => {
       fail();
     }
 
-    expect(result.code).toBe(2);
+    expect(result.code).toBe(1);
 
     expect(result.message).toBe("이용자를 찾지 못했습니다.");
   });
@@ -105,7 +105,7 @@ describe("test a sign out usecase", () => {
       fail();
     }
 
-    expect(result.code).toBe(3);
+    expect(result.code).toBe(2);
 
     expect(result.message).toBe("이미 로그아웃한 이용자입니다.");
   });

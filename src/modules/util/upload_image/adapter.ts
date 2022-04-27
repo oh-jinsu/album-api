@@ -33,8 +33,6 @@ export class UploadImageAdapter extends Adapter {
 
   getExceptionStatus(code: number): number {
     switch (code) {
-      case 1:
-        return 400;
       default:
         return 500;
     }

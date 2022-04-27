@@ -111,7 +111,7 @@ describe("test the find albums usecase", () => {
       fail();
     }
 
-    expect(result.code).toBe(1);
+    expect(result.code).toBe(102);
 
     expect(result.message).toBe("유효하지 않은 인증정보입니다.");
   });

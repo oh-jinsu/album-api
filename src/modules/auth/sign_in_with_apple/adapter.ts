@@ -24,7 +24,7 @@ export class SignInWithAppleAdapter extends Adapter {
   getExceptionStatus(code: number): number {
     switch (code) {
       case 1:
-        return 400;
+        return 401;
       case 2:
         return 404;
       default:

@@ -1,10 +1,8 @@
 import { Injectable } from "@nestjs/common";
-import {
-  UseCaseException,
-  UseCaseOk,
-  UseCaseResult,
-} from "src/core/enums/results/usecase";
+import { UseCaseOk, UseCaseResult } from "src/core/enums/results/usecase";
+import { AuthorizedUseCase } from "src/core/usecase/authorized";
 import { AlbumModel } from "src/declarations/models/album";
+import { ClaimModel } from "src/declarations/models/claim";
 import { FriendModel } from "src/declarations/models/friend";
 import { AuthProvider } from "src/declarations/providers/auth";
 import { AlbumRepository } from "src/declarations/repositories/album";
@@ -41,31 +39,23 @@ export interface Result {
 }
 
 @Injectable()
-export class FindAlbumsUseCase {
+export class FindAlbumsUseCase extends AuthorizedUseCase<Params, Result> {
   constructor(
-    private readonly authProvider: AuthProvider,
+    authProvider: AuthProvider,
     private readonly albumRepository: AlbumRepository,
     private readonly photoRepository: PhotoRepository,
     private readonly friendRepository: FriendRepository,
     private readonly userRepository: UserRepository,
   ) {
+    super(authProvider);
     this.mapAlbum = this.mapAlbum.bind(this);
     this.mapFriend = this.mapFriend.bind(this);
   }
 
-  async execute({
-    accessToken,
-    cursor,
-    limit,
-  }: Params): Promise<UseCaseResult<Result>> {
-    const isVerified = await this.authProvider.verifyAccessToken(accessToken);
-
-    if (!isVerified) {
-      return new UseCaseException(1, "유효하지 않은 인증정보입니다.");
-    }
-
-    const { id: userId } = await this.authProvider.extractClaim(accessToken);
-
+  protected async executeWithAuth(
+    { id: userId }: ClaimModel,
+    { cursor, limit }: Params,
+  ): Promise<UseCaseResult<Result>> {
     const { next, items: albums } = await this.albumRepository.findByUserId(
       userId,
       limit,

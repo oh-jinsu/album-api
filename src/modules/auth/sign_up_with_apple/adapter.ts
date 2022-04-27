@@ -24,7 +24,7 @@ export class SignUpWithAppleAdapter extends Adapter {
   override getExceptionStatus(code: number): number {
     switch (code) {
       case 1:
-        return 400;
+        return 401;
       case 2:
         return 409;
       default:

@@ -24,10 +24,8 @@ export class FindAlbumsAdapter extends Adapter {
     return this.response(result);
   }
 
-  getExceptionStatus(code: number): number {
+  protected override getExceptionStatus(code: number): number {
     switch (code) {
-      case 1:
-        return 401;
       default:
         return 500;
     }

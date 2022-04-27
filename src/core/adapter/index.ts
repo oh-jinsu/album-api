@@ -11,7 +11,7 @@ export abstract class Adapter {
           code,
           message,
         },
-        this.getExceptionStatus(result.code),
+        this.status(result.code),
       );
     }
 
@@ -48,5 +48,14 @@ export abstract class Adapter {
     return value;
   }
 
-  abstract getExceptionStatus(code: number): number;
+  private status(code: number): number {
+    switch (code) {
+      case 102:
+        return 401;
+      default:
+        return this.getExceptionStatus(code);
+    }
+  }
+
+  protected abstract getExceptionStatus(code: number): number;
 }

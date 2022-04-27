@@ -25,11 +25,9 @@ export class CreateAlbumAdapter extends Adapter {
     return this.response(result);
   }
 
-  getExceptionStatus(code: number): number {
+  protected override getExceptionStatus(code: number): number {
     switch (code) {
       case 1:
-        return 401;
-      case 2:
         return 404;
       default:
         return 500;

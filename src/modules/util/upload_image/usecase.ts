@@ -1,9 +1,7 @@
 import { Injectable } from "@nestjs/common";
-import {
-  UseCaseException,
-  UseCaseOk,
-  UseCaseResult,
-} from "src/core/enums/results/usecase";
+import { UseCaseOk, UseCaseResult } from "src/core/enums/results/usecase";
+import { AuthorizedUseCase } from "src/core/usecase/authorized";
+import { ClaimModel } from "src/declarations/models/claim";
 import { AuthProvider } from "src/declarations/providers/auth";
 import { ImageRepository } from "src/declarations/repositories/image";
 
@@ -19,25 +17,18 @@ export interface Result {
 }
 
 @Injectable()
-export class UploadImageUseCase {
+export class UploadImageUseCase extends AuthorizedUseCase<Params, Result> {
   constructor(
-    private readonly authProvider: AuthProvider,
+    authProvider: AuthProvider,
     private readonly imageRepository: ImageRepository,
-  ) {}
+  ) {
+    super(authProvider);
+  }
 
-  async execute({
-    accessToken,
-    buffer,
-    mimetype,
-  }: Params): Promise<UseCaseResult<Result>> {
-    const isVerified = await this.authProvider.verifyAccessToken(accessToken);
-
-    if (!isVerified) {
-      return new UseCaseException(1, "유효하지 않은 인증정보입니다.");
-    }
-
-    const { id: userId } = await this.authProvider.extractClaim(accessToken);
-
+  protected async executeWithAuth(
+    { id: userId }: ClaimModel,
+    { buffer, mimetype }: Params,
+  ): Promise<UseCaseResult<Result>> {
     const { id, createdAt } = await this.imageRepository.save({
       userId,
       buffer,

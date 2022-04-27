@@ -79,7 +79,7 @@ describe("test the create photo usecase", () => {
       fail();
     }
 
-    expect(result.code).toBe(1);
+    expect(result.code).toBe(102);
 
     expect(result.message).toBe("유효하지 않은 인증정보입니다.");
   });
@@ -101,7 +101,7 @@ describe("test the create photo usecase", () => {
       fail();
     }
 
-    expect(result.code).toBe(2);
+    expect(result.code).toBe(1);
 
     expect(result.message).toBe("앨범을 찾지 못했습니다.");
   });
@@ -123,7 +123,7 @@ describe("test the create photo usecase", () => {
       fail();
     }
 
-    expect(result.code).toBe(3);
+    expect(result.code).toBe(2);
 
     expect(result.message).toBe("저장된 이미지를 찾지 못했습니다.");
   });

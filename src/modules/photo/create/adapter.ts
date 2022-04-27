@@ -40,7 +40,7 @@ export class CreatePhotoAdapter extends Adapter {
   getExceptionStatus(code: number): number {
     switch (code) {
       case 1:
-        return 401;
+        return 404;
       case 2:
         return 404;
       default:
