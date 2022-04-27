@@ -79,7 +79,7 @@ export class CreateAlbumUseCase {
     );
 
     const cover = latestPhotoOption.isSome()
-      ? latestPhotoOption.value.imageUri
+      ? latestPhotoOption.value.image
       : null;
 
     return new UseCaseOk({

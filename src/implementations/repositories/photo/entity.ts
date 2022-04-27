@@ -18,7 +18,7 @@ export class PhotoEntity {
   albumId: string;
 
   @Column()
-  imageUri: string;
+  image: string;
 
   @Column()
   description: string;

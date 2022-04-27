@@ -90,7 +90,7 @@ export class FindAlbumsUseCase {
 
     const option = await this.photoRepository.findLatestByAlbumId(id);
 
-    const cover = option.isSome() ? option.value.imageUri : null;
+    const cover = option.isSome() ? option.value.image : null;
 
     const friends = await this.friendRepository.findByAlbumId(id);
 

@@ -4,7 +4,7 @@ import { PhotoModel } from "../models/photo";
 export type SavePhotoDto = {
   userId: string;
   albumId: string;
-  imageUri: string;
+  image: string;
   description: string;
 };
 

@@ -45,7 +45,7 @@ describe("test the find albums usecase", () => {
           id: "an id",
           userId,
           albumId: "an id",
-          imageUri: "an image uri",
+          image: "an image uri",
           description: "a description",
           updatedAt: new Date(),
           createdAt: new Date(),
