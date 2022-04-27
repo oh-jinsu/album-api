@@ -8,6 +8,7 @@ import { HttpExceptionFilter } from "./core/filters/http";
 import { ErrorFilter } from "./core/filters/error";
 import { UtilModule } from "./modules/util/module";
 import { AlbumModule } from "./modules/album";
+import { PhotoModule } from "./modules/photo";
 
 @Module({
   imports: [
@@ -16,6 +17,7 @@ import { AlbumModule } from "./modules/album";
     RepositoryModule,
     AuthModule,
     AlbumModule,
+    PhotoModule,
     UtilModule,
   ],
 })
