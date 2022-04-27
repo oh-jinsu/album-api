@@ -1,3 +1,4 @@
+import { Option } from "src/core/enums/option";
 import { AlbumModel } from "../models/album";
 
 export type SaveAlbumDto = {
@@ -10,6 +11,8 @@ export type UpdateAlbumDto = Partial<
 >;
 
 export abstract class AlbumRepository {
+  abstract findOne(id: string): Promise<Option<AlbumModel>>;
+
   abstract findByUserId(
     userId: string,
     limit?: number,

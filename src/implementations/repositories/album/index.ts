@@ -1,6 +1,7 @@
 import { Injectable } from "@nestjs/common";
 import { InjectRepository } from "@nestjs/typeorm";
 import { randomUUID } from "crypto";
+import { None, Option, Some } from "src/core/enums/option";
 import { AlbumModel } from "src/declarations/models/album";
 import {
   AlbumRepository,
@@ -17,6 +18,16 @@ export class AlbumRepositoryImpl implements AlbumRepository {
     @InjectRepository(AlbumEntity)
     private readonly adaptee: Repository<AlbumEntity>,
   ) {}
+
+  async findOne(id: string): Promise<Option<AlbumModel>> {
+    const entity = await this.adaptee.findOne(id);
+
+    if (!entity) {
+      return new None();
+    }
+
+    return new Some(AlbumMapper.toModel(entity));
+  }
 
   async findByUserId(
     userId: string,

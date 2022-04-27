@@ -1,3 +1,4 @@
+import { Option } from "src/core/enums/option";
 import { AlbumModel } from "src/declarations/models/album";
 import {
   AlbumRepository,
@@ -6,6 +7,8 @@ import {
 } from "src/declarations/repositories/album";
 
 export class MockAlbumRepository implements AlbumRepository {
+  findOne = jest.fn<Promise<Option<AlbumModel>>, [string]>();
+
   findByUserId = jest.fn<
     Promise<{ next?: string; items: AlbumModel[] }>,
     [string, number, string]
