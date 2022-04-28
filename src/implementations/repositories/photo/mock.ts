@@ -16,6 +16,8 @@ export class MockPhotoRepository implements PhotoRepository {
 
   findLatestByAlbumId = jest.fn<Promise<Option<PhotoModel>>, [string]>();
 
+  findOne = jest.fn<Promise<Option<PhotoModel>>, [string]>();
+
   save = jest.fn<Promise<PhotoModel>, [SavePhotoDto]>();
 
   update = jest.fn<Promise<PhotoModel>, [string, UpdatePhotoDto]>();

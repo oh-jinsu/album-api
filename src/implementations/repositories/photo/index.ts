@@ -72,6 +72,16 @@ export class PhotoRepositoryImpl implements PhotoRepository {
     return new Some(PhotoMapper.toModel(entities[0]));
   }
 
+  async findOne(id: string): Promise<Option<PhotoModel>> {
+    const entity = await this.adaptee.findOne(id);
+
+    if (!entity) {
+      return new None();
+    }
+
+    return new Some(PhotoMapper.toModel(entity));
+  }
+
   async save({
     userId,
     albumId,
