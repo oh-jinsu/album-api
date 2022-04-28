@@ -11,4 +11,6 @@ export abstract class ImageRepository {
   abstract getPublicImageUri(id: string): Promise<Option<string>>;
 
   abstract save(dto: SaveImageDto): Promise<ImageModel>;
+
+  abstract delete(id: string): Promise<void>;
 }

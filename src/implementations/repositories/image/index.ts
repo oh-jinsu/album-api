@@ -18,17 +18,21 @@ export class ImageRepositoryImpl implements ImageRepository {
     @InjectRepository(ImageEntity)
     private readonly adaptee: Repository<ImageEntity>,
   ) {}
-
   async save({ userId, buffer, mimetype }: SaveImageDto): Promise<ImageModel> {
     const id = randomUUID();
 
-    await s3.upload(id, buffer, mimetype);
-
     const newone = this.adaptee.create({ id, userId });
 
-    const entity = await this.adaptee.save(newone);
+    const [entity] = await Promise.all([
+      this.adaptee.save(newone),
+      s3.upload(id, buffer, mimetype),
+    ]);
 
     return ImageMapper.toModel(entity);
+  }
+
+  async delete(id: string): Promise<void> {
+    await Promise.all([this.adaptee.delete(id), s3.remove(id)]);
   }
 
   async getPublicImageUri(id: string): Promise<Option<string>> {

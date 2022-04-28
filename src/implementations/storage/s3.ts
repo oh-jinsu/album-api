@@ -44,7 +44,27 @@ const upload = (key: string, buffer: Buffer, mimetype: string): Promise<void> =>
     );
   });
 
+const remove = (key: string): Promise<void> =>
+  new Promise(async (resolve, reject) => {
+    s3.deleteObject(
+      {
+        Bucket: isProduction
+          ? process.env.AWS_S3_BUCKET_NAME
+          : process.env.AWS_S3_BUCKET_NAME_FOR_DEV,
+        Key: key,
+      },
+      (error) => {
+        if (error) {
+          reject(error);
+        } else {
+          resolve(null);
+        }
+      },
+    );
+  });
+
 export default {
   upload,
+  remove,
   getPublicUrl,
 };
