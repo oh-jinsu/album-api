@@ -9,7 +9,10 @@ import {
 export class MockPhotoRepository implements PhotoRepository {
   countByAlbumId = jest.fn<Promise<number>, [string]>();
 
-  findByAlbumId = jest.fn<Promise<PhotoModel[]>, [string]>();
+  findByAlbumId = jest.fn<
+    Promise<{ next?: string; items: PhotoModel[] }>,
+    [string, number, string]
+  >();
 
   findLatestByAlbumId = jest.fn<Promise<Option<PhotoModel>>, [string]>();
 

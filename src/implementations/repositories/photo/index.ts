@@ -8,7 +8,7 @@ import {
   SavePhotoDto,
   UpdatePhotoDto,
 } from "src/declarations/repositories/photo";
-import { Repository } from "typeorm";
+import { LessThan, Repository } from "typeorm";
 import { PhotoEntity } from "./entity";
 import { PhotoMapper } from "./mapper";
 
@@ -23,10 +23,35 @@ export class PhotoRepositoryImpl implements PhotoRepository {
     return this.adaptee.count({ albumId });
   }
 
-  async findByAlbumId(albumId: string): Promise<PhotoModel[]> {
-    const entities = await this.adaptee.find({ albumId });
+  async findByAlbumId(
+    albumId: string,
+    limit?: number,
+    cursor?: string,
+  ): Promise<{ next?: string; items: PhotoModel[] }> {
+    const cursored = await this.adaptee.findOne({
+      id: cursor,
+    });
 
-    return entities.map(PhotoMapper.toModel);
+    const take = limit ? limit + (cursored ? 0 : 1) : null;
+
+    const query = await this.adaptee.find({
+      where: {
+        albumId,
+        createdAt: LessThan(cursored?.createdAt || new Date()),
+      },
+      order: {
+        createdAt: "DESC",
+      },
+      take,
+    });
+
+    if (cursored) {
+      query.unshift(cursored);
+    }
+
+    const next = limit && query.length === limit + 1 ? query.pop() : null;
+
+    return { next: next?.id, items: query.map(PhotoMapper.toModel) };
   }
 
   async findLatestByAlbumId(albumId: string): Promise<Option<PhotoModel>> {

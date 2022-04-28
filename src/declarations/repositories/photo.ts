@@ -15,7 +15,11 @@ export type UpdatePhotoDto = {
 export abstract class PhotoRepository {
   abstract countByAlbumId(albumId: string): Promise<number>;
 
-  abstract findByAlbumId(albumId: string): Promise<PhotoModel[]>;
+  abstract findByAlbumId(
+    albumId: string,
+    limit?: number,
+    cursor?: string,
+  ): Promise<{ next?: string; items: PhotoModel[] }>;
 
   abstract findLatestByAlbumId(albumId: string): Promise<Option<PhotoModel>>;
 
