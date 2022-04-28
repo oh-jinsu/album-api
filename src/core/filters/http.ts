@@ -47,6 +47,13 @@ export class HttpExceptionFilter implements ExceptionFilter {
       };
     }
 
+    if (status === 401) {
+      return {
+        code: 102,
+        message: "유효하지 않은 인증정보입니다.",
+      };
+    }
+
     return {
       code: 1001,
       message: "알려지지 않은 예외입니다.",

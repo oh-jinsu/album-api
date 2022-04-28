@@ -1,7 +1,7 @@
 import {
-  BadRequestException,
   createParamDecorator,
   ExecutionContext,
+  UnauthorizedException,
 } from "@nestjs/common";
 import { Request } from "express";
 
@@ -14,7 +14,7 @@ export const AccessToken = createParamDecorator(
 
       return bearerToken.trim().replace("Bearer ", "");
     } catch {
-      throw new BadRequestException();
+      throw new UnauthorizedException();
     }
   },
 );
