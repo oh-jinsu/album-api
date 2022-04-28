@@ -7,6 +7,7 @@ import { UserModel } from "src/declarations/models/user";
 import { MockAuthProvider } from "src/implementations/providers/auth/mock";
 import { MockAlbumRepository } from "src/implementations/repositories/album/mock";
 import { MockFriendRepository } from "src/implementations/repositories/friend/mock";
+import { MockImageRepository } from "src/implementations/repositories/image/mock";
 import { MockPhotoRepository } from "src/implementations/repositories/photo/mock";
 import { MockUserRepository } from "src/implementations/repositories/user/mock";
 import { FindAlbumsUseCase } from "./usecase";
@@ -84,12 +85,17 @@ describe("test the find albums usecase", () => {
       ),
   );
 
+  const imageRepository = new MockImageRepository();
+
+  imageRepository.getPublicImageUri.mockResolvedValue(new Some("an image"));
+
   const usecase = new FindAlbumsUseCase(
     authProvider,
     albumRepository,
     photoRepository,
     friendRepository,
     userRepository,
+    imageRepository,
   );
 
   it("should be defined", () => {

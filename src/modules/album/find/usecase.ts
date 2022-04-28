@@ -7,6 +7,7 @@ import { FriendModel } from "src/declarations/models/friend";
 import { AuthProvider } from "src/declarations/providers/auth";
 import { AlbumRepository } from "src/declarations/repositories/album";
 import { FriendRepository } from "src/declarations/repositories/friend";
+import { ImageRepository } from "src/declarations/repositories/image";
 import { PhotoRepository } from "src/declarations/repositories/photo";
 import { UserRepository } from "src/declarations/repositories/user";
 
@@ -27,7 +28,7 @@ export interface ResultItem {
   id: string;
   title: string;
   photoCount: number;
-  cover?: string;
+  coverImageUri?: string;
   users: UserResult[];
   updatedAt: Date;
   createdAt: Date;
@@ -46,6 +47,7 @@ export class FindAlbumsUseCase extends AuthorizedUseCase<Params, Result> {
     private readonly photoRepository: PhotoRepository,
     private readonly friendRepository: FriendRepository,
     private readonly userRepository: UserRepository,
+    private readonly imageRepository: ImageRepository,
   ) {
     super(authProvider);
     this.mapAlbum = this.mapAlbum.bind(this);
@@ -78,9 +80,15 @@ export class FindAlbumsUseCase extends AuthorizedUseCase<Params, Result> {
   }: AlbumModel): Promise<ResultItem> {
     const photoCount = await this.photoRepository.countByAlbumId(id);
 
-    const option = await this.photoRepository.findLatestByAlbumId(id);
+    const photoOption = await this.photoRepository.findLatestByAlbumId(id);
 
-    const cover = option.isSome() ? option.value.image : null;
+    const coverImageUriOption = photoOption.isSome()
+      ? await this.imageRepository.getPublicImageUri(photoOption.value.image)
+      : null;
+
+    const coverImageUri = coverImageUriOption?.isSome()
+      ? coverImageUriOption.value
+      : null;
 
     const friends = await this.friendRepository.findByAlbumId(id);
 
@@ -91,7 +99,7 @@ export class FindAlbumsUseCase extends AuthorizedUseCase<Params, Result> {
     return {
       id,
       title,
-      cover,
+      coverImageUri,
       photoCount,
       users,
       updatedAt,
