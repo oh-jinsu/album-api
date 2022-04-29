@@ -6,7 +6,7 @@ import {
 } from "src/core/enums/results/usecase";
 import { AuthProvider } from "src/declarations/providers/auth";
 import { HashProvider } from "src/declarations/providers/hash";
-import { UserRepository } from "src/declarations/repositories/user";
+import { AuthRepository } from "src/declarations/repositories/auth";
 
 export interface Params {
   refreshToken: string;
@@ -21,7 +21,7 @@ export class RefreshAuthUseCase {
   constructor(
     private readonly authProvider: AuthProvider,
     private readonly hashProvider: HashProvider,
-    private readonly userRepository: UserRepository,
+    private readonly authRepository: AuthRepository,
   ) {}
 
   async execute({ refreshToken }: Params): Promise<UseCaseResult<Result>> {
@@ -33,24 +33,34 @@ export class RefreshAuthUseCase {
 
     const { id } = await this.authProvider.extractClaim(refreshToken);
 
-    const option = await this.userRepository.findOne(id);
+    const option = await this.authRepository.findOne(id);
 
     if (!option.isSome()) {
       return new UseCaseException(2, "탈퇴한 이용자입니다.");
     }
 
-    const user = option.value;
+    const auth = option.value;
 
     if (
-      !user.refreshToken ||
-      !(await this.hashProvider.compare(refreshToken, user.refreshToken))
+      !auth.refreshToken ||
+      !(await this.hashProvider.compare(refreshToken, auth.refreshToken))
     ) {
       return new UseCaseException(3, "폐기된 인증정보입니다.");
     }
 
-    const accessToken = await this.authProvider.issueAccessToken({
-      sub: id,
-    });
+    const oldone = auth.accessToken;
+
+    const isNotExpired = await this.authProvider.verifyAccessToken(oldone);
+
+    const accessToken = isNotExpired
+      ? oldone
+      : await this.authProvider.issueAccessToken({
+          sub: id,
+        });
+
+    if (accessToken !== oldone) {
+      await this.authRepository.updateAccessToken(id, accessToken);
+    }
 
     return new UseCaseOk({
       accessToken,

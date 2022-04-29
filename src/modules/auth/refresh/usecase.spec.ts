@@ -1,15 +1,13 @@
 import { None, Some } from "src/core/enums/option";
+import { AuthModel } from "src/declarations/models/auth";
 import { ClaimModel } from "src/declarations/models/claim";
-import { UserModel } from "src/declarations/models/user";
 import { MockAuthProvider } from "src/implementations/providers/auth/mock";
 import { MockHashProvider } from "src/implementations/providers/hash/mock";
-import { MockUserRepository } from "src/implementations/repositories/user/mock";
+import { MockAuthRepository } from "src/implementations/repositories/auth/mock";
 import { RefreshAuthUseCase } from "./usecase";
 
 describe("test the refresh auth usecase", () => {
   const authProvider = new MockAuthProvider();
-
-  authProvider.issueAccessToken.mockResolvedValue("a refresh token");
 
   authProvider.verifyRefreshToken.mockResolvedValue(true);
 
@@ -19,17 +17,16 @@ describe("test the refresh auth usecase", () => {
 
   hashProvider.compare.mockResolvedValue(true);
 
-  const userRepository = new MockUserRepository();
+  const authRepository = new MockAuthRepository();
 
-  userRepository.findOne.mockImplementation(
-    async (key: string) =>
+  authRepository.findOne.mockImplementation(
+    async (id: string) =>
       new Some(
-        new UserModel({
-          id: key,
-          email: "an email",
+        new AuthModel({
+          id,
+          key: "a key",
           from: "somewhere",
-          name: "a name",
-          avatar: "an avatar",
+          accessToken: "an access token",
           refreshToken: "a refresh token",
           updatedAt: new Date(),
           createdAt: new Date(),
@@ -40,7 +37,7 @@ describe("test the refresh auth usecase", () => {
   const usecase = new RefreshAuthUseCase(
     authProvider,
     hashProvider,
-    userRepository,
+    authRepository,
   );
 
   it("should be defined", () => {
@@ -64,7 +61,7 @@ describe("test the refresh auth usecase", () => {
   });
 
   it("should fail for an absent user", async () => {
-    userRepository.findOne.mockResolvedValueOnce(new None());
+    authRepository.findOne.mockResolvedValueOnce(new None());
 
     const refreshToken = "a refresh token";
 
@@ -95,7 +92,11 @@ describe("test the refresh auth usecase", () => {
     expect(result.message).toBe("폐기된 인증정보입니다.");
   });
 
-  it("should return new access token", async () => {
+  it("should return the new one", async () => {
+    authProvider.verifyAccessToken.mockResolvedValueOnce(false);
+
+    authProvider.issueAccessToken.mockResolvedValue("a new access token");
+
     const refreshToken = "a refresh token";
 
     const result = await usecase.execute({ refreshToken });
@@ -104,6 +105,22 @@ describe("test the refresh auth usecase", () => {
       fail();
     }
 
-    expect(result.value.accessToken).toBeDefined();
+    expect(result.value.accessToken).toBe("a new access token");
+  });
+
+  it("should return the old one", async () => {
+    authProvider.verifyAccessToken.mockResolvedValueOnce(true);
+
+    authProvider.issueAccessToken.mockResolvedValue("a new access token");
+
+    const refreshToken = "a refresh token";
+
+    const result = await usecase.execute({ refreshToken });
+
+    if (!result.isOk()) {
+      fail();
+    }
+
+    expect(result.value.accessToken).toBe("an access token");
   });
 });

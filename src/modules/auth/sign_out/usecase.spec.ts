@@ -1,9 +1,8 @@
 import { None, Some } from "src/core/enums/option";
+import { AuthModel } from "src/declarations/models/auth";
 import { ClaimModel } from "src/declarations/models/claim";
-import { UserModel } from "src/declarations/models/user";
-import { UpdateUserDto } from "src/declarations/repositories/user";
 import { MockAuthProvider } from "src/implementations/providers/auth/mock";
-import { MockUserRepository } from "src/implementations/repositories/user/mock";
+import { MockAuthRepository } from "src/implementations/repositories/auth/mock";
 import { SignOutUseCase } from "./usecase";
 
 describe("test a sign out usecase", () => {
@@ -13,17 +12,16 @@ describe("test a sign out usecase", () => {
 
   authProvider.extractClaim.mockResolvedValue(new ClaimModel({ id: "an id" }));
 
-  const userRepository = new MockUserRepository();
+  const authRepository = new MockAuthRepository();
 
-  userRepository.findOne.mockImplementation(
+  authRepository.findOne.mockImplementation(
     async (id: string) =>
       new Some(
-        new UserModel({
+        new AuthModel({
           id,
+          key: "a key",
           from: "somewhere",
-          name: "a name",
-          email: "an email",
-          avatar: "an avatar",
+          accessToken: "an access token",
           refreshToken: "a refresh token",
           updatedAt: new Date(),
           createdAt: new Date(),
@@ -31,21 +29,33 @@ describe("test a sign out usecase", () => {
       ),
   );
 
-  userRepository.update.mockImplementation(
-    async (id: string, option: UpdateUserDto) =>
-      new UserModel({
+  authRepository.updateAccessToken.mockImplementation(
+    async (id, accessToken) =>
+      new AuthModel({
         id,
+        key: "a key",
         from: "somewhere",
-        name: "a name",
-        email: option.email || "an email",
-        avatar: "an avatar",
-        refreshToken: option.refreshToken || "a refresh token",
+        accessToken,
+        refreshToken: "a refresh token",
         updatedAt: new Date(),
         createdAt: new Date(),
       }),
   );
 
-  const usecase = new SignOutUseCase(authProvider, userRepository);
+  authRepository.updateRefreshToken.mockImplementation(
+    async (id, refreshToken) =>
+      new AuthModel({
+        id,
+        key: "a key",
+        from: "somewhere",
+        accessToken: "an access token",
+        refreshToken: refreshToken,
+        updatedAt: new Date(),
+        createdAt: new Date(),
+      }),
+  );
+
+  const usecase = new SignOutUseCase(authProvider, authRepository);
 
   it("should be defined", () => {
     expect(usecase).toBeDefined();
@@ -68,7 +78,7 @@ describe("test a sign out usecase", () => {
   });
 
   it("should fail for an invalid token", async () => {
-    userRepository.findOne.mockResolvedValueOnce(new None());
+    authRepository.findOne.mockResolvedValueOnce(new None());
 
     const accessToken = "an access token";
 
@@ -80,20 +90,18 @@ describe("test a sign out usecase", () => {
 
     expect(result.code).toBe(1);
 
-    expect(result.message).toBe("이용자를 찾지 못했습니다.");
+    expect(result.message).toBe("가입자를 찾지 못했습니다.");
   });
 
   it("should fail for a conflict", async () => {
-    userRepository.findOne.mockImplementationOnce(
+    authRepository.findOne.mockImplementationOnce(
       async (id: string) =>
         new Some(
-          new UserModel({
+          new AuthModel({
             id,
+            key: "a key",
             from: "somewhere",
-            name: "a name",
-
-            email: "an email",
-            avatar: "an avatar",
+            accessToken: null,
             refreshToken: null,
             updatedAt: new Date(),
             createdAt: new Date(),
@@ -111,7 +119,7 @@ describe("test a sign out usecase", () => {
 
     expect(result.code).toBe(2);
 
-    expect(result.message).toBe("이미 로그아웃한 이용자입니다.");
+    expect(result.message).toBe("이미 로그아웃했습니다.");
   });
 
   it("should be ok", async () => {

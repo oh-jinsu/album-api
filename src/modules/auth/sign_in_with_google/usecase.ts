@@ -7,7 +7,7 @@ import {
 import { AuthProvider } from "src/declarations/providers/auth";
 import { GoogleAuthProvider } from "src/declarations/providers/google_auth";
 import { HashProvider } from "src/declarations/providers/hash";
-import { UserRepository } from "src/declarations/repositories/user";
+import { AuthRepository } from "src/declarations/repositories/auth";
 
 interface Params {
   idToken: string;
@@ -24,7 +24,7 @@ export class SignInWithGoogleUseCase {
     private readonly authProvider: AuthProvider,
     private readonly googleAuthProvider: GoogleAuthProvider,
     private readonly hashProvider: HashProvider,
-    private readonly userRepository: UserRepository,
+    private readonly authRepository: AuthRepository,
   ) {}
 
   async execute({ idToken }: Params): Promise<UseCaseResult<Result>> {
@@ -34,29 +34,37 @@ export class SignInWithGoogleUseCase {
       return new UseCaseException(1, "유효하지 않은 인증정보입니다.");
     }
 
-    const { id } = await this.googleAuthProvider.extractClaim(idToken);
+    const { id: key } = await this.googleAuthProvider.extractClaim(idToken);
 
-    const option = await this.userRepository.findOneByFrom(id);
+    const option = await this.authRepository.findOneByKey(key);
 
     if (!option.isSome()) {
-      return new UseCaseException(2, "가입하지 않은 이용자입니다.");
+      return new UseCaseException(2, "가입자를 찾지 못했습니다.");
     }
 
-    const { id: userId } = option.value;
+    const { id, accessToken: oldAccessToken } = option.value;
 
-    const accessToken = await this.authProvider.issueAccessToken({
-      sub: userId,
-    });
+    const isNotExpired = await this.authProvider.verifyAccessToken(
+      oldAccessToken,
+    );
+
+    const accessToken = isNotExpired
+      ? oldAccessToken
+      : await this.authProvider.issueAccessToken({
+          sub: id,
+        });
+
+    if (accessToken !== oldAccessToken) {
+      await this.authRepository.updateAccessToken(id, accessToken);
+    }
 
     const refreshToken = await this.authProvider.issueRefreshToken({
-      sub: userId,
+      sub: id,
     });
 
     const hashedRefreshToken = await this.hashProvider.encode(refreshToken);
 
-    await this.userRepository.update(userId, {
-      refreshToken: hashedRefreshToken,
-    });
+    await this.authRepository.updateRefreshToken(id, hashedRefreshToken);
 
     return new UseCaseOk({
       accessToken,

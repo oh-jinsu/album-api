@@ -20,10 +20,8 @@ describe("Try to find me", () => {
         new UserModel({
           id,
           email: "an email",
-          from: "somewhere",
           name: "a name",
           avatar: "an avatar",
-          refreshToken: "a refresh token",
           updatedAt: new Date(),
           createdAt: new Date(),
         }),

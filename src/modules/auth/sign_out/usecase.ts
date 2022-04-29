@@ -7,7 +7,7 @@ import {
 import { AuthorizedUseCase } from "src/core/usecase/authorized";
 import { ClaimModel } from "src/declarations/models/claim";
 import { AuthProvider } from "src/declarations/providers/auth";
-import { UserRepository } from "src/declarations/repositories/user";
+import { AuthRepository } from "src/declarations/repositories/auth";
 
 export interface Params {
   accessToken: string;
@@ -19,29 +19,29 @@ export type Result = Record<string, never>;
 export class SignOutUseCase extends AuthorizedUseCase<Params, Result> {
   constructor(
     authProvider: AuthProvider,
-    private readonly userRepository: UserRepository,
+    private readonly authRpeository: AuthRepository,
   ) {
     super(authProvider);
   }
 
   protected async executeWithAuth({
-    id: userId,
+    id,
   }: ClaimModel): Promise<UseCaseResult<Result>> {
-    const option = await this.userRepository.findOne(userId);
+    const option = await this.authRpeository.findOne(id);
 
     if (!option.isSome()) {
-      return new UseCaseException(1, "이용자를 찾지 못했습니다.");
+      return new UseCaseException(1, "가입자를 찾지 못했습니다.");
     }
 
     const { refreshToken } = option.value;
 
     if (!refreshToken) {
-      return new UseCaseException(2, "이미 로그아웃한 이용자입니다.");
+      return new UseCaseException(2, "이미 로그아웃했습니다.");
     }
 
-    await this.userRepository.update(userId, {
-      refreshToken: null,
-    });
+    await this.authRpeository.updateAccessToken(id, null);
+
+    await this.authRpeository.updateRefreshToken(id, null);
 
     return new UseCaseOk(null);
   }

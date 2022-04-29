@@ -2,12 +2,15 @@ import { Global, Module } from "@nestjs/common";
 import { TypeOrmModule } from "@nestjs/typeorm";
 import { isProduction } from "src/core/environment";
 import { AlbumRepository } from "src/declarations/repositories/album";
+import { AuthRepository } from "src/declarations/repositories/auth";
 import { FriendRepository } from "src/declarations/repositories/friend";
 import { ImageRepository } from "src/declarations/repositories/image";
 import { PhotoRepository } from "src/declarations/repositories/photo";
 import { UserRepository } from "src/declarations/repositories/user";
 import { AlbumRepositoryImpl } from "./album";
 import { AlbumEntity } from "./album/entity";
+import { AuthRepositoryImpl } from "./auth";
+import { AuthEntity } from "./auth/entity";
 import { FriendRepositoryImpl } from "./friend";
 import { FriendEntity } from "./friend/entity";
 import { ImageRepositoryImpl } from "./image";
@@ -29,6 +32,7 @@ import { UserEntity } from "./user/entity";
         password: process.env.DATABASE_PASSWORD,
         database: process.env.DATABASE,
         entities: [
+          AuthEntity,
           UserEntity,
           AlbumEntity,
           PhotoEntity,
@@ -40,6 +44,7 @@ import { UserEntity } from "./user/entity";
       }),
     }),
     TypeOrmModule.forFeature([
+      AuthEntity,
       UserEntity,
       AlbumEntity,
       PhotoEntity,
@@ -48,6 +53,10 @@ import { UserEntity } from "./user/entity";
     ]),
   ],
   providers: [
+    {
+      provide: AuthRepository,
+      useClass: AuthRepositoryImpl,
+    },
     {
       provide: UserRepository,
       useClass: UserRepositoryImpl,
@@ -70,6 +79,7 @@ import { UserEntity } from "./user/entity";
     },
   ],
   exports: [
+    AuthRepository,
     UserRepository,
     AlbumRepository,
     PhotoRepository,

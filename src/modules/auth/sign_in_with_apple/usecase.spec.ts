@@ -1,10 +1,10 @@
 import { None, Some } from "src/core/enums/option";
 import { AppleClaimModel } from "src/declarations/models/apple_claim";
-import { UserModel } from "src/declarations/models/user";
+import { AuthModel } from "src/declarations/models/auth";
 import { MockAppleAuthProvider } from "src/implementations/providers/apple_auth/mock";
 import { MockAuthProvider } from "src/implementations/providers/auth/mock";
 import { MockHashProvider } from "src/implementations/providers/hash/mock";
-import { MockUserRepository } from "src/implementations/repositories/user/mock";
+import { MockAuthRepository } from "src/implementations/repositories/auth/mock";
 import { SignInWithAppleUseCase } from "./usecase";
 
 describe("test the sign in with google usecase", () => {
@@ -26,33 +26,44 @@ describe("test the sign in with google usecase", () => {
 
   hashProvider.encode.mockImplementation(async (value) => value);
 
-  const userRepository = new MockUserRepository();
+  const authRepository = new MockAuthRepository();
 
-  userRepository.findOneByFrom.mockImplementation(
-    async (id) =>
+  authRepository.findOneByKey.mockImplementation(
+    async (key) =>
       new Some(
-        new UserModel({
-          id,
+        new AuthModel({
+          id: "an id",
+          key,
           from: "somewhere",
-          name: "a name",
-          email: "an email",
-          avatar: "an avatar",
-          refreshToken: "a refreshToken",
+          accessToken: "an access token",
+          refreshToken: "an refresh token",
           updatedAt: new Date(),
           createdAt: new Date(),
         }),
       ),
   );
 
-  userRepository.update.mockImplementation(
-    async (id, { refreshToken }) =>
-      new UserModel({
+  authRepository.updateAccessToken.mockImplementation(
+    async (id, accessToken) =>
+      new AuthModel({
         id,
+        key: "a key",
         from: "somewhere",
-        name: "a name",
-        email: "an email",
-        avatar: "an avatar",
-        refreshToken,
+        accessToken,
+        refreshToken: "a refresh token",
+        updatedAt: new Date(),
+        createdAt: new Date(),
+      }),
+  );
+
+  authRepository.updateRefreshToken.mockImplementation(
+    async (id, refreshToken) =>
+      new AuthModel({
+        id,
+        key: "a key",
+        from: "somewhere",
+        accessToken: "an access token",
+        refreshToken: refreshToken,
         updatedAt: new Date(),
         createdAt: new Date(),
       }),
@@ -62,7 +73,7 @@ describe("test the sign in with google usecase", () => {
     authProvider,
     appleAuthProvider,
     hashProvider,
-    userRepository,
+    authRepository,
   );
 
   it("should be defined", () => {
@@ -86,7 +97,7 @@ describe("test the sign in with google usecase", () => {
   });
 
   it("should fail for an absent user", async () => {
-    userRepository.findOneByFrom.mockResolvedValueOnce(new None());
+    authRepository.findOneByKey.mockResolvedValueOnce(new None());
 
     const idToken = "an id token";
 
@@ -98,10 +109,10 @@ describe("test the sign in with google usecase", () => {
 
     expect(result.code).toBe(2);
 
-    expect(result.message).toBe("가입하지 않은 이용자입니다.");
+    expect(result.message).toBe("가입자를 찾지 못했습니다.");
   });
 
-  it("should return an access token and a refresh token", async () => {
+  it("should be ok", async () => {
     const idToken = "an id token";
 
     const result = await usecase.execute({ idToken });

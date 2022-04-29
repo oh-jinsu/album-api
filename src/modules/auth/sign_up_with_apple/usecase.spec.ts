@@ -1,14 +1,61 @@
 import { None, Some } from "src/core/enums/option";
 import { AppleClaimModel } from "src/declarations/models/apple_claim";
-import { UserModel } from "src/declarations/models/user";
+import { AuthModel } from "src/declarations/models/auth";
 import { MockAppleAuthProvider } from "src/implementations/providers/apple_auth/mock";
-import { MockUserRepository } from "src/implementations/repositories/user/mock";
+import { MockAuthProvider } from "src/implementations/providers/auth/mock";
+import { MockHashProvider } from "src/implementations/providers/hash/mock";
+import { MockAuthRepository } from "src/implementations/repositories/auth/mock";
 import { SignUpWithAppleUseCase } from "./usecase";
 
-describe("sign_up_usecase_test", () => {
-  const userRepository = new MockUserRepository();
+describe("Try to sign up with apple", () => {
+  const authProvider = new MockAuthProvider();
 
-  userRepository.findOneByFrom.mockResolvedValue(new None());
+  authProvider.issueAccessToken.mockResolvedValue("an access token");
+
+  authProvider.issueRefreshToken.mockResolvedValue("an refresh token");
+
+  const authRepository = new MockAuthRepository();
+
+  authRepository.findOneByKey.mockResolvedValue(new None());
+
+  authRepository.save.mockImplementation(
+    async ({ key, from }) =>
+      new AuthModel({
+        id: "an id",
+        key,
+        from,
+        accessToken: null,
+        refreshToken: null,
+        updatedAt: new Date(),
+        createdAt: new Date(),
+      }),
+  );
+
+  authRepository.updateAccessToken.mockImplementation(
+    async (id, accessToken) =>
+      new AuthModel({
+        id,
+        key: "a key",
+        from: "somewhere",
+        accessToken,
+        refreshToken: "a refresh token",
+        updatedAt: new Date(),
+        createdAt: new Date(),
+      }),
+  );
+
+  authRepository.updateRefreshToken.mockImplementation(
+    async (id, refreshToken) =>
+      new AuthModel({
+        id,
+        key: "a key",
+        from: "somewhere",
+        accessToken: "an access token",
+        refreshToken: refreshToken,
+        updatedAt: new Date(),
+        createdAt: new Date(),
+      }),
+  );
 
   const appleAuthProvider = new MockAppleAuthProvider();
 
@@ -21,7 +68,16 @@ describe("sign_up_usecase_test", () => {
     }),
   );
 
-  const usecase = new SignUpWithAppleUseCase(userRepository, appleAuthProvider);
+  const hashProvider = new MockHashProvider();
+
+  hashProvider.encode.mockResolvedValue("a hashed value");
+
+  const usecase = new SignUpWithAppleUseCase(
+    authProvider,
+    appleAuthProvider,
+    hashProvider,
+    authRepository,
+  );
 
   it("should be defined", () => {
     expect(usecase).toBeDefined();
@@ -44,7 +100,7 @@ describe("sign_up_usecase_test", () => {
   });
 
   it("should fail for a existing user", async () => {
-    userRepository.findOneByFrom.mockResolvedValueOnce(new Some(null));
+    authRepository.findOneByKey.mockResolvedValueOnce(new Some(null));
 
     const idToken = "an id token";
 
@@ -59,20 +115,7 @@ describe("sign_up_usecase_test", () => {
     expect(result.message).toBe("이미 가입한 이용자입니다.");
   });
 
-  it("should return an user information", async () => {
-    userRepository.save.mockResolvedValueOnce(
-      new UserModel({
-        id: "1",
-        from: "somewhere",
-        name: "a name",
-        email: "email",
-        avatar: "an avatar",
-        refreshToken: null,
-        updatedAt: new Date(),
-        createdAt: new Date(),
-      }),
-    );
-
+  it("should be ok", async () => {
     const idToken = "an id token";
 
     const result = await usecase.execute({ idToken });
@@ -81,12 +124,8 @@ describe("sign_up_usecase_test", () => {
       fail();
     }
 
-    expect(result.value.id).toBeDefined();
+    expect(result.value.accessToken).toBeDefined();
 
-    expect(result.value.email).toBeDefined();
-
-    expect(result.value.name).toBeDefined();
-
-    expect(result.value.createdAt).toBeDefined();
+    expect(result.value.refreshToken).toBeDefined();
   });
 });

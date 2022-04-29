@@ -56,11 +56,9 @@ describe("test the create album usecase", () => {
       new Some(
         new UserModel({
           id,
-          from: "somewhere",
           email: "an email",
           name: "a name",
           avatar: "an avatar",
-          refreshToken: "a refresh token",
           updatedAt: new Date(),
           createdAt: new Date(),
         }),

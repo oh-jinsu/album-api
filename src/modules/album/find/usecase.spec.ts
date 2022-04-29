@@ -75,11 +75,9 @@ describe("test the find albums usecase", () => {
       new Some(
         new UserModel({
           id,
-          from: "somewhere",
           name: "a name",
           email: "an email",
           avatar: "an avatar",
-          refreshToken: "a refresh token",
           updatedAt: new Date(),
           createdAt: new Date(),
         }),

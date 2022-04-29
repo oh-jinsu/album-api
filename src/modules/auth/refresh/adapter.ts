@@ -26,8 +26,10 @@ export class RefreshAuthAdapter extends Adapter {
   getExceptionStatus(code: number): number {
     switch (code) {
       case 1:
-        return 404;
+        return 401;
       case 2:
+        return 404;
+      case 3:
         return 401;
       default:
         return 500;
