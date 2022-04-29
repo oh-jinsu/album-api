@@ -5,7 +5,7 @@ import { MockAuthProvider } from "src/implementations/providers/auth/mock";
 import { MockGoogleAuthProvider } from "src/implementations/providers/google_auth/mock";
 import { MockHashProvider } from "src/implementations/providers/hash/mock";
 import { MockAuthRepository } from "src/implementations/repositories/auth/mock";
-import { SignUpWithGoogleUseCase } from "src/modules/auth/sign_up_with_google/usecase";
+import { SignUpWithGoogleUseCase } from "./usecase";
 
 describe("Try to sign up with google", () => {
   const authProvider = new MockAuthProvider();
