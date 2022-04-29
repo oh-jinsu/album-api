@@ -12,9 +12,6 @@ export class UserEntity {
   id: string;
 
   @Column()
-  from: string;
-
-  @Column()
   name: string;
 
   @Column({
@@ -24,11 +21,6 @@ export class UserEntity {
 
   @Column()
   avatar: string;
-
-  @Column({
-    nullable: true,
-  })
-  refreshToken: string;
 
   @UpdateDateColumn()
   updatedAt: Date;
