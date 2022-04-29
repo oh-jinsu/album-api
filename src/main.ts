@@ -1,4 +1,4 @@
-import { NestFactory } from "@nestjs/core";
+import { APP_GUARD, NestFactory } from "@nestjs/core";
 import { Module, ValidationPipe } from "@nestjs/common";
 import { AuthModule } from "./modules/auth/module";
 import { ProviderModule } from "./implementations/providers";
@@ -10,10 +10,12 @@ import { UtilModule } from "./modules/util/module";
 import { AlbumModule } from "./modules/album";
 import { PhotoModule } from "./modules/photo";
 import { UserModule } from "./modules/user";
+import { ThrottlerGuard, ThrottlerModule } from "@nestjs/throttler";
 
 @Module({
   imports: [
     ConfigModule.forRoot(),
+    ThrottlerModule.forRoot(),
     ProviderModule,
     RepositoryModule,
     AuthModule,
@@ -21,6 +23,12 @@ import { UserModule } from "./modules/user";
     AlbumModule,
     PhotoModule,
     UtilModule,
+  ],
+  providers: [
+    {
+      provide: APP_GUARD,
+      useClass: ThrottlerGuard,
+    },
   ],
 })
 class AppModule {}

@@ -9,7 +9,9 @@ import { Adapter } from "src/core/adapter";
 import { Express } from "express";
 import { UploadImageUseCase } from "./usecase";
 import { AccessToken } from "src/core/decorators/access_token";
+import { Throttle } from "@nestjs/throttler";
 
+@Throttle(1, 0.1)
 @Controller("util/image")
 export class UploadImageAdapter extends Adapter {
   constructor(private readonly usecase: UploadImageUseCase) {

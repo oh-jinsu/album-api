@@ -1,4 +1,5 @@
 import { Body, Controller, Post } from "@nestjs/common";
+import { Throttle } from "@nestjs/throttler";
 import { IsString } from "class-validator";
 import { Adapter } from "src/core/adapter";
 import { SignUpWithGoogleUseCase } from "./usecase";
@@ -8,6 +9,7 @@ export class RequestBody {
   id_token: string;
 }
 
+@Throttle(1, 0.1)
 @Controller("auth/signup/google")
 export class SignUpWithGoogleAdapter extends Adapter {
   constructor(private readonly usecase: SignUpWithGoogleUseCase) {

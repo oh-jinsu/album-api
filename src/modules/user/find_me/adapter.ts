@@ -2,7 +2,9 @@ import { Controller, Get } from "@nestjs/common";
 import { Adapter } from "src/core/adapter";
 import { AccessToken } from "src/core/decorators/access_token";
 import { FindMeUseCase } from "./usecase";
+import { Throttle } from "@nestjs/throttler";
 
+@Throttle(1, 0.1)
 @Controller("user")
 export class FindMeAdapter extends Adapter {
   constructor(private readonly usecase: FindMeUseCase) {

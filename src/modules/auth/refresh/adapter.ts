@@ -1,4 +1,5 @@
 import { Body, Controller, Post } from "@nestjs/common";
+import { Throttle } from "@nestjs/throttler";
 import { IsString } from "class-validator";
 import { Adapter } from "src/core/adapter";
 import { RefreshAuthUseCase } from "./usecase";
@@ -8,6 +9,7 @@ export class RequestBody {
   refresh_token: string;
 }
 
+@Throttle(1, 0.1)
 @Controller("auth/refresh")
 export class RefreshAuthAdapter extends Adapter {
   constructor(private readonly usecase: RefreshAuthUseCase) {

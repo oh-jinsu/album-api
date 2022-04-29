@@ -1,8 +1,10 @@
 import { Controller, HttpCode, Post } from "@nestjs/common";
+import { Throttle } from "@nestjs/throttler";
 import { Adapter } from "src/core/adapter";
 import { AccessToken } from "src/core/decorators/access_token";
 import { SignOutUseCase } from "./usecase";
 
+@Throttle(1, 0.1)
 @Controller("auth/signout")
 export class SignOutAdapter extends Adapter {
   constructor(private readonly usecase: SignOutUseCase) {

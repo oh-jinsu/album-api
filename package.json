@@ -27,6 +27,7 @@
     "@nestjs/core": "^8.0.0",
     "@nestjs/jwt": "^8.0.0",
     "@nestjs/platform-express": "^8.0.0",
+    "@nestjs/throttler": "^2.0.1",
     "@nestjs/typeorm": "^8.0.3",
     "aws-sdk": "^2.1120.0",
     "bcrypt": "^5.0.1",

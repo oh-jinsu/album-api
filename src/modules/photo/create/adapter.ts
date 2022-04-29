@@ -1,4 +1,5 @@
 import { Body, Controller, Post } from "@nestjs/common";
+import { Throttle } from "@nestjs/throttler";
 import { IsOptional, IsString } from "class-validator";
 import { Adapter } from "src/core/adapter";
 import { AccessToken } from "src/core/decorators/access_token";
@@ -16,6 +17,7 @@ export class RequestBody {
   description?: string;
 }
 
+@Throttle(1, 0.1)
 @Controller("photo")
 export class CreatePhotoAdapter extends Adapter {
   constructor(private readonly usecase: CreatePhotoUseCase) {

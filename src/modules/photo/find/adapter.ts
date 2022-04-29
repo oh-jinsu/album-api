@@ -1,8 +1,10 @@
 import { Controller, Get, Query } from "@nestjs/common";
+import { Throttle } from "@nestjs/throttler";
 import { Adapter } from "src/core/adapter";
 import { AccessToken } from "src/core/decorators/access_token";
 import { FindPhotosUseCase } from "./usecase";
 
+@Throttle(1, 0.1)
 @Controller("photo")
 export class FindPhotosAdapter extends Adapter {
   constructor(private readonly usecase: FindPhotosUseCase) {

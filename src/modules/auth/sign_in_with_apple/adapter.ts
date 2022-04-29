@@ -1,4 +1,5 @@
 import { Body, Controller, Post } from "@nestjs/common";
+import { Throttle } from "@nestjs/throttler";
 import { IsString } from "class-validator";
 import { Adapter } from "src/core/adapter";
 import { SignInWithAppleUseCase } from "./usecase";
@@ -8,6 +9,7 @@ export class RequestBody {
   id_token: string;
 }
 
+@Throttle(1, 0.1)
 @Controller("auth/signin/apple")
 export class SignInWithAppleAdapter extends Adapter {
   constructor(private readonly signInWithAppleUseCase: SignInWithAppleUseCase) {

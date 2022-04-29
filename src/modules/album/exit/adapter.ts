@@ -1,8 +1,10 @@
 import { Controller, Delete, Param } from "@nestjs/common";
+import { Throttle } from "@nestjs/throttler";
 import { Adapter } from "src/core/adapter";
 import { AccessToken } from "src/core/decorators/access_token";
 import { ExitAlbumUseCase } from "./usecase";
 
+@Throttle(1, 0.1)
 @Controller("album")
 export class ExitAlbumAdapter extends Adapter {
   constructor(private readonly usecase: ExitAlbumUseCase) {
