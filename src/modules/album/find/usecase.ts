@@ -20,6 +20,7 @@ export interface Params {
 export interface UserResult {
   id: string;
   email?: string;
+  name: string;
   avatar: string;
   joinedAt: Date;
 }
@@ -117,11 +118,12 @@ export class FindAlbumsUseCase extends AuthorizedUseCase<Params, Result> {
       return null;
     }
 
-    const { id, email, avatar } = userOption.value;
+    const { id, name, email, avatar } = userOption.value;
 
     return {
       id,
       email,
+      name,
       avatar,
       joinedAt,
     };

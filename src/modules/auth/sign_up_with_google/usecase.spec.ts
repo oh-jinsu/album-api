@@ -67,6 +67,7 @@ describe("sign_up_usecase_test", () => {
       new UserModel({
         id: "1",
         from: "somewhere",
+        name: "a name",
         email: "email",
         avatar: "an avatar",
         refreshToken: null,

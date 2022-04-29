@@ -14,6 +14,7 @@ export interface Params {
 export interface Result {
   id: string;
   email: string;
+  name: string;
   avatar: string;
   createdAt: Date;
 }
@@ -47,6 +48,7 @@ export class SignUpWithAppleUseCase {
     return new UseCaseOk({
       id: user.id,
       email: user.email,
+      name: user.name,
       avatar: user.avatar,
       createdAt: user.createdAt,
     });

@@ -34,6 +34,7 @@ describe("test the sign in with google usecase", () => {
         new UserModel({
           id,
           from: "somewhere",
+          name: "a name",
           email: "an email",
           avatar: "an avatar",
           refreshToken: "a refreshToken",
@@ -48,7 +49,7 @@ describe("test the sign in with google usecase", () => {
       new UserModel({
         id,
         from: "somewhere",
-
+        name: "a name",
         email: "an email",
         avatar: "an avatar",
         refreshToken,

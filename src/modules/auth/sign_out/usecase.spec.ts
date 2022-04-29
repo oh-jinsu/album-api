@@ -21,6 +21,7 @@ describe("test a sign out usecase", () => {
         new UserModel({
           id,
           from: "somewhere",
+          name: "a name",
           email: "an email",
           avatar: "an avatar",
           refreshToken: "a refresh token",
@@ -35,6 +36,7 @@ describe("test a sign out usecase", () => {
       new UserModel({
         id,
         from: "somewhere",
+        name: "a name",
         email: option.email || "an email",
         avatar: "an avatar",
         refreshToken: option.refreshToken || "a refresh token",
@@ -88,6 +90,8 @@ describe("test a sign out usecase", () => {
           new UserModel({
             id,
             from: "somewhere",
+            name: "a name",
+
             email: "an email",
             avatar: "an avatar",
             refreshToken: null,

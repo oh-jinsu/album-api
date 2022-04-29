@@ -47,6 +47,7 @@ export class UserRepositoryImpl implements UserRepository {
     const newone = this.adaptee.create({
       id,
       from,
+      name: process.env.DEFAULT_USERNAME,
       avatar: process.env.DEFAULT_AVATAR_ID,
       email,
     });

@@ -76,6 +76,7 @@ describe("test the find albums usecase", () => {
         new UserModel({
           id,
           from: "somewhere",
+          name: "a name",
           email: "an email",
           avatar: "an avatar",
           refreshToken: "a refresh token",
@@ -137,10 +138,30 @@ describe("test the find albums usecase", () => {
 
     expect(result.value.next).toBeDefined();
 
-    for (const item of result.value.items) {
-      for (const value of Object.values(item)) {
-        expect(value).toBeDefined();
+    for (const {
+      id,
+      title,
+      coverImageUri,
+      photoCount,
+      users,
+      updatedAt,
+      createdAt,
+    } of result.value.items) {
+      expect(id).toBeDefined();
+      expect(title).toBeDefined();
+      expect(coverImageUri).toBeDefined();
+      expect(photoCount).toBe(10);
+
+      for (const { id, email, name, avatar, joinedAt } of users) {
+        expect(id).toBeDefined();
+        expect(email).toBeDefined();
+        expect(name).toBeDefined();
+        expect(avatar).toBeDefined();
+        expect(joinedAt).toBeDefined();
       }
+
+      expect(updatedAt).toBeDefined();
+      expect(createdAt).toBeDefined();
     }
   });
 });

@@ -16,6 +16,7 @@ export interface Params {
 export interface Result {
   id: string;
   email?: string;
+  name: string;
   avatar: string;
   updatedAt: Date;
   createdAt: Date;
@@ -39,11 +40,12 @@ export class FindMeUseCase extends AuthorizedUseCase<Params, Result> {
       return new UseCaseException(1, "이용자를 찾지 못했습니다.");
     }
 
-    const { email, avatar, updatedAt, createdAt } = option.value;
+    const { email, name, avatar, updatedAt, createdAt } = option.value;
 
     return new UseCaseOk({
       id,
       email,
+      name,
       avatar,
       updatedAt,
       createdAt,

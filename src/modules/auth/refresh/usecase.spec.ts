@@ -28,7 +28,7 @@ describe("test the refresh auth usecase", () => {
           id: key,
           email: "an email",
           from: "somewhere",
-
+          name: "a name",
           avatar: "an avatar",
           refreshToken: "a refresh token",
           updatedAt: new Date(),

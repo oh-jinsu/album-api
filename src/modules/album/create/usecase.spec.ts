@@ -6,6 +6,7 @@ import { UserModel } from "src/declarations/models/user";
 import { MockAuthProvider } from "src/implementations/providers/auth/mock";
 import { MockAlbumRepository } from "src/implementations/repositories/album/mock";
 import { MockFriendRepository } from "src/implementations/repositories/friend/mock";
+import { MockImageRepository } from "src/implementations/repositories/image/mock";
 import { MockPhotoRepository } from "src/implementations/repositories/photo/mock";
 import { MockUserRepository } from "src/implementations/repositories/user/mock";
 import { CreateAlbumUseCase } from "./usecase";
@@ -55,8 +56,9 @@ describe("test the create album usecase", () => {
       new Some(
         new UserModel({
           id,
-          email: "an email",
           from: "somewhere",
+          email: "an email",
+          name: "a name",
           avatar: "an avatar",
           refreshToken: "a refresh token",
           updatedAt: new Date(),
@@ -65,12 +67,19 @@ describe("test the create album usecase", () => {
       ),
   );
 
+  const imageRepository = new MockImageRepository();
+
+  imageRepository.getPublicImageUri.mockResolvedValueOnce(
+    new Some("an image uri"),
+  );
+
   const usecase = new CreateAlbumUseCase(
     authProvider,
     photoRepository,
     friendRepository,
     albumRepository,
     userRepository,
+    imageRepository,
   );
 
   it("should be defined", () => {
@@ -127,6 +136,20 @@ describe("test the create album usecase", () => {
     expect(result.value.id).toBeDefined();
 
     expect(result.value.title).toBeDefined();
+
+    expect(result.value.coverImageUri).toBeNull();
+
+    expect(result.value.photoCount).toBe(0);
+
+    for (const { id, email, name, avatar, joinedAt } of result.value.users) {
+      expect(id).toBeDefined();
+      expect(email).toBeDefined();
+      expect(name).toBeDefined();
+      expect(avatar).toBeDefined();
+      expect(joinedAt).toBeDefined();
+    }
+
+    expect(result.value.updatedAt).toBeDefined();
 
     expect(result.value.createdAt).toBeDefined();
   });

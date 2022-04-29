@@ -9,6 +9,7 @@ import { ClaimModel } from "src/declarations/models/claim";
 import { AuthProvider } from "src/declarations/providers/auth";
 import { AlbumRepository } from "src/declarations/repositories/album";
 import { FriendRepository } from "src/declarations/repositories/friend";
+import { ImageRepository } from "src/declarations/repositories/image";
 import { PhotoRepository } from "src/declarations/repositories/photo";
 import { UserRepository } from "src/declarations/repositories/user";
 
@@ -20,6 +21,7 @@ export interface Params {
 export interface UserResult {
   id: string;
   email?: string;
+  name: string;
   avatar: string;
   joinedAt: Date;
 }
@@ -28,7 +30,7 @@ export interface Result {
   id: string;
   title: string;
   photoCount: number;
-  cover?: string;
+  coverImageUri?: string;
   users: UserResult[];
   updatedAt: Date;
   createdAt: Date;
@@ -42,6 +44,7 @@ export class CreateAlbumUseCase extends AuthorizedUseCase<Params, Result> {
     private readonly friendRepository: FriendRepository,
     private readonly albumRepository: AlbumRepository,
     private readonly userRepository: UserRepository,
+    private readonly imageRepository: ImageRepository,
   ) {
     super(authProvider);
   }
@@ -74,19 +77,26 @@ export class CreateAlbumUseCase extends AuthorizedUseCase<Params, Result> {
       album.id,
     );
 
-    const cover = latestPhotoOption.isSome()
-      ? latestPhotoOption.value.image
+    const imageUriOption = latestPhotoOption.isSome()
+      ? await this.imageRepository.getPublicImageUri(
+          latestPhotoOption.value.image,
+        )
+      : null;
+
+    const coverImageUri = imageUriOption?.isSome()
+      ? imageUriOption.value
       : null;
 
     return new UseCaseOk({
       id: album.id,
       title: album.title,
       photoCount,
-      cover,
+      coverImageUri,
       users: [
         {
           id: user.id,
           email: user.email,
+          name: user.name,
           avatar: user.avatar,
           joinedAt: friend.createdAt,
         },

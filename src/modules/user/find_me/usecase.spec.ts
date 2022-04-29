@@ -21,6 +21,7 @@ describe("Try to find me", () => {
           id,
           email: "an email",
           from: "somewhere",
+          name: "a name",
           avatar: "an avatar",
           refreshToken: "a refresh token",
           updatedAt: new Date(),
@@ -76,10 +77,11 @@ describe("Try to find me", () => {
       fail();
     }
 
-    const { id, email, avatar, updatedAt, createdAt } = result.value;
+    const { id, email, name, avatar, updatedAt, createdAt } = result.value;
 
     expect(id).toBeDefined();
     expect(email).toBeDefined();
+    expect(name).toBeDefined();
     expect(avatar).toBeDefined();
     expect(updatedAt).toBeDefined();
     expect(createdAt).toBeDefined();

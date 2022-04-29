@@ -14,6 +14,9 @@ export class UserEntity {
   @Column()
   from: string;
 
+  @Column()
+  name: string;
+
   @Column({
     nullable: true,
   })

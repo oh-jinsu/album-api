@@ -64,6 +64,7 @@ describe("sign_up_usecase_test", () => {
       new UserModel({
         id: "1",
         from: "somewhere",
+        name: "a name",
         email: "email",
         avatar: "an avatar",
         refreshToken: null,
@@ -82,6 +83,10 @@ describe("sign_up_usecase_test", () => {
 
     expect(result.value.id).toBeDefined();
 
-    expect(result.value.email).toBe("email");
+    expect(result.value.email).toBeDefined();
+
+    expect(result.value.name).toBeDefined();
+
+    expect(result.value.createdAt).toBeDefined();
   });
 });
