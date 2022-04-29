@@ -9,6 +9,7 @@ import { ErrorFilter } from "./core/filters/error";
 import { UtilModule } from "./modules/util/module";
 import { AlbumModule } from "./modules/album";
 import { PhotoModule } from "./modules/photo";
+import { UserModule } from "./modules/user";
 
 @Module({
   imports: [
@@ -16,6 +17,7 @@ import { PhotoModule } from "./modules/photo";
     ProviderModule,
     RepositoryModule,
     AuthModule,
+    UserModule,
     AlbumModule,
     PhotoModule,
     UtilModule,
