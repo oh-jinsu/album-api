@@ -7,6 +7,7 @@ import {
 import { AuthorizedUseCase } from "src/core/usecase/authorized";
 import { ClaimModel } from "src/declarations/models/claim";
 import { AuthProvider } from "src/declarations/providers/auth";
+import { ImageRepository } from "src/declarations/repositories/image";
 import { UserRepository } from "src/declarations/repositories/user";
 
 export interface Params {
@@ -17,7 +18,7 @@ export interface Result {
   id: string;
   email?: string;
   name: string;
-  avatar: string;
+  avatarImageUri: string;
   updatedAt: Date;
   createdAt: Date;
 }
@@ -27,6 +28,7 @@ export class FindMeUseCase extends AuthorizedUseCase<Params, Result> {
   constructor(
     authProvider: AuthProvider,
     private readonly userRepository: UserRepository,
+    private readonly imageRepository: ImageRepository,
   ) {
     super(authProvider);
   }
@@ -42,11 +44,17 @@ export class FindMeUseCase extends AuthorizedUseCase<Params, Result> {
 
     const { email, name, avatar, updatedAt, createdAt } = option.value;
 
+    const imageUriOption = await this.imageRepository.getPublicImageUri(avatar);
+
+    const avatarImageUri = imageUriOption?.isSome()
+      ? imageUriOption.value
+      : null;
+
     return new UseCaseOk({
       id,
       email,
       name,
-      avatar,
+      avatarImageUri,
       updatedAt,
       createdAt,
     });

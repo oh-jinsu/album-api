@@ -2,6 +2,7 @@ import { None, Some } from "src/core/enums/option";
 import { ClaimModel } from "src/declarations/models/claim";
 import { UserModel } from "src/declarations/models/user";
 import { MockAuthProvider } from "src/implementations/providers/auth/mock";
+import { MockImageRepository } from "src/implementations/repositories/image/mock";
 import { MockUserRepository } from "src/implementations/repositories/user/mock";
 import { FindMeUseCase } from "./usecase";
 
@@ -28,7 +29,15 @@ describe("Try to find me", () => {
       ),
   );
 
-  const usecase = new FindMeUseCase(authProvider, userRepository);
+  const imageRepository = new MockImageRepository();
+
+  imageRepository.getPublicImageUri.mockResolvedValue(new Some("an image uri"));
+
+  const usecase = new FindMeUseCase(
+    authProvider,
+    userRepository,
+    imageRepository,
+  );
 
   it("should be defined", () => {
     expect(usecase).toBeDefined();
@@ -75,12 +84,13 @@ describe("Try to find me", () => {
       fail();
     }
 
-    const { id, email, name, avatar, updatedAt, createdAt } = result.value;
+    const { id, email, name, avatarImageUri, updatedAt, createdAt } =
+      result.value;
 
     expect(id).toBeDefined();
     expect(email).toBeDefined();
     expect(name).toBeDefined();
-    expect(avatar).toBeDefined();
+    expect(avatarImageUri).toBeDefined();
     expect(updatedAt).toBeDefined();
     expect(createdAt).toBeDefined();
   });
