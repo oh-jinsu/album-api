@@ -39,9 +39,9 @@ export class SignOutUseCase extends AuthorizedUseCase<Params, Result> {
       return new UseCaseException(2, "이미 로그아웃했습니다.");
     }
 
-    await this.authRepository.updateAccessToken(id, null);
+    await this.authRepository.update(id, { accessToken: null });
 
-    await this.authRepository.updateRefreshToken(id, null);
+    await this.authRepository.update(id, { refreshToken: null });
 
     return new UseCaseOk(null);
   }

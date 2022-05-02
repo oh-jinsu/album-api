@@ -8,6 +8,7 @@ import {
 import { Throttle } from "@nestjs/throttler";
 import { IsString } from "class-validator";
 import { Adapter } from "src/core/adapter";
+import { AccessToken } from "src/core/decorators/access_token";
 import { SignUpWithAppleUseCase } from "./with_apple/usecase";
 import { SignUpWithGoogleUseCase } from "./with_google/usecase";
 
@@ -28,20 +29,25 @@ export class SignUpAdapter extends Adapter {
 
   @Post()
   async receive(
+    @AccessToken() accessToken: string,
     @Query("provider") provider: string,
     @Body() body: RequestBody,
   ) {
-    const result = await this.select(provider, body);
+    const result = await this.select(accessToken, provider, body);
 
     return this.response(result);
   }
 
-  private async select(provider: string, { id_token: idToken }: RequestBody) {
+  private async select(
+    accessToken: string,
+    provider: string,
+    { id_token: idToken }: RequestBody,
+  ) {
     switch (provider) {
       case "apple":
-        return this.usecaseWithApple.execute({ idToken });
+        return this.usecaseWithApple.execute({ accessToken, idToken });
       case "google":
-        return this.usecaseWithGoogle.execute({ idToken });
+        return this.usecaseWithGoogle.execute({ accessToken, idToken });
       default:
         throw new BadRequestException();
     }

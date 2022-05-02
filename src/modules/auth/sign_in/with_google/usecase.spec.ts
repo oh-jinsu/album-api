@@ -43,27 +43,14 @@ describe("test the sign in with google usecase", () => {
       ),
   );
 
-  authRepository.updateAccessToken.mockImplementation(
-    async (id, accessToken) =>
+  authRepository.update.mockImplementation(
+    async (id, { key, from, accessToken, refreshToken }) =>
       new AuthModel({
         id,
-        key: "a key",
-        from: "somewhere",
-        accessToken,
-        refreshToken: "a refresh token",
-        updatedAt: new Date(),
-        createdAt: new Date(),
-      }),
-  );
-
-  authRepository.updateRefreshToken.mockImplementation(
-    async (id, refreshToken) =>
-      new AuthModel({
-        id,
-        key: "a key",
-        from: "somewhere",
-        accessToken: "an access token",
-        refreshToken: refreshToken,
+        key: key ?? "a key",
+        from: from ?? "somewhere",
+        accessToken: accessToken ?? "an access token",
+        refreshToken: refreshToken ?? "a refresh token",
         updatedAt: new Date(),
         createdAt: new Date(),
       }),

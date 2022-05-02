@@ -60,7 +60,7 @@ export class RefreshAuthUseCase {
         });
 
     if (accessToken !== oldone) {
-      await this.authRepository.updateAccessToken(id, accessToken);
+      await this.authRepository.update(id, { accessToken });
     }
 
     return new UseCaseOk({

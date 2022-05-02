@@ -4,12 +4,15 @@ import {
   UseCaseOk,
   UseCaseResult,
 } from "src/core/enums/results/usecase";
+import { AuthorizedUseCase } from "src/core/usecase/authorized";
+import { ClaimGrade, ClaimModel } from "src/declarations/models/claim";
 import { AppleAuthProvider } from "src/declarations/providers/apple_auth";
 import { AuthProvider } from "src/declarations/providers/auth";
 import { HashProvider } from "src/declarations/providers/hash";
 import { AuthRepository } from "src/declarations/repositories/auth";
 
 export interface Params {
+  accessToken: string;
   idToken: string;
 }
 
@@ -19,15 +22,24 @@ export interface Result {
 }
 
 @Injectable()
-export class SignUpWithAppleUseCase {
+export class SignUpWithAppleUseCase extends AuthorizedUseCase<Params, Result> {
   constructor(
     private readonly authProvider: AuthProvider,
     private readonly appleAuthProvider: AppleAuthProvider,
     private readonly hashProvider: HashProvider,
     private readonly authRepository: AuthRepository,
-  ) {}
+  ) {
+    super(authProvider);
+  }
 
-  async execute({ idToken }: Params): Promise<UseCaseResult<Result>> {
+  protected isOpenFor(grade: ClaimGrade): boolean {
+    return grade === "guest";
+  }
+
+  async executeWithAuth(
+    { id }: ClaimModel,
+    { idToken }: Params,
+  ): Promise<UseCaseResult<Result>> {
     const isVerified = await this.appleAuthProvider.verify(idToken);
 
     if (!isVerified) {
@@ -42,7 +54,7 @@ export class SignUpWithAppleUseCase {
       return new UseCaseException(2, "이미 가입한 이용자입니다.");
     }
 
-    const { id } = await this.authRepository.save({
+    await this.authRepository.update(id, {
       key,
       from: "apple",
     });
@@ -52,7 +64,7 @@ export class SignUpWithAppleUseCase {
       grade: "member",
     });
 
-    await this.authRepository.updateAccessToken(id, accessToken);
+    await this.authRepository.update(id, { accessToken });
 
     const refreshToken = await this.authProvider.issueRefreshToken({
       sub: id,
@@ -61,7 +73,7 @@ export class SignUpWithAppleUseCase {
 
     const hashedRefreshToken = await this.hashProvider.encode(refreshToken);
 
-    await this.authRepository.updateRefreshToken(id, hashedRefreshToken);
+    await this.authRepository.update(id, { refreshToken: hashedRefreshToken });
 
     return new UseCaseOk({
       accessToken,

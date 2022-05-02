@@ -5,7 +5,7 @@ import {
   UseCaseResult,
 } from "src/core/enums/results/usecase";
 import { AuthorizedUseCase } from "src/core/usecase/authorized";
-import { ClaimModel } from "src/declarations/models/claim";
+import { ClaimGrade, ClaimModel } from "src/declarations/models/claim";
 import { AuthProvider } from "src/declarations/providers/auth";
 import { AlbumRepository } from "src/declarations/repositories/album";
 import { FriendRepository } from "src/declarations/repositories/friend";
@@ -29,6 +29,10 @@ export class ExitAlbumUseCase extends AuthorizedUseCase<Params, Result> {
     private readonly imageRepository: ImageRepository,
   ) {
     super(authProvider);
+  }
+
+  protected isOpenFor(grade: ClaimGrade): boolean {
+    return grade === "member";
   }
 
   protected async executeWithAuth(

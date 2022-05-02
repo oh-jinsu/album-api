@@ -42,22 +42,14 @@ export class SignInWithGoogleUseCase {
       return new UseCaseException(2, "가입자를 찾지 못했습니다.");
     }
 
-    const { id, accessToken: oldAccessToken } = option.value;
+    const { id } = option.value;
 
-    const isNotExpired = await this.authProvider.verifyAccessToken(
-      oldAccessToken,
-    );
+    const accessToken = await this.authProvider.issueAccessToken({
+      sub: id,
+      grade: "member",
+    });
 
-    const accessToken = isNotExpired
-      ? oldAccessToken
-      : await this.authProvider.issueAccessToken({
-          sub: id,
-          grade: "member",
-        });
-
-    if (accessToken !== oldAccessToken) {
-      await this.authRepository.updateAccessToken(id, accessToken);
-    }
+    await this.authRepository.update(id, { accessToken });
 
     const refreshToken = await this.authProvider.issueRefreshToken({
       sub: id,
@@ -66,7 +58,7 @@ export class SignInWithGoogleUseCase {
 
     const hashedRefreshToken = await this.hashProvider.encode(refreshToken);
 
-    await this.authRepository.updateRefreshToken(id, hashedRefreshToken);
+    await this.authRepository.update(id, { refreshToken: hashedRefreshToken });
 
     return new UseCaseOk({
       accessToken,

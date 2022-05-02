@@ -3,6 +3,7 @@ import { AuthModel } from "src/declarations/models/auth";
 import {
   AuthRepository,
   SaveAuthDto,
+  UpdateAuthDto,
 } from "src/declarations/repositories/auth";
 
 export class MockAuthRepository implements AuthRepository {
@@ -12,9 +13,7 @@ export class MockAuthRepository implements AuthRepository {
 
   save = jest.fn<Promise<AuthModel>, [SaveAuthDto]>();
 
-  updateAccessToken = jest.fn<Promise<AuthModel>, [string, string]>();
-
-  updateRefreshToken = jest.fn<Promise<AuthModel>, [string, string]>();
+  update = jest.fn<Promise<AuthModel>, [string, UpdateAuthDto]>();
 
   delete = jest.fn<Promise<void>, [string]>();
 }

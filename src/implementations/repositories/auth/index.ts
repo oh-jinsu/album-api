@@ -6,6 +6,7 @@ import { AuthModel } from "src/declarations/models/auth";
 import {
   AuthRepository,
   SaveAuthDto,
+  UpdateAuthDto,
 } from "src/declarations/repositories/auth";
 import { Repository } from "typeorm";
 import { AuthEntity } from "./entity";
@@ -53,25 +54,8 @@ export class AuthRepositoryImpl implements AuthRepository {
     return AuthMapper.toModel(entity);
   }
 
-  async updateAccessToken(id: string, accessToken: string): Promise<AuthModel> {
-    await this.adaptee.update(id, {
-      accessToken,
-    });
-
-    const entity = await this.adaptee.findOne({
-      id,
-    });
-
-    return AuthMapper.toModel(entity);
-  }
-
-  async updateRefreshToken(
-    id: string,
-    refreshToken: string,
-  ): Promise<AuthModel> {
-    await this.adaptee.update(id, {
-      refreshToken,
-    });
+  async update(id: string, dto: UpdateAuthDto): Promise<AuthModel> {
+    await this.adaptee.update(id, dto);
 
     const entity = await this.adaptee.findOne({
       id,

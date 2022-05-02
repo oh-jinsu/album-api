@@ -31,27 +31,14 @@ describe("Try to sign up with apple", () => {
       }),
   );
 
-  authRepository.updateAccessToken.mockImplementation(
-    async (id, accessToken) =>
+  authRepository.update.mockImplementation(
+    async (id, { key, from, accessToken, refreshToken }) =>
       new AuthModel({
         id,
-        key: "a key",
-        from: "somewhere",
-        accessToken,
-        refreshToken: "a refresh token",
-        updatedAt: new Date(),
-        createdAt: new Date(),
-      }),
-  );
-
-  authRepository.updateRefreshToken.mockImplementation(
-    async (id, refreshToken) =>
-      new AuthModel({
-        id,
-        key: "a key",
-        from: "somewhere",
-        accessToken: "an access token",
-        refreshToken: refreshToken,
+        key: key ?? "a key",
+        from: from ?? "somewhere",
+        accessToken: accessToken ?? "an access token",
+        refreshToken: refreshToken ?? "a refresh token",
         updatedAt: new Date(),
         createdAt: new Date(),
       }),
@@ -86,9 +73,11 @@ describe("Try to sign up with apple", () => {
   it("should fail for a invalid id token", async () => {
     appleAuthProvider.verify.mockResolvedValueOnce(false);
 
+    const accessToken = "an access token";
+
     const idToken = "an id token";
 
-    const result = await usecase.execute({ idToken });
+    const result = await usecase.execute({ accessToken, idToken });
 
     if (!result.isException()) {
       fail();
@@ -102,9 +91,11 @@ describe("Try to sign up with apple", () => {
   it("should fail for a existing user", async () => {
     authRepository.findOneByKey.mockResolvedValueOnce(new Some(null));
 
+    const accessToken = "an access token";
+
     const idToken = "an id token";
 
-    const result = await usecase.execute({ idToken });
+    const result = await usecase.execute({ accessToken, idToken });
 
     if (!result.isException()) {
       fail();
@@ -116,9 +107,11 @@ describe("Try to sign up with apple", () => {
   });
 
   it("should be ok", async () => {
+    const accessToken = "an access token";
+
     const idToken = "an id token";
 
-    const result = await usecase.execute({ idToken });
+    const result = await usecase.execute({ accessToken, idToken });
 
     if (!result.isOk()) {
       fail();

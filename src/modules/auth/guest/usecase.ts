@@ -30,7 +30,9 @@ export class IssueGuestTokenUseCase {
       grade: "guest",
     });
 
-    await this.authRepository.updateAccessToken(id, accessToken);
+    await this.authRepository.update(id, {
+      accessToken,
+    });
 
     const refreshToken = await this.authProvider.issueRefreshToken({
       sub: id,
@@ -39,7 +41,9 @@ export class IssueGuestTokenUseCase {
 
     const hashedRefreshToken = await this.hashProvider.encode(refreshToken);
 
-    await this.authRepository.updateRefreshToken(id, hashedRefreshToken);
+    await this.authRepository.update(id, {
+      refreshToken: hashedRefreshToken,
+    });
 
     return new UseCaseOk({
       accessToken,

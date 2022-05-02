@@ -6,6 +6,10 @@ export type SaveAuthDto = {
   from: string;
 };
 
+export type UpdateAuthDto = Partial<
+  Omit<AuthModel, "id" | "updatedAt" | "createdAt">
+>;
+
 export abstract class AuthRepository {
   abstract findOne(id: string): Promise<Option<AuthModel>>;
 
@@ -13,15 +17,7 @@ export abstract class AuthRepository {
 
   abstract save(dto: SaveAuthDto): Promise<AuthModel>;
 
-  abstract updateAccessToken(
-    id: string,
-    accessToken: string,
-  ): Promise<AuthModel>;
-
-  abstract updateRefreshToken(
-    id: string,
-    refreshToken: string,
-  ): Promise<AuthModel>;
+  abstract update(id: string, dto: UpdateAuthDto): Promise<AuthModel>;
 
   abstract delete(id: string): Promise<void>;
 }
