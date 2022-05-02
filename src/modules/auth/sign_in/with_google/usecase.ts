@@ -52,6 +52,7 @@ export class SignInWithGoogleUseCase {
       ? oldAccessToken
       : await this.authProvider.issueAccessToken({
           sub: id,
+          grade: "member",
         });
 
     if (accessToken !== oldAccessToken) {
@@ -60,6 +61,7 @@ export class SignInWithGoogleUseCase {
 
     const refreshToken = await this.authProvider.issueRefreshToken({
       sub: id,
+      grade: "member",
     });
 
     const hashedRefreshToken = await this.hashProvider.encode(refreshToken);

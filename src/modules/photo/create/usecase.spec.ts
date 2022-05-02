@@ -15,7 +15,9 @@ describe("test the create photo usecase", () => {
 
   authProvider.verifyAccessToken.mockResolvedValue(true);
 
-  authProvider.extractClaim.mockResolvedValue(new ClaimModel({ id: "an id " }));
+  authProvider.extractClaim.mockResolvedValue(
+    new ClaimModel({ id: "an id", grade: "member" }),
+  );
 
   const photoRepository = new MockPhotoRepository();
 

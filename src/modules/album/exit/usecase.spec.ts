@@ -16,7 +16,7 @@ describe("try to exit an album", () => {
   authProvider.verifyAccessToken.mockResolvedValue(true);
 
   authProvider.extractClaim.mockResolvedValue(
-    new ClaimModel({ id: "an user id" }),
+    new ClaimModel({ id: "an user id", grade: "member" }),
   );
 
   const albumRepository = new MockAlbumRepository();

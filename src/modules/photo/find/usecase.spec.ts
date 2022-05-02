@@ -16,6 +16,7 @@ describe("Try to find photos", () => {
   authProvider.extractClaim.mockResolvedValue(
     new ClaimModel({
       id: "an user id",
+      grade: "member",
     }),
   );
 

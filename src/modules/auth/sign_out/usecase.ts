@@ -19,7 +19,7 @@ export type Result = Record<string, never>;
 export class SignOutUseCase extends AuthorizedUseCase<Params, Result> {
   constructor(
     authProvider: AuthProvider,
-    private readonly authRpeository: AuthRepository,
+    private readonly authRepository: AuthRepository,
   ) {
     super(authProvider);
   }
@@ -27,7 +27,7 @@ export class SignOutUseCase extends AuthorizedUseCase<Params, Result> {
   protected async executeWithAuth({
     id,
   }: ClaimModel): Promise<UseCaseResult<Result>> {
-    const option = await this.authRpeository.findOne(id);
+    const option = await this.authRepository.findOne(id);
 
     if (!option.isSome()) {
       return new UseCaseException(1, "가입자를 찾지 못했습니다.");
@@ -39,9 +39,9 @@ export class SignOutUseCase extends AuthorizedUseCase<Params, Result> {
       return new UseCaseException(2, "이미 로그아웃했습니다.");
     }
 
-    await this.authRpeository.updateAccessToken(id, null);
+    await this.authRepository.updateAccessToken(id, null);
 
-    await this.authRpeository.updateRefreshToken(id, null);
+    await this.authRepository.updateRefreshToken(id, null);
 
     return new UseCaseOk(null);
   }

@@ -1,7 +1,8 @@
-import { ClaimModel } from "../models/claim";
+import { ClaimGrade, ClaimModel } from "../models/claim";
 
 export type IssueTokenOptions = {
   sub: string;
+  grade: ClaimGrade;
 };
 
 export abstract class AuthProvider {

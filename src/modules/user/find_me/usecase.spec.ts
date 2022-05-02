@@ -11,7 +11,9 @@ describe("Try to find me", () => {
 
   authProvider.verifyAccessToken.mockResolvedValue(true);
 
-  authProvider.extractClaim.mockResolvedValue(new ClaimModel({ id: "an id" }));
+  authProvider.extractClaim.mockResolvedValue(
+    new ClaimModel({ id: "an id", grade: "member" }),
+  );
 
   const userRepository = new MockUserRepository();
 

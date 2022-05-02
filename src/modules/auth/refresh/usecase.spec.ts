@@ -11,7 +11,9 @@ describe("test the refresh auth usecase", () => {
 
   authProvider.verifyRefreshToken.mockResolvedValue(true);
 
-  authProvider.extractClaim.mockResolvedValue(new ClaimModel({ id: "an id" }));
+  authProvider.extractClaim.mockResolvedValue(
+    new ClaimModel({ id: "an id", grade: "member" }),
+  );
 
   const hashProvider = new MockHashProvider();
 

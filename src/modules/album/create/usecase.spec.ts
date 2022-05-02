@@ -16,7 +16,9 @@ describe("test the create album usecase", () => {
 
   authProvider.verifyAccessToken.mockResolvedValue(true);
 
-  authProvider.extractClaim.mockResolvedValue(new ClaimModel({ id: "an id " }));
+  authProvider.extractClaim.mockResolvedValue(
+    new ClaimModel({ id: "an id", grade: "member" }),
+  );
 
   const albumRepository = new MockAlbumRepository();
 

@@ -12,6 +12,7 @@ describe("test the upload image usecase", () => {
   authProvider.extractClaim.mockResolvedValue(
     new ClaimModel({
       id: "an id",
+      grade: "member",
     }),
   );
 

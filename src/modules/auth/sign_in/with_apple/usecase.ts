@@ -50,6 +50,7 @@ export class SignInWithAppleUseCase {
       ? oldone
       : await this.authProvider.issueAccessToken({
           sub: id,
+          grade: "member",
         });
 
     if (accessToken !== oldone) {
@@ -60,6 +61,7 @@ export class SignInWithAppleUseCase {
 
     const refreshToken = await this.authProvider.issueRefreshToken({
       sub: id,
+      grade: "member",
     });
 
     const hashedRefreshToken = await this.hashProvider.encode(refreshToken);

@@ -27,12 +27,14 @@ export class IssueGuestTokenUseCase {
 
     const accessToken = await this.authProvider.issueAccessToken({
       sub: id,
+      grade: "guest",
     });
 
     await this.authRepository.updateAccessToken(id, accessToken);
 
     const refreshToken = await this.authProvider.issueRefreshToken({
       sub: id,
+      grade: "guest",
     });
 
     const hashedRefreshToken = await this.hashProvider.encode(refreshToken);

@@ -31,7 +31,7 @@ export class RefreshAuthUseCase {
       return new UseCaseException(1, "유효하지 않은 인증정보입니다.");
     }
 
-    const { id } = await this.authProvider.extractClaim(refreshToken);
+    const { id, grade } = await this.authProvider.extractClaim(refreshToken);
 
     const option = await this.authRepository.findOne(id);
 
@@ -56,6 +56,7 @@ export class RefreshAuthUseCase {
       ? oldone
       : await this.authProvider.issueAccessToken({
           sub: id,
+          grade,
         });
 
     if (accessToken !== oldone) {

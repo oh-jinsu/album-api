@@ -12,7 +12,7 @@ describe("Try to test delete a photo", () => {
   authProvider.verifyAccessToken.mockResolvedValue(true);
 
   authProvider.extractClaim.mockResolvedValue(
-    new ClaimModel({ id: "an user id" }),
+    new ClaimModel({ id: "an user id", grade: "member" }),
   );
 
   const photoRepository = new MockPhotoRepository();
@@ -90,6 +90,7 @@ describe("Try to test delete a photo", () => {
     authProvider.extractClaim.mockResolvedValueOnce(
       new ClaimModel({
         id: "another id",
+        grade: "member",
       }),
     );
 

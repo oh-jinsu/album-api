@@ -11,9 +11,11 @@ import {
 export class AuthProviderImpl implements AuthProvider {
   constructor(private readonly jwtService: JwtService) {}
 
-  async issueAccessToken({ sub }: IssueTokenOptions): Promise<string> {
+  async issueAccessToken({ sub, grade }: IssueTokenOptions): Promise<string> {
     return this.jwtService.sign(
-      {},
+      {
+        grd: grade,
+      },
       {
         subject: sub,
         issuer: process.env.JWT_ISSUER,
@@ -40,9 +42,11 @@ export class AuthProviderImpl implements AuthProvider {
     }
   }
 
-  async issueRefreshToken({ sub }: IssueTokenOptions): Promise<string> {
+  async issueRefreshToken({ sub, grade }: IssueTokenOptions): Promise<string> {
     return this.jwtService.sign(
-      {},
+      {
+        grd: grade,
+      },
       {
         subject: sub,
         issuer: process.env.JWT_ISSUER,
@@ -70,8 +74,12 @@ export class AuthProviderImpl implements AuthProvider {
   }
 
   async extractClaim(token: string): Promise<ClaimModel> {
-    const { sub } = this.jwtService.decode(token);
+    type JsonPayload = { [key: string]: any };
 
-    return new ClaimModel({ id: sub });
+    const { sub, grd } = this.jwtService.decode(token, {
+      json: true,
+    }) as JsonPayload;
+
+    return new ClaimModel({ id: sub, grade: grd });
   }
 }
