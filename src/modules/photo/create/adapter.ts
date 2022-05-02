@@ -45,6 +45,8 @@ export class CreatePhotoAdapter extends Adapter {
         return 404;
       case 2:
         return 404;
+      case 3:
+        return 409;
       default:
         return 500;
     }

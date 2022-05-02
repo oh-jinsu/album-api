@@ -8,6 +8,7 @@ import { AuthorizedUseCase } from "src/core/usecase/authorized";
 import { ClaimModel } from "src/declarations/models/claim";
 import { AuthProvider } from "src/declarations/providers/auth";
 import { AlbumRepository } from "src/declarations/repositories/album";
+import { FilmRepository } from "src/declarations/repositories/film";
 import { ImageRepository } from "src/declarations/repositories/image";
 import { PhotoRepository } from "src/declarations/repositories/photo";
 
@@ -32,6 +33,7 @@ export class CreatePhotoUseCase extends AuthorizedUseCase<Params, Result> {
     authProvider: AuthProvider,
     private readonly photoRepository: PhotoRepository,
     private readonly albumRepository: AlbumRepository,
+    private readonly filmRepository: FilmRepository,
     private readonly imageRepository: ImageRepository,
   ) {
     super(authProvider);
@@ -51,6 +53,16 @@ export class CreatePhotoUseCase extends AuthorizedUseCase<Params, Result> {
 
     if (!imageUriOption.isSome()) {
       return new UseCaseException(2, "저장된 이미지를 찾지 못했습니다.");
+    }
+
+    const films = await this.filmRepository.findEalistByUserId(userId, 1);
+
+    if (films.length < 1) {
+      return new UseCaseException(3, "필름이 부족합니다.");
+    }
+
+    for (const film of films) {
+      await this.filmRepository.delete(film.id);
     }
 
     const photo = await this.photoRepository.save({
