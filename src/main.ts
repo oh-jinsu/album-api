@@ -13,6 +13,7 @@ import { UserModule } from "./modules/user";
 import { ThrottlerGuard, ThrottlerModule } from "@nestjs/throttler";
 import { FilmModule } from "./modules/film";
 import { ScheduleModule } from "@nestjs/schedule";
+import { ThrottlerExceptionFilter } from "./core/filters/throttler";
 
 @Module({
   imports: [
@@ -40,7 +41,11 @@ class AppModule {}
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
 
-  app.useGlobalFilters(new ErrorFilter(), new HttpExceptionFilter());
+  app.useGlobalFilters(
+    new ErrorFilter(),
+    new HttpExceptionFilter(),
+    new ThrottlerExceptionFilter(),
+  );
 
   app.useGlobalPipes(
     new ValidationPipe({
