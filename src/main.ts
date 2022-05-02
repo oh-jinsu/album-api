@@ -11,6 +11,7 @@ import { AlbumModule } from "./modules/album";
 import { PhotoModule } from "./modules/photo";
 import { UserModule } from "./modules/user";
 import { ThrottlerGuard, ThrottlerModule } from "@nestjs/throttler";
+import { FilmModule } from "./modules/film";
 
 @Module({
   imports: [
@@ -22,6 +23,7 @@ import { ThrottlerGuard, ThrottlerModule } from "@nestjs/throttler";
     UserModule,
     AlbumModule,
     PhotoModule,
+    FilmModule,
     UtilModule,
   ],
   providers: [
