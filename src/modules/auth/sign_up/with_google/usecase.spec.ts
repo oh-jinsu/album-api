@@ -1,14 +1,25 @@
 import { None, Some } from "src/core/enums/option";
 import { AuthModel } from "src/declarations/models/auth";
+import { ClaimModel } from "src/declarations/models/claim";
 import { GoogleClaimModel } from "src/declarations/models/google_claim";
 import { MockAuthProvider } from "src/implementations/providers/auth/mock";
 import { MockGoogleAuthProvider } from "src/implementations/providers/google_auth/mock";
 import { MockHashProvider } from "src/implementations/providers/hash/mock";
 import { MockAuthRepository } from "src/implementations/repositories/auth/mock";
+import { MockUserRepository } from "src/implementations/repositories/user/mock";
 import { SignUpWithGoogleUseCase } from "./usecase";
 
 describe("Try to sign up with google", () => {
   const authProvider = new MockAuthProvider();
+
+  authProvider.verifyAccessToken.mockResolvedValue(true);
+
+  authProvider.extractClaim.mockResolvedValue(
+    new ClaimModel({
+      id: "an id",
+      grade: "guest",
+    }),
+  );
 
   authProvider.issueAccessToken.mockResolvedValue("an access token");
 
@@ -59,11 +70,16 @@ describe("Try to sign up with google", () => {
 
   hashProvider.encode.mockResolvedValue("a hashed value");
 
+  const userRepository = new MockUserRepository();
+
+  userRepository.delete.mockResolvedValue(null);
+
   const usecase = new SignUpWithGoogleUseCase(
     authProvider,
     googleAuthProvider,
     hashProvider,
     authRepository,
+    userRepository,
   );
 
   it("should be defined", () => {

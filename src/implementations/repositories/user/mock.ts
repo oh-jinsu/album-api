@@ -14,4 +14,6 @@ export class MockUserRepository implements UserRepository {
   save = jest.fn<Promise<UserModel>, [SaveUserDto]>();
 
   update = jest.fn<Promise<UserModel>, [string, UpdateUserDto]>();
+
+  delete = jest.fn<Promise<void>, [string]>();
 }

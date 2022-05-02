@@ -10,6 +10,7 @@ import { AuthProvider } from "src/declarations/providers/auth";
 import { GoogleAuthProvider } from "src/declarations/providers/google_auth";
 import { HashProvider } from "src/declarations/providers/hash";
 import { AuthRepository } from "src/declarations/repositories/auth";
+import { UserRepository } from "src/declarations/repositories/user";
 
 export interface Params {
   accessToken: string;
@@ -28,6 +29,7 @@ export class SignUpWithGoogleUseCase extends AuthorizedUseCase<Params, Result> {
     private readonly googleAuthProvider: GoogleAuthProvider,
     private readonly hashProvider: HashProvider,
     private readonly authRepository: AuthRepository,
+    private readonly userRepository: UserRepository,
   ) {
     super(authProvider);
   }
@@ -74,6 +76,8 @@ export class SignUpWithGoogleUseCase extends AuthorizedUseCase<Params, Result> {
     const hashedRefreshToken = await this.hashProvider.encode(refreshToken);
 
     await this.authRepository.update(id, { refreshToken: hashedRefreshToken });
+
+    await this.userRepository.delete(id);
 
     return new UseCaseOk({
       accessToken,

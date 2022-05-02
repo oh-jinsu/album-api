@@ -1,10 +1,11 @@
 import { None, Some } from "src/core/enums/option";
 import { ClaimModel } from "src/declarations/models/claim";
+import { FilmModel } from "src/declarations/models/film";
 import { UserModel } from "src/declarations/models/user";
 import { MockAuthProvider } from "src/implementations/providers/auth/mock";
-import { MockImageRepository } from "src/implementations/repositories/image/mock";
+import { MockFilmRepository } from "src/implementations/repositories/flim/mock";
 import { MockUserRepository } from "src/implementations/repositories/user/mock";
-import { CreateMeUseCase } from "./usecase";
+import { CreateGuestUseCase } from "./usecase";
 
 describe("Try to create me", () => {
   const authProvider = new MockAuthProvider();
@@ -12,7 +13,7 @@ describe("Try to create me", () => {
   authProvider.verifyAccessToken.mockResolvedValue(true);
 
   authProvider.extractClaim.mockResolvedValue(
-    new ClaimModel({ id: "an id", grade: "member" }),
+    new ClaimModel({ id: "an id", grade: "guest" }),
   );
 
   const userRepository = new MockUserRepository();
@@ -31,14 +32,21 @@ describe("Try to create me", () => {
       }),
   );
 
-  const imageRepository = new MockImageRepository();
+  const filmRepository = new MockFilmRepository();
 
-  imageRepository.getPublicImageUri.mockResolvedValue(new Some("an image uri"));
+  filmRepository.save.mockImplementation(
+    async (userId) =>
+      new FilmModel({
+        id: "an id",
+        userId,
+        createdAt: new Date(),
+      }),
+  );
 
-  const usecase = new CreateMeUseCase(
+  const usecase = new CreateGuestUseCase(
     authProvider,
     userRepository,
-    imageRepository,
+    filmRepository,
   );
 
   it("should be defined", () => {
@@ -87,65 +95,6 @@ describe("Try to create me", () => {
     expect(result.message).toBe("이미 등록된 이용자입니다.");
   });
 
-  it("should fail for a too short name", async () => {
-    const params = {
-      accessToken: "an access token",
-      name: "a",
-      email: "an email",
-      avatar: "an avatar",
-    };
-
-    const result = await usecase.execute(params);
-
-    if (!result.isException()) {
-      fail();
-    }
-
-    expect(result.code).toBe(2);
-
-    expect(result.message).toBe("이름이 너무 짧습니다.");
-  });
-
-  it("should fail for a too long name", async () => {
-    const params = {
-      accessToken: "an access token",
-      name: "namenamenamenamenamenamename",
-      email: "an email",
-      avatar: "an avatar",
-    };
-
-    const result = await usecase.execute(params);
-
-    if (!result.isException()) {
-      fail();
-    }
-
-    expect(result.code).toBe(3);
-
-    expect(result.message).toBe("이름이 너무 깁니다.");
-  });
-
-  it("should fail for an unsaved image", async () => {
-    imageRepository.getPublicImageUri.mockResolvedValueOnce(new None());
-
-    const params = {
-      accessToken: "an access token",
-      name: "a name",
-      email: "an email",
-      avatar: "an avatar",
-    };
-
-    const result = await usecase.execute(params);
-
-    if (!result.isException()) {
-      fail();
-    }
-
-    expect(result.code).toBe(4);
-
-    expect(result.message).toBe("저장된 이미지를 찾지 못했습니다.");
-  });
-
   it("should be ok", async () => {
     const params = {
       accessToken: "an access token",
@@ -160,13 +109,10 @@ describe("Try to create me", () => {
       fail();
     }
 
-    const { id, name, email, avatarImageUri, updatedAt, createdAt } =
-      result.value;
+    const { id, name, updatedAt, createdAt } = result.value;
 
     expect(id).toBeDefined();
     expect(name).toBeDefined();
-    expect(email).toBeDefined();
-    expect(avatarImageUri).toBeDefined();
     expect(updatedAt).toBeDefined();
     expect(createdAt).toBeDefined();
   });

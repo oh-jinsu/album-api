@@ -5,9 +5,8 @@ import {
   UseCaseResult,
 } from "src/core/enums/results/usecase";
 import { AuthorizedUseCase } from "src/core/usecase/authorized";
-import { ClaimModel } from "src/declarations/models/claim";
+import { ClaimGrade, ClaimModel } from "src/declarations/models/claim";
 import { AuthProvider } from "src/declarations/providers/auth";
-import { FilmRepository } from "src/declarations/repositories/film";
 import { ImageRepository } from "src/declarations/repositories/image";
 import { UserRepository } from "src/declarations/repositories/user";
 
@@ -32,10 +31,13 @@ export class CreateMeUseCase extends AuthorizedUseCase<Params, Result> {
   constructor(
     authProvider: AuthProvider,
     private readonly userRepository: UserRepository,
-    private readonly filmRepository: FilmRepository,
     private readonly imageRepository: ImageRepository,
   ) {
     super(authProvider);
+  }
+
+  protected isOpenFor(grade: ClaimGrade): boolean {
+    return grade === "member";
   }
 
   protected async executeWithAuth(
@@ -78,10 +80,6 @@ export class CreateMeUseCase extends AuthorizedUseCase<Params, Result> {
       email,
       avatar,
     });
-
-    for (let i = 0; i < 10; i++) {
-      this.filmRepository.save(id);
-    }
 
     return new UseCaseOk({
       id,

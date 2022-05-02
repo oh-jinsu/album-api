@@ -20,4 +20,6 @@ export abstract class UserRepository {
   abstract save(dto: SaveUserDto): Promise<UserModel>;
 
   abstract update(id: string, dto: UpdateUserDto): Promise<UserModel>;
+
+  abstract delete(id: string): Promise<void>;
 }

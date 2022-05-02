@@ -62,4 +62,8 @@ export class UserRepositoryImpl implements UserRepository {
 
     return result;
   }
+
+  async delete(id: string): Promise<void> {
+    await this.adaptee.delete({ id });
+  }
 }

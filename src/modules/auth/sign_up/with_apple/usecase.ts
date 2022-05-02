@@ -10,6 +10,7 @@ import { AppleAuthProvider } from "src/declarations/providers/apple_auth";
 import { AuthProvider } from "src/declarations/providers/auth";
 import { HashProvider } from "src/declarations/providers/hash";
 import { AuthRepository } from "src/declarations/repositories/auth";
+import { UserRepository } from "src/declarations/repositories/user";
 
 export interface Params {
   accessToken: string;
@@ -28,6 +29,7 @@ export class SignUpWithAppleUseCase extends AuthorizedUseCase<Params, Result> {
     private readonly appleAuthProvider: AppleAuthProvider,
     private readonly hashProvider: HashProvider,
     private readonly authRepository: AuthRepository,
+    private readonly userRepository: UserRepository,
   ) {
     super(authProvider);
   }
@@ -74,6 +76,8 @@ export class SignUpWithAppleUseCase extends AuthorizedUseCase<Params, Result> {
     const hashedRefreshToken = await this.hashProvider.encode(refreshToken);
 
     await this.authRepository.update(id, { refreshToken: hashedRefreshToken });
+
+    await this.userRepository.delete(id);
 
     return new UseCaseOk({
       accessToken,
