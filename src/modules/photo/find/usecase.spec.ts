@@ -1,9 +1,11 @@
 import { None, Some } from "src/core/enums/option";
 import { AlbumModel } from "src/declarations/models/album";
 import { ClaimModel } from "src/declarations/models/claim";
+import { FriendModel } from "src/declarations/models/friend";
 import { PhotoModel } from "src/declarations/models/photo";
 import { MockAuthProvider } from "src/implementations/providers/auth/mock";
 import { MockAlbumRepository } from "src/implementations/repositories/album/mock";
+import { MockFriendRepository } from "src/implementations/repositories/friend/mock";
 import { MockImageRepository } from "src/implementations/repositories/image/mock";
 import { MockPhotoRepository } from "src/implementations/repositories/photo/mock";
 import { FindPhotosUseCase } from "./usecase";
@@ -27,7 +29,6 @@ describe("Try to find photos", () => {
       new Some(
         new AlbumModel({
           id,
-          userId: "an user id",
           title: "a title",
           updatedAt: new Date(),
           createdAt: new Date(),
@@ -53,6 +54,20 @@ describe("Try to find photos", () => {
     ),
   }));
 
+  const friendRepository = new MockFriendRepository();
+
+  friendRepository.findOne.mockImplementation(
+    async (id) =>
+      new Some(
+        new FriendModel({
+          id,
+          userId: "an user id",
+          albumId: "an album id",
+          createdAt: new Date(),
+        }),
+      ),
+  );
+
   const imageRepository = new MockImageRepository();
 
   imageRepository.getPublicImageUri.mockResolvedValue(
@@ -61,8 +76,9 @@ describe("Try to find photos", () => {
 
   const usecase = new FindPhotosUseCase(
     authProvider,
-    albumRepository,
     photoRepository,
+    albumRepository,
+    friendRepository,
     imageRepository,
   );
 
@@ -113,18 +129,7 @@ describe("Try to find photos", () => {
   });
 
   it("should fail for access an album which is not mine", async () => {
-    albumRepository.findOne.mockImplementationOnce(
-      async (id) =>
-        new Some(
-          new AlbumModel({
-            id,
-            userId: "another userId",
-            title: "a title",
-            updatedAt: new Date(),
-            createdAt: new Date(),
-          }),
-        ),
-    );
+    friendRepository.findOne.mockResolvedValueOnce(new None());
 
     const params = {
       accessToken: "an access token",

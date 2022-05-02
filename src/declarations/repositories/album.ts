@@ -3,7 +3,6 @@ import { AlbumModel } from "../models/album";
 
 export type SaveAlbumDto = {
   title: string;
-  userId: string;
 };
 
 export type UpdateAlbumDto = Partial<
@@ -12,12 +11,6 @@ export type UpdateAlbumDto = Partial<
 
 export abstract class AlbumRepository {
   abstract findOne(id: string): Promise<Option<AlbumModel>>;
-
-  abstract findByUserId(
-    userId: string,
-    limit?: number,
-    cursor?: string,
-  ): Promise<{ next?: string; items: AlbumModel[] }>;
 
   abstract save(dto: SaveAlbumDto): Promise<AlbumModel>;
 

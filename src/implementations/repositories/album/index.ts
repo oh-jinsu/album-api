@@ -8,7 +8,7 @@ import {
   SaveAlbumDto,
   UpdateAlbumDto,
 } from "src/declarations/repositories/album";
-import { LessThan, Repository } from "typeorm";
+import { Repository } from "typeorm";
 import { AlbumEntity } from "./entity";
 import { AlbumMapper } from "./mapper";
 
@@ -29,41 +29,9 @@ export class AlbumRepositoryImpl implements AlbumRepository {
     return new Some(AlbumMapper.toModel(entity));
   }
 
-  async findByUserId(
-    userId: string,
-    limit?: number,
-    cursor?: string,
-  ): Promise<{ next?: string; items: AlbumModel[] }> {
-    const cursored = await this.adaptee.findOne({
-      id: cursor,
-    });
-
-    const take = limit ? limit + (cursored ? 0 : 1) : null;
-
-    const query = await this.adaptee.find({
-      where: {
-        userId,
-        createdAt: LessThan(cursored?.createdAt || new Date()),
-      },
-      order: {
-        createdAt: "DESC",
-      },
-      take,
-    });
-
-    if (cursored) {
-      query.unshift(cursored);
-    }
-
-    const next = limit && query.length === limit + 1 ? query.pop() : null;
-
-    return { next: next?.id, items: query.map(AlbumMapper.toModel) };
-  }
-
-  async save({ userId, title }: SaveAlbumDto): Promise<AlbumModel> {
+  async save({ title }: SaveAlbumDto): Promise<AlbumModel> {
     const newone = this.adaptee.create({
       id: randomUUID(),
-      userId,
       title,
     });
 

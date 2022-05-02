@@ -26,7 +26,6 @@ describe("try to exit an album", () => {
       new Some(
         new AlbumModel({
           id,
-          userId: "an user id",
           title: "a title",
           updatedAt: new Date(),
           createdAt: new Date(),

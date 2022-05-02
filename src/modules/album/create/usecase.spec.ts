@@ -23,10 +23,9 @@ describe("test the create album usecase", () => {
   const albumRepository = new MockAlbumRepository();
 
   albumRepository.save.mockImplementation(
-    async ({ userId, title }) =>
+    async ({ title }) =>
       new AlbumModel({
         id: "an id",
-        userId,
         title,
         updatedAt: new Date(),
         createdAt: new Date(),

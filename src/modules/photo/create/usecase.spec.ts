@@ -41,7 +41,6 @@ describe("test the create photo usecase", () => {
       new Some(
         new AlbumModel({
           id,
-          userId: "an userId",
           title: "a title",
           updatedAt: new Date(),
           createdAt: new Date(),

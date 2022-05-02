@@ -7,7 +7,7 @@ import {
   FriendRepository,
   SaveFriendDto,
 } from "src/declarations/repositories/friend";
-import { Repository } from "typeorm";
+import { LessThan, Repository } from "typeorm";
 import { FriendEntity } from "./entity";
 import { FriendMapper } from "./mapper";
 
@@ -29,6 +29,37 @@ export class FriendRepositoryImpl implements FriendRepository {
     }
 
     return new Some(FriendMapper.toModel(entity));
+  }
+
+  async findByUserId(
+    userId: string,
+    limit?: number,
+    cursor?: string,
+  ): Promise<{ next?: string; items: FriendModel[] }> {
+    const cursored = await this.adaptee.findOne({
+      id: cursor,
+    });
+
+    const take = limit ? limit + (cursored ? 0 : 1) : null;
+
+    const query = await this.adaptee.find({
+      where: {
+        userId,
+        createdAt: LessThan(cursored?.createdAt || new Date()),
+      },
+      order: {
+        createdAt: "DESC",
+      },
+      take,
+    });
+
+    if (cursored) {
+      query.unshift(cursored);
+    }
+
+    const next = limit && query.length === limit + 1 ? query.pop() : null;
+
+    return { next: next?.id, items: query.map(FriendMapper.toModel) };
   }
 
   async findByAlbumId(albumId: string): Promise<FriendModel[]> {

@@ -1,7 +1,6 @@
 import { Injectable } from "@nestjs/common";
 import { UseCaseOk, UseCaseResult } from "src/core/enums/results/usecase";
 import { AuthorizedUseCase } from "src/core/usecase/authorized";
-import { AlbumModel } from "src/declarations/models/album";
 import { ClaimModel } from "src/declarations/models/claim";
 import { FriendModel } from "src/declarations/models/friend";
 import { AuthProvider } from "src/declarations/providers/auth";
@@ -59,13 +58,15 @@ export class FindAlbumsUseCase extends AuthorizedUseCase<Params, Result> {
     { id: userId }: ClaimModel,
     { cursor, limit }: Params,
   ): Promise<UseCaseResult<Result>> {
-    const { next, items: albums } = await this.albumRepository.findByUserId(
+    const { next, items: friends } = await this.friendRepository.findByUserId(
       userId,
       limit,
       cursor,
     );
 
-    const items = await Promise.all(albums.map(this.mapAlbum));
+    const items = await Promise.all(
+      friends.map(this.mapAlbum).filter((e) => e),
+    );
 
     return new UseCaseOk({
       next,
@@ -73,12 +74,15 @@ export class FindAlbumsUseCase extends AuthorizedUseCase<Params, Result> {
     });
   }
 
-  private async mapAlbum({
-    id,
-    title,
-    updatedAt,
-    createdAt,
-  }: AlbumModel): Promise<ResultItem> {
+  private async mapAlbum({ albumId }: FriendModel): Promise<ResultItem> {
+    const albumOption = await this.albumRepository.findOne(albumId);
+
+    if (!albumOption.isSome()) {
+      return null;
+    }
+
+    const { id, title, updatedAt, createdAt } = albumOption.value;
+
     const photoCount = await this.photoRepository.countByAlbumId(id);
 
     const photoOption = await this.photoRepository.findLatestByAlbumId(id);

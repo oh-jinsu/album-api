@@ -53,8 +53,13 @@ export class CreateAlbumUseCase extends AuthorizedUseCase<Params, Result> {
     { id: userId }: ClaimModel,
     { title }: Params,
   ): Promise<UseCaseResult<Result>> {
+    const userOption = await this.userRepository.findOne(userId);
+
+    if (!userOption.isSome()) {
+      return new UseCaseException(1, "이용자를 찾지 못했습니다.");
+    }
+
     const album = await this.albumRepository.save({
-      userId,
       title,
     });
 
@@ -62,12 +67,6 @@ export class CreateAlbumUseCase extends AuthorizedUseCase<Params, Result> {
       userId,
       albumId: album.id,
     });
-
-    const userOption = await this.userRepository.findOne(friend.userId);
-
-    if (!userOption.isSome()) {
-      return new UseCaseException(1, "이용자를 찾지 못했습니다.");
-    }
 
     const user = userOption.value;
 

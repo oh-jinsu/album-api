@@ -23,19 +23,17 @@ describe("test the find albums usecase", () => {
 
   const albumRepository = new MockAlbumRepository();
 
-  albumRepository.findByUserId.mockImplementation(async (userId: string) => ({
-    next: "an id",
-    items: [...Array(10)].map(
-      (_, i) =>
+  albumRepository.findOne.mockImplementation(
+    async (id) =>
+      new Some(
         new AlbumModel({
-          id: `an id ${i}`,
-          userId,
+          id,
           title: "a title",
           updatedAt: new Date(),
           createdAt: new Date(),
         }),
-    ),
-  }));
+      ),
+  );
 
   const photoRepository = new MockPhotoRepository();
 
@@ -57,6 +55,19 @@ describe("test the find albums usecase", () => {
   );
 
   const friendRepository = new MockFriendRepository();
+
+  friendRepository.findByUserId.mockImplementation(async (userId, limit) => ({
+    next: null,
+    items: [...Array(limit)].map(
+      (_, i) =>
+        new FriendModel({
+          id: `an id ${i}`,
+          userId,
+          albumId: "album id",
+          createdAt: new Date(),
+        }),
+    ),
+  }));
 
   friendRepository.findByAlbumId.mockImplementation(async (albumId) =>
     [...Array(3)].map(

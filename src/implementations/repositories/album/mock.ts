@@ -9,11 +9,6 @@ import {
 export class MockAlbumRepository implements AlbumRepository {
   findOne = jest.fn<Promise<Option<AlbumModel>>, [string]>();
 
-  findByUserId = jest.fn<
-    Promise<{ next?: string; items: AlbumModel[] }>,
-    [string, number, string]
-  >();
-
   save = jest.fn<Promise<AlbumModel>, [SaveAlbumDto]>();
 
   update = jest.fn<Promise<AlbumModel>, [string, UpdateAlbumDto]>();

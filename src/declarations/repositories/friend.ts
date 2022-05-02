@@ -12,6 +12,15 @@ export abstract class FriendRepository {
     albumId: string,
   ): Promise<Option<FriendModel>>;
 
+  abstract findByUserId(
+    userId: string,
+    limit?: number,
+    cursor?: string,
+  ): Promise<{
+    next?: string;
+    items: FriendModel[];
+  }>;
+
   abstract findByAlbumId(albumId: string): Promise<FriendModel[]>;
 
   abstract save(dto: SaveFriendDto): Promise<FriendModel>;

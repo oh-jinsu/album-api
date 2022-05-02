@@ -12,9 +12,6 @@ export class AlbumEntity {
   id: string;
 
   @Column()
-  userId: string;
-
-  @Column()
   title: string;
 
   @UpdateDateColumn()

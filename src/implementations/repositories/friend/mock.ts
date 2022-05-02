@@ -8,6 +8,11 @@ import {
 export class MockFriendRepository implements FriendRepository {
   findOne = jest.fn<Promise<Option<FriendModel>>, [string, string]>();
 
+  findByUserId = jest.fn<
+    Promise<{ next?: string; items: FriendModel[] }>,
+    [string, number, string]
+  >();
+
   findByAlbumId = jest.fn<Promise<FriendModel[]>, [string]>();
 
   save = jest.fn<Promise<FriendModel>, [SaveFriendDto]>();
