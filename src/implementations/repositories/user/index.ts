@@ -16,6 +16,13 @@ export class UserRepositoryImpl implements UserRepository {
     @InjectRepository(UserEntity)
     private readonly adaptee: Repository<UserEntity>,
   ) {}
+
+  async find(): Promise<UserModel[]> {
+    const entities = await this.adaptee.find();
+
+    return entities.map(UserMapper.toModel);
+  }
+
   async findOne(id: string): Promise<Option<UserModel>> {
     const entity = await this.adaptee.findOne(id);
 

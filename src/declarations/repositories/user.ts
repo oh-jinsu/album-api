@@ -13,6 +13,8 @@ export type UpdateUserDto = Partial<
 >;
 
 export abstract class UserRepository {
+  abstract find(): Promise<UserModel[]>;
+
   abstract findOne(id: string): Promise<Option<UserModel>>;
 
   abstract save(dto: SaveUserDto): Promise<UserModel>;
