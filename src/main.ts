@@ -12,11 +12,13 @@ import { PhotoModule } from "./modules/photo";
 import { UserModule } from "./modules/user";
 import { ThrottlerGuard, ThrottlerModule } from "@nestjs/throttler";
 import { FilmModule } from "./modules/film";
+import { ScheduleModule } from "@nestjs/schedule";
 
 @Module({
   imports: [
     ConfigModule.forRoot(),
     ThrottlerModule.forRoot(),
+    ScheduleModule.forRoot(),
     ProviderModule,
     RepositoryModule,
     AuthModule,
