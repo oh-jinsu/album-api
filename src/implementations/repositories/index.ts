@@ -3,6 +3,7 @@ import { TypeOrmModule } from "@nestjs/typeorm";
 import { isProduction } from "src/core/environment";
 import { AlbumRepository } from "src/declarations/repositories/album";
 import { AuthRepository } from "src/declarations/repositories/auth";
+import { FilmRepository } from "src/declarations/repositories/film";
 import { FriendRepository } from "src/declarations/repositories/friend";
 import { ImageRepository } from "src/declarations/repositories/image";
 import { PhotoRepository } from "src/declarations/repositories/photo";
@@ -11,6 +12,8 @@ import { AlbumRepositoryImpl } from "./album";
 import { AlbumEntity } from "./album/entity";
 import { AuthRepositoryImpl } from "./auth";
 import { AuthEntity } from "./auth/entity";
+import { FilmRepositoryImpl } from "./flim";
+import { FilmEntity } from "./flim/entity";
 import { FriendRepositoryImpl } from "./friend";
 import { FriendEntity } from "./friend/entity";
 import { ImageRepositoryImpl } from "./image";
@@ -36,6 +39,7 @@ import { UserEntity } from "./user/entity";
           UserEntity,
           AlbumEntity,
           PhotoEntity,
+          FilmEntity,
           FriendEntity,
           ImageEntity,
         ],
@@ -48,6 +52,7 @@ import { UserEntity } from "./user/entity";
       UserEntity,
       AlbumEntity,
       PhotoEntity,
+      FilmEntity,
       FriendEntity,
       ImageEntity,
     ]),
@@ -70,6 +75,10 @@ import { UserEntity } from "./user/entity";
       useClass: PhotoRepositoryImpl,
     },
     {
+      provide: FilmRepository,
+      useClass: FilmRepositoryImpl,
+    },
+    {
       provide: FriendRepository,
       useClass: FriendRepositoryImpl,
     },
@@ -83,6 +92,7 @@ import { UserEntity } from "./user/entity";
     UserRepository,
     AlbumRepository,
     PhotoRepository,
+    FilmRepository,
     FriendRepository,
     ImageRepository,
   ],
