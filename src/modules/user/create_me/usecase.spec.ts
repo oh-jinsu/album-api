@@ -1,7 +1,9 @@
 import { None, Some } from "src/core/enums/option";
 import { ClaimModel } from "src/declarations/models/claim";
+import { FilmModel } from "src/declarations/models/film";
 import { UserModel } from "src/declarations/models/user";
 import { MockAuthProvider } from "src/implementations/providers/auth/mock";
+import { MockFilmRepository } from "src/implementations/repositories/flim/mock";
 import { MockImageRepository } from "src/implementations/repositories/image/mock";
 import { MockUserRepository } from "src/implementations/repositories/user/mock";
 import { CreateMeUseCase } from "./usecase";
@@ -29,6 +31,17 @@ describe("Try to create me", () => {
       }),
   );
 
+  const filmRepository = new MockFilmRepository();
+
+  filmRepository.save.mockImplementation(
+    async (userId) =>
+      new FilmModel({
+        id: "an id",
+        userId,
+        createdAt: new Date(),
+      }),
+  );
+
   const imageRepository = new MockImageRepository();
 
   imageRepository.getPublicImageUri.mockResolvedValue(new Some("an image uri"));
@@ -36,6 +49,7 @@ describe("Try to create me", () => {
   const usecase = new CreateMeUseCase(
     authProvider,
     userRepository,
+    filmRepository,
     imageRepository,
   );
 
