@@ -22,7 +22,7 @@ export interface UserResult {
   id: string;
   email?: string;
   name: string;
-  avatar: string;
+  avatarImageUri?: string;
   joinedAt: Date;
 }
 
@@ -70,20 +70,28 @@ export class CreateAlbumUseCase extends AuthorizedUseCase<Params, Result> {
 
     const user = userOption.value;
 
+    const avatarImageUriOption = await this.imageRepository.getPublicImageUri(
+      user.avatar,
+    );
+
+    const avatarImageUri = avatarImageUriOption.isSome()
+      ? avatarImageUriOption.value
+      : null;
+
     const photoCount = await this.photoRepository.countByAlbumId(album.id);
 
     const latestPhotoOption = await this.photoRepository.findLatestByAlbumId(
       album.id,
     );
 
-    const imageUriOption = latestPhotoOption.isSome()
+    const coverImageUriOption = latestPhotoOption.isSome()
       ? await this.imageRepository.getPublicImageUri(
           latestPhotoOption.value.image,
         )
       : null;
 
-    const coverImageUri = imageUriOption?.isSome()
-      ? imageUriOption.value
+    const coverImageUri = coverImageUriOption?.isSome()
+      ? coverImageUriOption.value
       : null;
 
     return new UseCaseOk({
@@ -96,7 +104,7 @@ export class CreateAlbumUseCase extends AuthorizedUseCase<Params, Result> {
           id: user.id,
           email: user.email,
           name: user.name,
-          avatar: user.avatar,
+          avatarImageUri,
           joinedAt: friend.createdAt,
         },
       ],

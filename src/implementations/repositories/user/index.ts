@@ -40,7 +40,7 @@ export class UserRepositoryImpl implements UserRepository {
       id,
       name,
       email,
-      avatar: avatar || process.env.DEFAULT_AVATAR_ID,
+      avatar,
     });
 
     const entity = await this.adaptee.save(newone);

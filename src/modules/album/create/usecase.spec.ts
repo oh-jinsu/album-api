@@ -140,11 +140,12 @@ describe("test the create album usecase", () => {
 
     expect(result.value.photoCount).toBe(0);
 
-    for (const { id, email, name, avatar, joinedAt } of result.value.users) {
+    for (const { id, email, name, avatarImageUri, joinedAt } of result.value
+      .users) {
       expect(id).toBeDefined();
       expect(email).toBeDefined();
       expect(name).toBeDefined();
-      expect(avatar).toBeDefined();
+      expect(avatarImageUri).toBeDefined();
       expect(joinedAt).toBeDefined();
     }
 

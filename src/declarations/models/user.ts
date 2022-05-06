@@ -2,7 +2,7 @@ export class UserModel {
   public readonly id: string;
   public readonly name: string;
   public readonly email?: string;
-  public readonly avatar: string;
+  public readonly avatar?: string;
   public readonly updatedAt: Date;
   public readonly createdAt: Date;
 
@@ -17,7 +17,7 @@ export class UserModel {
     id: string;
     name: string;
     email?: string;
-    avatar: string;
+    avatar?: string;
     updatedAt: Date;
     createdAt: Date;
   }) {

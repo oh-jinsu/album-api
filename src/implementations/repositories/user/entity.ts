@@ -17,10 +17,12 @@ export class UserEntity {
   @Column({
     nullable: true,
   })
-  email: string;
+  email?: string;
 
-  @Column()
-  avatar: string;
+  @Column({
+    nullable: true,
+  })
+  avatar?: string;
 
   @UpdateDateColumn()
   updatedAt: Date;

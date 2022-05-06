@@ -163,11 +163,11 @@ describe("test the find albums usecase", () => {
       expect(coverImageUri).toBeDefined();
       expect(photoCount).toBe(10);
 
-      for (const { id, email, name, avatar, joinedAt } of users) {
+      for (const { id, email, name, avatarImageUri, joinedAt } of users) {
         expect(id).toBeDefined();
         expect(email).toBeDefined();
         expect(name).toBeDefined();
-        expect(avatar).toBeDefined();
+        expect(avatarImageUri).toBeDefined();
         expect(joinedAt).toBeDefined();
       }
 

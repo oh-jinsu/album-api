@@ -21,7 +21,7 @@ export interface Result {
   id: string;
   email?: string;
   name: string;
-  avatarImageUri: string;
+  avatarImageUri?: string;
   updatedAt: Date;
   createdAt: Date;
 }

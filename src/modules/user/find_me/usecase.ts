@@ -18,7 +18,7 @@ export interface Result {
   id: string;
   email?: string;
   name: string;
-  avatarImageUri: string;
+  avatarImageUri?: string;
   updatedAt: Date;
   createdAt: Date;
 }
@@ -46,7 +46,7 @@ export class FindMeUseCase extends AuthorizedUseCase<Params, Result> {
 
     const imageUriOption = await this.imageRepository.getPublicImageUri(avatar);
 
-    const avatarImageUri = imageUriOption?.isSome()
+    const avatarImageUri = imageUriOption.isSome()
       ? imageUriOption.value
       : null;
 

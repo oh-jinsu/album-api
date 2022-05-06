@@ -20,7 +20,7 @@ export interface UserResult {
   id: string;
   email?: string;
   name: string;
-  avatar: string;
+  avatarImageUri?: string;
   joinedAt: Date;
 }
 
@@ -124,11 +124,19 @@ export class FindAlbumsUseCase extends AuthorizedUseCase<Params, Result> {
 
     const { id, name, email, avatar } = userOption.value;
 
+    const avatarImageUriOption = await this.imageRepository.getPublicImageUri(
+      avatar,
+    );
+
+    const avatarImageUri = avatarImageUriOption.isSome()
+      ? avatarImageUriOption.value
+      : null;
+
     return {
       id,
       email,
       name,
-      avatar,
+      avatarImageUri,
       joinedAt,
     };
   }
