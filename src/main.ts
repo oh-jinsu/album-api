@@ -55,7 +55,7 @@ async function bootstrap() {
 
   app.setGlobalPrefix(process.env.VERSION);
 
-  await app.listen(3000);
+  await app.listen(process.env.PORT);
 }
 
 bootstrap();
