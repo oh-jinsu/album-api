@@ -1,6 +1,5 @@
 import { Injectable } from "@nestjs/common";
 import { InjectRepository } from "@nestjs/typeorm";
-import { randomUUID } from "crypto";
 import { None, Option, Some } from "src/core/enums/option";
 import { ImageModel } from "src/declarations/models/image";
 import {
@@ -8,6 +7,7 @@ import {
   SaveImageDto,
 } from "src/declarations/repositories/image";
 import { Repository } from "typeorm";
+import { v4 } from "uuid";
 import s3 from "../../storage/s3";
 import { ImageEntity } from "./entity";
 import { ImageMapper } from "./mapper";
@@ -19,7 +19,7 @@ export class ImageRepositoryImpl implements ImageRepository {
     private readonly adaptee: Repository<ImageEntity>,
   ) {}
   async save({ userId, buffer, mimetype }: SaveImageDto): Promise<ImageModel> {
-    const id = randomUUID();
+    const id = v4();
 
     const newone = this.adaptee.create({ id, userId });
 

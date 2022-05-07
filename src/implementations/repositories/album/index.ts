@@ -1,6 +1,5 @@
 import { Injectable } from "@nestjs/common";
 import { InjectRepository } from "@nestjs/typeorm";
-import { randomUUID } from "crypto";
 import { None, Option, Some } from "src/core/enums/option";
 import { AlbumModel } from "src/declarations/models/album";
 import {
@@ -11,6 +10,7 @@ import {
 import { Repository } from "typeorm";
 import { AlbumEntity } from "./entity";
 import { AlbumMapper } from "./mapper";
+import { v4 } from "uuid";
 
 @Injectable()
 export class AlbumRepositoryImpl implements AlbumRepository {
@@ -31,7 +31,7 @@ export class AlbumRepositoryImpl implements AlbumRepository {
 
   async save({ title }: SaveAlbumDto): Promise<AlbumModel> {
     const newone = this.adaptee.create({
-      id: randomUUID(),
+      id: v4(),
       title,
     });
 

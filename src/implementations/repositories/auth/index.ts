@@ -1,6 +1,5 @@
 import { Injectable } from "@nestjs/common";
 import { InjectRepository } from "@nestjs/typeorm";
-import { randomUUID } from "crypto";
 import { None, Option, Some } from "src/core/enums/option";
 import { AuthModel } from "src/declarations/models/auth";
 import {
@@ -9,6 +8,7 @@ import {
   UpdateAuthDto,
 } from "src/declarations/repositories/auth";
 import { Repository } from "typeorm";
+import { v4 } from "uuid";
 import { AuthEntity } from "./entity";
 import { AuthMapper } from "./mapper";
 
@@ -45,7 +45,7 @@ export class AuthRepositoryImpl implements AuthRepository {
 
   async save(dto: SaveAuthDto): Promise<AuthModel> {
     const newone = this.adaptee.create({
-      id: randomUUID(),
+      id: v4(),
       ...dto,
     });
 

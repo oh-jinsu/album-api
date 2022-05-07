@@ -1,6 +1,5 @@
 import { Injectable } from "@nestjs/common";
 import { InjectRepository } from "@nestjs/typeorm";
-import { randomUUID } from "crypto";
 import { None, Option, Some } from "src/core/enums/option";
 import { FriendModel } from "src/declarations/models/friend";
 import {
@@ -8,6 +7,7 @@ import {
   SaveFriendDto,
 } from "src/declarations/repositories/friend";
 import { LessThan, Repository } from "typeorm";
+import { v4 } from "uuid";
 import { FriendEntity } from "./entity";
 import { FriendMapper } from "./mapper";
 
@@ -71,7 +71,7 @@ export class FriendRepositoryImpl implements FriendRepository {
   }
 
   async save({ userId, albumId }: SaveFriendDto): Promise<FriendModel> {
-    const newone = this.adaptee.create({ id: randomUUID(), userId, albumId });
+    const newone = this.adaptee.create({ id: v4(), userId, albumId });
 
     const entity = await this.adaptee.save(newone);
 

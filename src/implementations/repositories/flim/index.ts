@@ -1,9 +1,9 @@
 import { Injectable } from "@nestjs/common";
 import { InjectRepository } from "@nestjs/typeorm";
-import { randomUUID } from "crypto";
 import { FilmModel } from "src/declarations/models/film";
 import { FilmRepository } from "src/declarations/repositories/film";
 import { Repository } from "typeorm";
+import { v4 } from "uuid";
 import { FilmEntity } from "./entity";
 import { FilmMapper } from "./mapper";
 
@@ -36,7 +36,7 @@ export class FilmRepositoryImpl implements FilmRepository {
 
   async save(userId: string): Promise<FilmModel> {
     const newone = this.adaptee.create({
-      id: randomUUID(),
+      id: v4(),
       userId,
     });
 

@@ -1,6 +1,5 @@
 import { Injectable } from "@nestjs/common";
 import { InjectRepository } from "@nestjs/typeorm";
-import { randomUUID } from "crypto";
 import { None, Option, Some } from "src/core/enums/option";
 import { PhotoModel } from "src/declarations/models/photo";
 import {
@@ -9,6 +8,7 @@ import {
   UpdatePhotoDto,
 } from "src/declarations/repositories/photo";
 import { LessThan, Repository } from "typeorm";
+import { v4 } from "uuid";
 import { PhotoEntity } from "./entity";
 import { PhotoMapper } from "./mapper";
 
@@ -89,7 +89,7 @@ export class PhotoRepositoryImpl implements PhotoRepository {
     description,
   }: SavePhotoDto): Promise<PhotoModel> {
     const newone = this.adaptee.create({
-      id: randomUUID(),
+      id: v4(),
       userId,
       albumId,
       image,
