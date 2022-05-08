@@ -7,7 +7,7 @@ import { CreatePhotoUseCase } from "./usecase";
 
 export class RequestBody {
   @IsString()
-  albumId: string;
+  album_id: string;
 
   @IsString()
   image: string;
@@ -30,7 +30,7 @@ export class CreatePhotoAdapter extends Adapter {
   @Post()
   async receive(
     @AccessToken() accessToken: string,
-    @Body() { albumId, image, date, description }: RequestBody,
+    @Body() { album_id: albumId, image, date, description }: RequestBody,
   ) {
     const result = await this.usecase.execute({
       accessToken,
