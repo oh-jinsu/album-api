@@ -1,6 +1,6 @@
 import { Body, Controller, Post } from "@nestjs/common";
 import { Throttle } from "@nestjs/throttler";
-import { IsDate, IsOptional, IsString } from "class-validator";
+import { IsDateString, IsOptional, IsString } from "class-validator";
 import { Adapter } from "src/core/adapter";
 import { AccessToken } from "src/core/decorators/access_token";
 import { CreatePhotoUseCase } from "./usecase";
@@ -12,8 +12,8 @@ export class RequestBody {
   @IsString()
   image: string;
 
-  @IsDate()
-  date: Date;
+  @IsDateString()
+  date: string;
 
   @IsString()
   @IsOptional()
@@ -35,7 +35,7 @@ export class CreatePhotoAdapter extends Adapter {
     const result = await this.usecase.execute({
       accessToken,
       albumId,
-      date,
+      date: new Date(date),
       image,
       description,
     });
