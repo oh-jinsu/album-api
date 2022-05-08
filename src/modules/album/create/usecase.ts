@@ -70,11 +70,11 @@ export class CreateAlbumUseCase extends AuthorizedUseCase<Params, Result> {
 
     const user = userOption.value;
 
-    const avatarImageUriOption = await this.imageRepository.getPublicImageUri(
-      user.avatar,
-    );
+    const avatarImageUriOption = user.avatar
+      ? await this.imageRepository.getPublicImageUri(user.avatar)
+      : null;
 
-    const avatarImageUri = avatarImageUriOption.isSome()
+    const avatarImageUri = avatarImageUriOption?.isSome()
       ? avatarImageUriOption.value
       : null;
 

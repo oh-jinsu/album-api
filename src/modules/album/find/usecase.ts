@@ -124,11 +124,11 @@ export class FindAlbumsUseCase extends AuthorizedUseCase<Params, Result> {
 
     const { id, name, email, avatar } = userOption.value;
 
-    const avatarImageUriOption = await this.imageRepository.getPublicImageUri(
-      avatar,
-    );
+    const avatarImageUriOption = avatar
+      ? await this.imageRepository.getPublicImageUri(avatar)
+      : null;
 
-    const avatarImageUri = avatarImageUriOption.isSome()
+    const avatarImageUri = avatarImageUriOption?.isSome()
       ? avatarImageUriOption.value
       : null;
 
