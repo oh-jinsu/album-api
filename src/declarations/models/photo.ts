@@ -3,6 +3,7 @@ export class PhotoModel {
   public readonly userId: string;
   public readonly albumId: string;
   public readonly image: string;
+  public readonly date: Date;
   public readonly description: string;
   public readonly updatedAt: Date;
   public readonly createdAt: Date;
@@ -12,6 +13,7 @@ export class PhotoModel {
     userId,
     albumId,
     image,
+    date,
     description,
     updatedAt,
     createdAt,
@@ -20,6 +22,7 @@ export class PhotoModel {
     userId: string;
     albumId: string;
     image: string;
+    date: Date;
     description: string;
     updatedAt: Date;
     createdAt: Date;
@@ -29,6 +32,7 @@ export class PhotoModel {
     this.albumId = albumId;
     this.image = image;
     this.description = description;
+    this.date = date;
     this.updatedAt = updatedAt;
     this.createdAt = createdAt;
   }

@@ -6,6 +6,7 @@ import {
 } from "src/core/enums/results/usecase";
 import { AuthorizedUseCase } from "src/core/usecase/authorized";
 import { ClaimModel } from "src/declarations/models/claim";
+import { PhotoModel } from "src/declarations/models/photo";
 import { AuthProvider } from "src/declarations/providers/auth";
 import { AlbumRepository } from "src/declarations/repositories/album";
 import { FriendRepository } from "src/declarations/repositories/friend";
@@ -23,6 +24,7 @@ export interface ResultItem {
   id: string;
   publicImageUri: string;
   description: string;
+  date: Date;
   updatedAt: Date;
   createdAt: Date;
 }
@@ -76,7 +78,14 @@ export class FindPhotosUseCase extends AuthorizedUseCase<Params, Result> {
     });
   }
 
-  private async mapPhoto({ id, image, description, updatedAt, createdAt }) {
+  private async mapPhoto({
+    id,
+    image,
+    description,
+    date,
+    updatedAt,
+    createdAt,
+  }: PhotoModel) {
     const option = await this.imageRepository.getPublicImageUri(image);
 
     if (!option.isSome()) {
@@ -89,6 +98,7 @@ export class FindPhotosUseCase extends AuthorizedUseCase<Params, Result> {
       id,
       publicImageUri,
       description,
+      date,
       updatedAt,
       createdAt,
     };

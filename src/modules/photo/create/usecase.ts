@@ -16,6 +16,7 @@ export interface Params {
   accessToken: string;
   albumId: string;
   image: string;
+  date: Date;
   description?: string;
 }
 
@@ -41,7 +42,7 @@ export class CreatePhotoUseCase extends AuthorizedUseCase<Params, Result> {
 
   protected async executeWithAuth(
     { id: userId }: ClaimModel,
-    { albumId, image, description }: Params,
+    { albumId, image, date, description }: Params,
   ): Promise<UseCaseResult<Result>> {
     const albumOption = await this.albumRepository.findOne(albumId);
 
@@ -68,6 +69,7 @@ export class CreatePhotoUseCase extends AuthorizedUseCase<Params, Result> {
     const photo = await this.photoRepository.save({
       userId,
       albumId,
+      date,
       image,
       description,
     });

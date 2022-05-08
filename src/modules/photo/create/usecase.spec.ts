@@ -28,6 +28,7 @@ describe("test the create photo usecase", () => {
         userId,
         albumId,
         image,
+        date: new Date(),
         description,
         updatedAt: new Date(),
         createdAt: new Date(),
@@ -90,6 +91,7 @@ describe("test the create photo usecase", () => {
       albumId: "an album id",
       image: "an image",
       description: "a description",
+      date: new Date(),
     };
 
     const result = await usecase.execute(params);
@@ -112,6 +114,7 @@ describe("test the create photo usecase", () => {
       albumId: "an album id",
       image: "an image",
       description: "a description",
+      date: new Date(),
     };
 
     const result = await usecase.execute(params);
@@ -134,6 +137,7 @@ describe("test the create photo usecase", () => {
       albumId: "an album id",
       image: "an image",
       description: "a description",
+      date: new Date(),
     };
 
     const result = await usecase.execute(params);
@@ -156,6 +160,7 @@ describe("test the create photo usecase", () => {
       albumId: "an album id",
       image: "an image",
       description: "a description",
+      date: new Date(),
     };
 
     const result = await usecase.execute(params);
@@ -176,6 +181,7 @@ describe("test the create photo usecase", () => {
       albumId: "an album id",
       image: "an image",
       description: "a description",
+      date: new Date(),
     };
 
     const result = await usecase.execute(params);

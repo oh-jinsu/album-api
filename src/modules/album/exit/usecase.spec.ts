@@ -70,6 +70,7 @@ describe("try to exit an album", () => {
           id: `an id ${i}`,
           userId: "an user id",
           albumId,
+          date: new Date(),
           image: "an image",
           description: "a description",
           updatedAt: new Date(),

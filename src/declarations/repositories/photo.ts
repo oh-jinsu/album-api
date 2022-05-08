@@ -5,11 +5,13 @@ export type SavePhotoDto = {
   userId: string;
   albumId: string;
   image: string;
+  date: Date;
   description: string;
 };
 
 export type UpdatePhotoDto = {
-  description: string;
+  date?: Date;
+  description?: string;
 };
 
 export abstract class PhotoRepository {

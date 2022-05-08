@@ -47,6 +47,7 @@ describe("Try to find photos", () => {
           userId: "an user id",
           albumId,
           image: "an image",
+          date: new Date(),
           description: "a description",
           updatedAt: new Date(),
           createdAt: new Date(),
@@ -169,12 +170,14 @@ describe("Try to find photos", () => {
       id,
       publicImageUri,
       description,
+      date,
       updatedAt,
       createdAt,
     } of result.value.items) {
       expect(id).toBeDefined();
       expect(publicImageUri).toBeDefined();
       expect(description).toBeDefined();
+      expect(date).toBeDefined();
       expect(updatedAt).toBeDefined();
       expect(createdAt).toBeDefined();
     }

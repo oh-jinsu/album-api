@@ -23,6 +23,9 @@ export class PhotoEntity {
   @Column()
   description: string;
 
+  @Column()
+  date: Date;
+
   @UpdateDateColumn()
   updatedAt: Date;
 

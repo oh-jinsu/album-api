@@ -26,6 +26,7 @@ describe("Try to test delete a photo", () => {
           albumId: "an album id",
           image: "an image",
           description: "a description",
+          date: new Date(),
           updatedAt: new Date(),
           createdAt: new Date(),
         }),
