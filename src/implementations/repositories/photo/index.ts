@@ -40,7 +40,7 @@ export class PhotoRepositoryImpl implements PhotoRepository {
         createdAt: LessThan(cursored?.createdAt || new Date()),
       },
       order: {
-        createdAt: "DESC",
+        date: "DESC",
       },
       take,
     });
@@ -86,6 +86,7 @@ export class PhotoRepositoryImpl implements PhotoRepository {
     userId,
     albumId,
     image,
+    date,
     description,
   }: SavePhotoDto): Promise<PhotoModel> {
     const newone = this.adaptee.create({
@@ -93,6 +94,7 @@ export class PhotoRepositoryImpl implements PhotoRepository {
       userId,
       albumId,
       image,
+      date,
       description,
     });
 

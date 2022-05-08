@@ -4,7 +4,7 @@ export class PhotoModel {
   public readonly albumId: string;
   public readonly image: string;
   public readonly date: Date;
-  public readonly description: string;
+  public readonly description?: string;
   public readonly updatedAt: Date;
   public readonly createdAt: Date;
 
@@ -23,7 +23,7 @@ export class PhotoModel {
     albumId: string;
     image: string;
     date: Date;
-    description: string;
+    description?: string;
     updatedAt: Date;
     createdAt: Date;
   }) {
