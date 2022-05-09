@@ -12,6 +12,7 @@ import s3 from "../../storage/s3";
 import { ImageEntity } from "./entity";
 import { ImageMapper } from "./mapper";
 import * as sharp from "sharp";
+import { isProduction } from "src/core/environment";
 
 @Injectable()
 export class ImageRepositoryImpl implements ImageRepository {
@@ -53,8 +54,10 @@ export class ImageRepositoryImpl implements ImageRepository {
       return new None();
     }
 
-    const result = await s3.getPublicUrl(`${id}/xxhdpi`);
+    const host = isProduction
+      ? process.env.AWS_CLOUDFRONT_HOST
+      : process.env.AWS_CLOUDFRONT_HOST_FOR_DEV;
 
-    return new Some(result);
+    return new Some(`${host}/${id}/xxhdpi`);
   }
 }
