@@ -25,9 +25,9 @@ export class ImageRepositoryImpl implements ImageRepository {
     const newone = this.adaptee.create({ id, userId });
 
     const [mdpi, xhdpi, xxhdpi] = await Promise.all([
-      sharp(buffer).resize(375).toBuffer(),
-      sharp(buffer).resize(768).toBuffer(),
-      sharp(buffer).resize(1024).toBuffer(),
+      sharp(buffer).resize(375).withMetadata().toBuffer(),
+      sharp(buffer).resize(768).withMetadata().toBuffer(),
+      sharp(buffer).resize(1024).withMetadata().toBuffer(),
     ]);
 
     const [entity] = await Promise.all([
