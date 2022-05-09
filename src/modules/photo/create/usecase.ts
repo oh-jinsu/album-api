@@ -24,6 +24,7 @@ export interface Result {
   id: string;
   publicImageUri: string;
   description: string;
+  date: Date;
   updatedAt: Date;
   createdAt: Date;
 }
@@ -78,6 +79,7 @@ export class CreatePhotoUseCase extends AuthorizedUseCase<Params, Result> {
       id: photo.id,
       publicImageUri: imageUriOption.value,
       description: photo.description,
+      date: photo.date,
       updatedAt: photo.updatedAt,
       createdAt: photo.createdAt,
     });
