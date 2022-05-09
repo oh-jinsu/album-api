@@ -20,7 +20,7 @@ const getPublicUrl = (
       ? process.env.AWS_S3_BUCKET_NAME
       : process.env.AWS_S3_BUCKET_NAME_FOR_DEV,
     Key: key,
-    Expires: option?.expiration || 60,
+    Expires: option?.expiration || Number(process.env.AWS_S3_OBJECT_EXPIRATION),
   });
 
 const upload = (key: string, buffer: Buffer, mimetype: string): Promise<void> =>
