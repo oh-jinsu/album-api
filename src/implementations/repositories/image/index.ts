@@ -11,6 +11,7 @@ import { v4 } from "uuid";
 import s3 from "../../storage/s3";
 import { ImageEntity } from "./entity";
 import { ImageMapper } from "./mapper";
+import * as sharp from "sharp";
 
 @Injectable()
 export class ImageRepositoryImpl implements ImageRepository {
@@ -23,10 +24,20 @@ export class ImageRepositoryImpl implements ImageRepository {
 
     const newone = this.adaptee.create({ id, userId });
 
+    const [mdpi, xhdpi, xxhdpi] = await Promise.all([
+      sharp(buffer).resize(375).toBuffer(),
+      sharp(buffer).resize(768).toBuffer(),
+      sharp(buffer).resize(1024).toBuffer(),
+    ]);
+
     const [entity] = await Promise.all([
       this.adaptee.save(newone),
-      s3.upload(id, buffer, mimetype),
+      s3.upload(`${id}/mdpi`, mdpi, mimetype),
+      s3.upload(`${id}/xhdpi`, xhdpi, mimetype),
+      s3.upload(`${id}/xxhdpi`, xxhdpi, mimetype),
     ]);
+
+    s3.upload(`${id}/origin`, buffer, mimetype);
 
     return ImageMapper.toModel(entity);
   }
@@ -42,7 +53,7 @@ export class ImageRepositoryImpl implements ImageRepository {
       return new None();
     }
 
-    const result = await s3.getPublicUrl(id);
+    const result = await s3.getPublicUrl(`${id}/xxhdpi`);
 
     return new Some(result);
   }
