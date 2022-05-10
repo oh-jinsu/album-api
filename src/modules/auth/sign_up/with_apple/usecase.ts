@@ -25,7 +25,7 @@ export interface Result {
 @Injectable()
 export class SignUpWithAppleUseCase extends AuthorizedUseCase<Params, Result> {
   constructor(
-    private readonly authProvider: AuthProvider,
+    authProvider: AuthProvider,
     private readonly appleAuthProvider: AppleAuthProvider,
     private readonly hashProvider: HashProvider,
     private readonly authRepository: AuthRepository,

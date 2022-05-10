@@ -25,7 +25,7 @@ export interface Result {
 @Injectable()
 export class SignUpWithGoogleUseCase extends AuthorizedUseCase<Params, Result> {
   constructor(
-    private readonly authProvider: AuthProvider,
+    authProvider: AuthProvider,
     private readonly googleAuthProvider: GoogleAuthProvider,
     private readonly hashProvider: HashProvider,
     private readonly authRepository: AuthRepository,

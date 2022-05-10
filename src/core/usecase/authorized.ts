@@ -10,18 +10,16 @@ export interface AuthorizedUseCaseParams {
 export abstract class AuthorizedUseCase<T extends AuthorizedUseCaseParams, K>
   implements UseCase<T, K>
 {
-  constructor(private readonly superAuthProvider: AuthProvider) {}
+  constructor(protected readonly authProvider: AuthProvider) {}
 
   async execute({ accessToken, ...params }: T): Promise<UseCaseResult<K>> {
-    const isVerified = await this.superAuthProvider.verifyAccessToken(
-      accessToken,
-    );
+    const isVerified = await this.authProvider.verifyAccessToken(accessToken);
 
     if (!isVerified) {
       return new UseCaseException(102, "유효하지 않은 인증정보입니다.");
     }
 
-    const claim = await this.superAuthProvider.extractClaim(accessToken);
+    const claim = await this.authProvider.extractClaim(accessToken);
 
     if (!this.isOpenFor(claim.grade)) {
       return new UseCaseException(104, "권한이 없습니다.");
