@@ -5,19 +5,21 @@ import { GoogleAuthProvider } from "src/declarations/providers/google_auth";
 
 @Injectable()
 export class GoogleAuthProviderImpl implements GoogleAuthProvider {
-  private clientId = process.env.GOOGLE_OAUTH_CLIENT_ID;
-
-  private client = new OAuth2Client(this.clientId);
+  private client = new OAuth2Client();
 
   async verify(idToken: string): Promise<boolean> {
     try {
       await this.client.verifyIdToken({
         idToken,
-        audience: this.clientId,
+        audience: [
+          process.env.GOOGLE_OAUTH_CLIENT_ID_FOR_ANDROID,
+          process.env.GOOGLE_OAUTH_CLIENT_ID_FOR_IOS,
+        ],
       });
 
       return true;
     } catch (e) {
+      console.log(e);
       return false;
     }
   }
@@ -25,7 +27,10 @@ export class GoogleAuthProviderImpl implements GoogleAuthProvider {
   async extractClaim(idToken: string): Promise<GoogleClaimModel> {
     const ticket = await this.client.verifyIdToken({
       idToken,
-      audience: this.clientId,
+      audience: [
+        process.env.GOOGLE_OAUTH_CLIENT_ID_FOR_ANDROID,
+        process.env.GOOGLE_OAUTH_CLIENT_ID_FOR_IOS,
+      ],
     });
 
     const { sub: id, email } = ticket.getPayload();
