@@ -14,6 +14,7 @@ import { ThrottlerGuard, ThrottlerModule } from "@nestjs/throttler";
 import { FilmModule } from "./modules/film";
 import { ScheduleModule } from "@nestjs/schedule";
 import { ThrottlerExceptionFilter } from "./core/filters/throttler";
+import { InvitationModule } from "./modules/invitation";
 
 @Module({
   imports: [
@@ -27,6 +28,7 @@ import { ThrottlerExceptionFilter } from "./core/filters/throttler";
     AlbumModule,
     PhotoModule,
     FilmModule,
+    InvitationModule,
     UtilModule,
   ],
   providers: [

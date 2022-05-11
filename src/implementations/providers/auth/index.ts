@@ -4,6 +4,7 @@ import { isProduction } from "src/core/environment";
 import { ClaimModel } from "src/declarations/models/claim";
 import {
   AuthProvider,
+  IssueInvitationTokenOptions,
   IssueTokenOptions,
 } from "src/declarations/providers/auth";
 
@@ -71,6 +72,22 @@ export class AuthProviderImpl implements AuthProvider {
     } catch {
       return false;
     }
+  }
+
+  async issueInvitationToken({
+    sub,
+  }: IssueInvitationTokenOptions): Promise<string> {
+    console.log(process.env.JWT_SECRET_INVITATION_TOKEN);
+    return this.jwtService.sign(
+      {},
+      {
+        subject: sub,
+        issuer: process.env.JWT_ISSUER,
+        audience: process.env.JWT_AUDIENCE,
+        secret: process.env.JWT_SECRET_INVITATION_TOKEN,
+        expiresIn: process.env.JWT_EXPIRES_IN_INVITATION_TOKEN,
+      },
+    );
   }
 
   async extractClaim(token: string): Promise<ClaimModel> {

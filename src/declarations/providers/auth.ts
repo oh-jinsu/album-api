@@ -5,6 +5,10 @@ export type IssueTokenOptions = {
   grade: ClaimGrade;
 };
 
+export type IssueInvitationTokenOptions = {
+  sub: string;
+};
+
 export abstract class AuthProvider {
   abstract issueAccessToken(option: IssueTokenOptions): Promise<string>;
 
@@ -15,4 +19,8 @@ export abstract class AuthProvider {
   abstract verifyRefreshToken(token: string): Promise<boolean>;
 
   abstract extractClaim(token: string): Promise<ClaimModel>;
+
+  abstract issueInvitationToken(
+    option: IssueInvitationTokenOptions,
+  ): Promise<string>;
 }
