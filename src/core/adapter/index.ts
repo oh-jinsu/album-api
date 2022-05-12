@@ -52,6 +52,8 @@ export abstract class Adapter {
     switch (code) {
       case 102:
         return 401;
+      case 104:
+        return 403;
       default:
         return this.getExceptionStatus(code);
     }
