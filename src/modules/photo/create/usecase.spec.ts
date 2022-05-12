@@ -2,8 +2,10 @@ import { None, Some } from "src/core/enums/option";
 import { AlbumModel } from "src/declarations/models/album";
 import { ClaimModel } from "src/declarations/models/claim";
 import { FilmModel } from "src/declarations/models/film";
+import { ImageModel } from "src/declarations/models/image";
 import { PhotoModel } from "src/declarations/models/photo";
 import { MockAuthProvider } from "src/implementations/providers/auth/mock";
+import { MockImageProvider } from "src/implementations/providers/image/mock";
 import { MockAlbumRepository } from "src/implementations/repositories/album/mock";
 import { MockFilmRepository } from "src/implementations/repositories/flim/mock";
 import { MockImageRepository } from "src/implementations/repositories/image/mock";
@@ -18,6 +20,10 @@ describe("test the create photo usecase", () => {
   authProvider.extractClaim.mockResolvedValue(
     new ClaimModel({ id: "an id", grade: "member" }),
   );
+
+  const imageProvider = new MockImageProvider();
+
+  imageProvider.getPublicImageUri.mockResolvedValue("a public image");
 
   const photoRepository = new MockPhotoRepository();
 
@@ -66,12 +72,20 @@ describe("test the create photo usecase", () => {
 
   const imageRepository = new MockImageRepository();
 
-  imageRepository.getPublicImageUri.mockResolvedValue(
-    new Some("a public image uri"),
+  imageRepository.findOne.mockImplementation(
+    async (id) =>
+      new Some(
+        new ImageModel({
+          id,
+          userId: "an user id",
+          createdAt: new Date(),
+        }),
+      ),
   );
 
   const usecase = new CreatePhotoUseCase(
     authProvider,
+    imageProvider,
     photoRepository,
     albumRepository,
     filmRepository,
@@ -129,7 +143,7 @@ describe("test the create photo usecase", () => {
   });
 
   it("should fail for an unsaved image", async () => {
-    imageRepository.getPublicImageUri.mockResolvedValueOnce(new None());
+    imageRepository.findOne.mockResolvedValueOnce(new None());
 
     const params = {
       accessToken: "an access token",

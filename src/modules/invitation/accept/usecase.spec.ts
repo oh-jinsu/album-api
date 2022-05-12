@@ -6,9 +6,9 @@ import { InvitationClaimModel } from "src/declarations/models/invitation_claim";
 import { PhotoModel } from "src/declarations/models/photo";
 import { UserModel } from "src/declarations/models/user";
 import { MockAuthProvider } from "src/implementations/providers/auth/mock";
+import { MockImageProvider } from "src/implementations/providers/image/mock";
 import { MockAlbumRepository } from "src/implementations/repositories/album/mock";
 import { MockFriendRepository } from "src/implementations/repositories/friend/mock";
-import { MockImageRepository } from "src/implementations/repositories/image/mock";
 import { MockPhotoRepository } from "src/implementations/repositories/photo/mock";
 import { MockUserRepository } from "src/implementations/repositories/user/mock";
 import { AcceptInvitationUseCase } from "./usecase";
@@ -104,11 +104,9 @@ describe("Try to accept an invitation", () => {
       ),
   );
 
-  const imageRepository = new MockImageRepository();
+  const imageProvider = new MockImageProvider();
 
-  imageRepository.getPublicImageUri.mockResolvedValue(
-    new Some("a public image"),
-  );
+  imageProvider.getPublicImageUri.mockResolvedValue("a public image");
 
   const usecase = new AcceptInvitationUseCase(
     authProvider,
@@ -116,7 +114,7 @@ describe("Try to accept an invitation", () => {
     friendRepository,
     photoRepository,
     userRepository,
-    imageRepository,
+    imageProvider,
   );
 
   it("should be defined", () => {

@@ -6,9 +6,9 @@ import {
 } from "src/declarations/repositories/image";
 
 export class MockImageRepository implements ImageRepository {
+  findOne = jest.fn<Promise<Option<ImageModel>>, [string]>();
+
   save = jest.fn<Promise<ImageModel>, [SaveImageDto]>();
 
   delete = jest.fn<Promise<void>, [string]>();
-
-  getPublicImageUri = jest.fn<Promise<Option<string>>, [string]>();
 }

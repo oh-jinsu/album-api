@@ -7,6 +7,7 @@ import {
 import { AuthorizedUseCase } from "src/core/usecase/authorized";
 import { ClaimGrade, ClaimModel } from "src/declarations/models/claim";
 import { AuthProvider } from "src/declarations/providers/auth";
+import { ImageProvider } from "src/declarations/providers/image";
 import { ImageRepository } from "src/declarations/repositories/image";
 import { UserRepository } from "src/declarations/repositories/user";
 
@@ -30,6 +31,7 @@ export interface Result {
 export class CreateMeUseCase extends AuthorizedUseCase<Params, Result> {
   constructor(
     authProvider: AuthProvider,
+    private readonly imageProvider: ImageProvider,
     private readonly userRepository: UserRepository,
     private readonly imageRepository: ImageRepository,
   ) {
@@ -63,15 +65,13 @@ export class CreateMeUseCase extends AuthorizedUseCase<Params, Result> {
     let avatarImageUri = null;
 
     if (avatar) {
-      const imageUriOption = await this.imageRepository.getPublicImageUri(
-        avatar,
-      );
+      const imageOption = await this.imageRepository.findOne(avatar);
 
-      if (!imageUriOption.isSome()) {
+      if (!imageOption.isSome()) {
         return new UseCaseException(4, "저장된 이미지를 찾지 못했습니다.");
       }
 
-      avatarImageUri = imageUriOption.value;
+      avatarImageUri = await this.imageProvider.getPublicImageUri(avatar);
     }
 
     const { updatedAt, createdAt } = await this.userRepository.save({

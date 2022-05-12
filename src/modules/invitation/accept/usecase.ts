@@ -7,9 +7,9 @@ import {
 import { AuthorizedUseCase } from "src/core/usecase/authorized";
 import { ClaimGrade, ClaimModel } from "src/declarations/models/claim";
 import { AuthProvider } from "src/declarations/providers/auth";
+import { ImageProvider } from "src/declarations/providers/image";
 import { AlbumRepository } from "src/declarations/repositories/album";
 import { FriendRepository } from "src/declarations/repositories/friend";
-import { ImageRepository } from "src/declarations/repositories/image";
 import { PhotoRepository } from "src/declarations/repositories/photo";
 import { UserRepository } from "src/declarations/repositories/user";
 
@@ -44,7 +44,7 @@ export class AcceptInvitationUseCase extends AuthorizedUseCase<Params, Result> {
     private readonly friendRepository: FriendRepository,
     private readonly photoRepository: PhotoRepository,
     private readonly userRepository: UserRepository,
-    private readonly imageRepository: ImageRepository,
+    private readonly imageProvider: ImageProvider,
   ) {
     super(authProvider);
   }
@@ -100,14 +100,10 @@ export class AcceptInvitationUseCase extends AuthorizedUseCase<Params, Result> {
       albumId,
     );
 
-    const coverImageUriOption = latestPhotoOption.isSome()
-      ? await this.imageRepository.getPublicImageUri(
+    const coverImageUri = latestPhotoOption.isSome()
+      ? await this.imageProvider.getPublicImageUri(
           latestPhotoOption.value.image,
         )
-      : null;
-
-    const coverImageUri = coverImageUriOption?.isSome()
-      ? coverImageUriOption.value
       : null;
 
     const friends = await this.friendRepository.findByAlbumId(albumId);
@@ -122,12 +118,8 @@ export class AcceptInvitationUseCase extends AuthorizedUseCase<Params, Result> {
 
         const { id, email, name, avatar } = userOption.value;
 
-        const avatarImageUriOption = avatar
-          ? await this.imageRepository.getPublicImageUri(avatar)
-          : null;
-
-        const avatarImageUri = avatarImageUriOption?.isSome()
-          ? avatarImageUriOption.value
+        const avatarImageUri = avatar
+          ? await this.imageProvider.getPublicImageUri(avatar)
           : null;
 
         return {

@@ -2,7 +2,7 @@ import { None, Some } from "src/core/enums/option";
 import { ClaimModel } from "src/declarations/models/claim";
 import { UserModel } from "src/declarations/models/user";
 import { MockAuthProvider } from "src/implementations/providers/auth/mock";
-import { MockImageRepository } from "src/implementations/repositories/image/mock";
+import { MockImageProvider } from "src/implementations/providers/image/mock";
 import { MockUserRepository } from "src/implementations/repositories/user/mock";
 import { FindMeUseCase } from "./usecase";
 
@@ -31,14 +31,14 @@ describe("Try to find me", () => {
       ),
   );
 
-  const imageRepository = new MockImageRepository();
+  const imageProvider = new MockImageProvider();
 
-  imageRepository.getPublicImageUri.mockResolvedValue(new Some("an image uri"));
+  imageProvider.getPublicImageUri.mockResolvedValue("an image uri");
 
   const usecase = new FindMeUseCase(
     authProvider,
     userRepository,
-    imageRepository,
+    imageProvider,
   );
 
   it("should be defined", () => {

@@ -8,7 +8,7 @@ export type SaveImageDto = {
 };
 
 export abstract class ImageRepository {
-  abstract getPublicImageUri(id: string): Promise<Option<string>>;
+  abstract findOne(id: string): Promise<Option<ImageModel>>;
 
   abstract save(dto: SaveImageDto): Promise<ImageModel>;
 

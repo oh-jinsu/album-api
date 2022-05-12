@@ -1,7 +1,9 @@
 import { None, Some } from "src/core/enums/option";
 import { ClaimModel } from "src/declarations/models/claim";
+import { ImageModel } from "src/declarations/models/image";
 import { UserModel } from "src/declarations/models/user";
 import { MockAuthProvider } from "src/implementations/providers/auth/mock";
+import { MockImageProvider } from "src/implementations/providers/image/mock";
 import { MockImageRepository } from "src/implementations/repositories/image/mock";
 import { MockUserRepository } from "src/implementations/repositories/user/mock";
 import { CreateMeUseCase } from "./usecase";
@@ -14,6 +16,10 @@ describe("Try to create me", () => {
   authProvider.extractClaim.mockResolvedValue(
     new ClaimModel({ id: "an id", grade: "member" }),
   );
+
+  const imageProvider = new MockImageProvider();
+
+  imageProvider.getPublicImageUri.mockResolvedValue("a public image");
 
   const userRepository = new MockUserRepository();
 
@@ -33,10 +39,20 @@ describe("Try to create me", () => {
 
   const imageRepository = new MockImageRepository();
 
-  imageRepository.getPublicImageUri.mockResolvedValue(new Some("an image uri"));
+  imageRepository.findOne.mockImplementation(
+    async (id) =>
+      new Some(
+        new ImageModel({
+          id,
+          userId: "an user id",
+          createdAt: new Date(),
+        }),
+      ),
+  );
 
   const usecase = new CreateMeUseCase(
     authProvider,
+    imageProvider,
     userRepository,
     imageRepository,
   );
@@ -126,7 +142,7 @@ describe("Try to create me", () => {
   });
 
   it("should fail for an unsaved image", async () => {
-    imageRepository.getPublicImageUri.mockResolvedValueOnce(new None());
+    imageRepository.findOne.mockResolvedValueOnce(new None());
 
     const params = {
       accessToken: "an access token",

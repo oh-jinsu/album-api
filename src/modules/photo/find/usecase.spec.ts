@@ -4,9 +4,9 @@ import { ClaimModel } from "src/declarations/models/claim";
 import { FriendModel } from "src/declarations/models/friend";
 import { PhotoModel } from "src/declarations/models/photo";
 import { MockAuthProvider } from "src/implementations/providers/auth/mock";
+import { MockImageProvider } from "src/implementations/providers/image/mock";
 import { MockAlbumRepository } from "src/implementations/repositories/album/mock";
 import { MockFriendRepository } from "src/implementations/repositories/friend/mock";
-import { MockImageRepository } from "src/implementations/repositories/image/mock";
 import { MockPhotoRepository } from "src/implementations/repositories/photo/mock";
 import { FindPhotosUseCase } from "./usecase";
 
@@ -69,18 +69,16 @@ describe("Try to find photos", () => {
       ),
   );
 
-  const imageRepository = new MockImageRepository();
+  const imageProvider = new MockImageProvider();
 
-  imageRepository.getPublicImageUri.mockResolvedValue(
-    new Some("a public image uri"),
-  );
+  imageProvider.getPublicImageUri.mockResolvedValue("a public image uri");
 
   const usecase = new FindPhotosUseCase(
     authProvider,
     photoRepository,
     albumRepository,
     friendRepository,
-    imageRepository,
+    imageProvider,
   );
 
   it("should be defined", () => {

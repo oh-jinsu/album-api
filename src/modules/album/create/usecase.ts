@@ -7,9 +7,9 @@ import {
 import { AuthorizedUseCase } from "src/core/usecase/authorized";
 import { ClaimModel } from "src/declarations/models/claim";
 import { AuthProvider } from "src/declarations/providers/auth";
+import { ImageProvider } from "src/declarations/providers/image";
 import { AlbumRepository } from "src/declarations/repositories/album";
 import { FriendRepository } from "src/declarations/repositories/friend";
-import { ImageRepository } from "src/declarations/repositories/image";
 import { PhotoRepository } from "src/declarations/repositories/photo";
 import { UserRepository } from "src/declarations/repositories/user";
 
@@ -44,7 +44,7 @@ export class CreateAlbumUseCase extends AuthorizedUseCase<Params, Result> {
     private readonly friendRepository: FriendRepository,
     private readonly albumRepository: AlbumRepository,
     private readonly userRepository: UserRepository,
-    private readonly imageRepository: ImageRepository,
+    private readonly imageProvider: ImageProvider,
   ) {
     super(authProvider);
   }
@@ -70,12 +70,8 @@ export class CreateAlbumUseCase extends AuthorizedUseCase<Params, Result> {
 
     const user = userOption.value;
 
-    const avatarImageUriOption = user.avatar
-      ? await this.imageRepository.getPublicImageUri(user.avatar)
-      : null;
-
-    const avatarImageUri = avatarImageUriOption?.isSome()
-      ? avatarImageUriOption.value
+    const avatarImageUri = user.avatar
+      ? await this.imageProvider.getPublicImageUri(user.avatar)
       : null;
 
     const photoCount = await this.photoRepository.countByAlbumId(album.id);
@@ -84,14 +80,10 @@ export class CreateAlbumUseCase extends AuthorizedUseCase<Params, Result> {
       album.id,
     );
 
-    const coverImageUriOption = latestPhotoOption.isSome()
-      ? await this.imageRepository.getPublicImageUri(
+    const coverImageUri = latestPhotoOption.isSome()
+      ? await this.imageProvider.getPublicImageUri(
           latestPhotoOption.value.image,
         )
-      : null;
-
-    const coverImageUri = coverImageUriOption?.isSome()
-      ? coverImageUriOption.value
       : null;
 
     return new UseCaseOk({

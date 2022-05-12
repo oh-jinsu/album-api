@@ -7,6 +7,7 @@ import {
 import { AuthorizedUseCase } from "src/core/usecase/authorized";
 import { ClaimModel } from "src/declarations/models/claim";
 import { AuthProvider } from "src/declarations/providers/auth";
+import { ImageProvider } from "src/declarations/providers/image";
 import { AlbumRepository } from "src/declarations/repositories/album";
 import { FilmRepository } from "src/declarations/repositories/film";
 import { ImageRepository } from "src/declarations/repositories/image";
@@ -33,6 +34,7 @@ export interface Result {
 export class CreatePhotoUseCase extends AuthorizedUseCase<Params, Result> {
   constructor(
     authProvider: AuthProvider,
+    private readonly imageProvider: ImageProvider,
     private readonly photoRepository: PhotoRepository,
     private readonly albumRepository: AlbumRepository,
     private readonly filmRepository: FilmRepository,
@@ -51,11 +53,13 @@ export class CreatePhotoUseCase extends AuthorizedUseCase<Params, Result> {
       return new UseCaseException(1, "앨범을 찾지 못했습니다.");
     }
 
-    const imageUriOption = await this.imageRepository.getPublicImageUri(image);
+    const imageOption = await this.imageRepository.findOne(image);
 
-    if (!imageUriOption.isSome()) {
+    if (!imageOption.isSome()) {
       return new UseCaseException(2, "저장된 이미지를 찾지 못했습니다.");
     }
+
+    const publicImageUri = await this.imageProvider.getPublicImageUri(image);
 
     const films = await this.filmRepository.findEalistByUserId(userId, 1);
 
@@ -77,7 +81,7 @@ export class CreatePhotoUseCase extends AuthorizedUseCase<Params, Result> {
 
     return new UseCaseOk({
       id: photo.id,
-      publicImageUri: imageUriOption.value,
+      publicImageUri,
       description: photo.description,
       date: photo.date,
       updatedAt: photo.updatedAt,

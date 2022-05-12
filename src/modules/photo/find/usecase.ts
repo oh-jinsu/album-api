@@ -6,11 +6,10 @@ import {
 } from "src/core/enums/results/usecase";
 import { AuthorizedUseCase } from "src/core/usecase/authorized";
 import { ClaimModel } from "src/declarations/models/claim";
-import { PhotoModel } from "src/declarations/models/photo";
 import { AuthProvider } from "src/declarations/providers/auth";
+import { ImageProvider } from "src/declarations/providers/image";
 import { AlbumRepository } from "src/declarations/repositories/album";
 import { FriendRepository } from "src/declarations/repositories/friend";
-import { ImageRepository } from "src/declarations/repositories/image";
 import { PhotoRepository } from "src/declarations/repositories/photo";
 
 export interface Params {
@@ -41,11 +40,9 @@ export class FindPhotosUseCase extends AuthorizedUseCase<Params, Result> {
     private readonly photoRepository: PhotoRepository,
     private readonly albumRepository: AlbumRepository,
     private readonly friendRepository: FriendRepository,
-    private readonly imageRepository: ImageRepository,
+    private readonly imageProvider: ImageProvider,
   ) {
     super(authProvider);
-
-    this.mapPhoto = this.mapPhoto.bind(this);
   }
 
   protected async executeWithAuth(
@@ -70,37 +67,28 @@ export class FindPhotosUseCase extends AuthorizedUseCase<Params, Result> {
       cursor,
     );
 
-    const items = await Promise.all(photos.map(this.mapPhoto).filter((e) => e));
+    const items = await Promise.all(
+      photos
+        .map(async ({ id, image, description, date, updatedAt, createdAt }) => {
+          const publicImageUri = await this.imageProvider.getPublicImageUri(
+            image,
+          );
+
+          return {
+            id,
+            publicImageUri,
+            description,
+            date,
+            updatedAt,
+            createdAt,
+          };
+        })
+        .filter((e) => e),
+    );
 
     return new UseCaseOk({
       next,
       items,
     });
-  }
-
-  private async mapPhoto({
-    id,
-    image,
-    description,
-    date,
-    updatedAt,
-    createdAt,
-  }: PhotoModel) {
-    const option = await this.imageRepository.getPublicImageUri(image);
-
-    if (!option.isSome()) {
-      return null;
-    }
-
-    const publicImageUri = option.value;
-
-    return {
-      id,
-      publicImageUri,
-      description,
-      date,
-      updatedAt,
-      createdAt,
-    };
   }
 }
