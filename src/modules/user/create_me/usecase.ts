@@ -36,7 +36,7 @@ export class CreateMeUseCase extends AuthorizedUseCase<Params, Result> {
     super(authProvider);
   }
 
-  protected isOpenFor(grade: ClaimGrade): boolean {
+  protected assertGrade(grade: ClaimGrade): boolean {
     return grade === "member";
   }
 

@@ -21,7 +21,7 @@ export abstract class AuthorizedUseCase<T extends AuthorizedUseCaseParams, K>
 
     const claim = await this.authProvider.extractClaim(accessToken);
 
-    if (!this.isOpenFor(claim.grade)) {
+    if (!this.assertGrade(claim.grade)) {
       return new UseCaseException(104, "권한이 없습니다.");
     }
 
@@ -29,7 +29,7 @@ export abstract class AuthorizedUseCase<T extends AuthorizedUseCaseParams, K>
   }
 
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  protected isOpenFor(grade: ClaimGrade): boolean {
+  protected assertGrade(grade: ClaimGrade): boolean {
     return true;
   }
 

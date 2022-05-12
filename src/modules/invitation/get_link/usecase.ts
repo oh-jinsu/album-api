@@ -34,7 +34,7 @@ export class GetInvitationLinkUseCase extends AuthorizedUseCase<
     super(authProvider);
   }
 
-  protected isOpenFor(grade: ClaimGrade): boolean {
+  protected assertGrade(grade: ClaimGrade): boolean {
     return grade === "member";
   }
 
