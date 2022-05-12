@@ -23,6 +23,8 @@ export interface Params {
 
 export interface Result {
   id: string;
+  userId: string;
+  albumId: string;
   publicImageUri: string;
   description: string;
   date: Date;
@@ -81,6 +83,8 @@ export class CreatePhotoUseCase extends AuthorizedUseCase<Params, Result> {
 
     return new UseCaseOk({
       id: photo.id,
+      userId,
+      albumId,
       publicImageUri,
       description: photo.description,
       date: photo.date,

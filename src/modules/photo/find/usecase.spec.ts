@@ -166,6 +166,8 @@ describe("Try to find photos", () => {
 
     for (const {
       id,
+      userId,
+      albumId,
       publicImageUri,
       description,
       date,
@@ -173,6 +175,8 @@ describe("Try to find photos", () => {
       createdAt,
     } of result.value.items) {
       expect(id).toBeDefined();
+      expect(userId).toBeDefined();
+      expect(albumId).toBeDefined();
       expect(publicImageUri).toBeDefined();
       expect(description).toBeDefined();
       expect(date).toBeDefined();

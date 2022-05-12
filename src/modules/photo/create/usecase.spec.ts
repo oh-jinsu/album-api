@@ -204,10 +204,20 @@ describe("test the create photo usecase", () => {
       fail();
     }
 
-    const { id, publicImageUri, description, date, updatedAt, createdAt } =
-      result.value;
+    const {
+      id,
+      userId,
+      albumId,
+      publicImageUri,
+      description,
+      date,
+      updatedAt,
+      createdAt,
+    } = result.value;
 
     expect(id).toBeDefined();
+    expect(userId).toBeDefined();
+    expect(albumId).toBeDefined();
     expect(publicImageUri).toBeDefined();
     expect(date).toBeDefined();
     expect(description).toBeDefined();

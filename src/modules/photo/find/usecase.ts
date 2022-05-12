@@ -21,6 +21,8 @@ export interface Params {
 
 export interface ResultItem {
   id: string;
+  userId: string;
+  albumId: string;
   publicImageUri: string;
   description: string;
   date: Date;
@@ -69,20 +71,33 @@ export class FindPhotosUseCase extends AuthorizedUseCase<Params, Result> {
 
     const items = await Promise.all(
       photos
-        .map(async ({ id, image, description, date, updatedAt, createdAt }) => {
-          const publicImageUri = await this.imageProvider.getPublicImageUri(
-            image,
-          );
-
-          return {
+        .map(
+          async ({
             id,
-            publicImageUri,
+            userId,
+            albumId,
+            image,
             description,
             date,
             updatedAt,
             createdAt,
-          };
-        })
+          }) => {
+            const publicImageUri = await this.imageProvider.getPublicImageUri(
+              image,
+            );
+
+            return {
+              id,
+              userId,
+              albumId,
+              publicImageUri,
+              description,
+              date,
+              updatedAt,
+              createdAt,
+            };
+          },
+        )
         .filter((e) => e),
     );
 
