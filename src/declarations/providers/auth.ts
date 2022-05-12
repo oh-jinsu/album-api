@@ -1,4 +1,5 @@
 import { ClaimGrade, ClaimModel } from "../models/claim";
+import { InvitationClaimModel } from "../models/invitation_claim";
 
 export type IssueTokenOptions = {
   sub: string;
@@ -23,4 +24,8 @@ export abstract class AuthProvider {
   abstract issueInvitationToken(
     option: IssueInvitationTokenOptions,
   ): Promise<string>;
+
+  abstract verifyInvitationToken(token: string): Promise<boolean>;
+
+  abstract extractInvitationClaim(token: string): Promise<InvitationClaimModel>;
 }

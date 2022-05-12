@@ -1,4 +1,5 @@
 import { ClaimModel } from "src/declarations/models/claim";
+import { InvitationClaimModel } from "src/declarations/models/invitation_claim";
 import {
   AuthProvider,
   IssueInvitationTokenOptions,
@@ -19,5 +20,9 @@ export class MockAuthProvider implements AuthProvider {
     [IssueInvitationTokenOptions]
   >();
 
+  verifyInvitationToken = jest.fn<Promise<boolean>, [string]>();
+
   extractClaim = jest.fn<Promise<ClaimModel>, [string]>();
+
+  extractInvitationClaim = jest.fn<Promise<InvitationClaimModel>, [string]>();
 }

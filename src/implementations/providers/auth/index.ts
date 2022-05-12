@@ -2,6 +2,7 @@ import { Injectable } from "@nestjs/common";
 import { JwtService } from "@nestjs/jwt";
 import { isProduction } from "src/core/environment";
 import { ClaimModel } from "src/declarations/models/claim";
+import { InvitationClaimModel } from "src/declarations/models/invitation_claim";
 import {
   AuthProvider,
   IssueInvitationTokenOptions,
@@ -77,7 +78,6 @@ export class AuthProviderImpl implements AuthProvider {
   async issueInvitationToken({
     sub,
   }: IssueInvitationTokenOptions): Promise<string> {
-    console.log(process.env.JWT_SECRET_INVITATION_TOKEN);
     return this.jwtService.sign(
       {},
       {
@@ -90,6 +90,21 @@ export class AuthProviderImpl implements AuthProvider {
     );
   }
 
+  async verifyInvitationToken(token: string): Promise<boolean> {
+    try {
+      this.jwtService.verify(token, {
+        issuer: process.env.JWT_ISSUER,
+        audience: process.env.JWT_AUDIENCE,
+        secret: process.env.JWT_SECRET_INVITATION_TOKEN,
+      });
+
+      return true;
+    } catch (e) {
+      console.log(e);
+      return false;
+    }
+  }
+
   async extractClaim(token: string): Promise<ClaimModel> {
     type JsonPayload = { [key: string]: any };
 
@@ -98,5 +113,15 @@ export class AuthProviderImpl implements AuthProvider {
     }) as JsonPayload;
 
     return new ClaimModel({ id: sub, grade: grd });
+  }
+
+  async extractInvitationClaim(token: string): Promise<InvitationClaimModel> {
+    type JsonPayload = { [key: string]: any };
+
+    const { sub } = this.jwtService.decode(token, {
+      json: true,
+    }) as JsonPayload;
+
+    return new InvitationClaimModel({ id: sub });
   }
 }
