@@ -18,9 +18,8 @@ export class AcceptInvitationAdapter extends Adapter {
   @Post()
   async receive(
     @AccessToken() accessToken: string,
-    @Body() { invitation_token: invitationToken, ...dto }: RequestBody,
+    @Body() { invitation_token: invitationToken }: RequestBody,
   ) {
-    console.log(invitationToken, dto);
     const result = await this.usecase.execute({ accessToken, invitationToken });
 
     return this.response(result);
@@ -33,6 +32,8 @@ export class AcceptInvitationAdapter extends Adapter {
       case 2:
         return 404;
       case 3:
+        return 404;
+      case 4:
         return 409;
       default:
         return 500;
