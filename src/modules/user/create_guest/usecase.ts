@@ -49,7 +49,7 @@ export class CreateGuestUseCase extends AuthorizedUseCase<Params, Result> {
       name: "게스트",
     });
 
-    for (let i = 0; i < 10; i++) {
+    for (let i = 0; i < 3; i++) {
       this.filmRepository.save(id);
     }
 
