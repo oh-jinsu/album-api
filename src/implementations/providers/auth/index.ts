@@ -77,9 +77,14 @@ export class AuthProviderImpl implements AuthProvider {
 
   async issueInvitationToken({
     sub,
+    title,
+    owner,
   }: IssueInvitationTokenOptions): Promise<string> {
     return this.jwtService.sign(
-      {},
+      {
+        title,
+        owner,
+      },
       {
         subject: sub,
         issuer: process.env.JWT_ISSUER,
@@ -100,7 +105,6 @@ export class AuthProviderImpl implements AuthProvider {
 
       return true;
     } catch (e) {
-      console.log(e);
       return false;
     }
   }
@@ -118,10 +122,10 @@ export class AuthProviderImpl implements AuthProvider {
   async extractInvitationClaim(token: string): Promise<InvitationClaimModel> {
     type JsonPayload = { [key: string]: any };
 
-    const { sub } = this.jwtService.decode(token, {
+    const { sub, title, owner } = this.jwtService.decode(token, {
       json: true,
     }) as JsonPayload;
 
-    return new InvitationClaimModel({ id: sub });
+    return new InvitationClaimModel({ id: sub, title, owner });
   }
 }

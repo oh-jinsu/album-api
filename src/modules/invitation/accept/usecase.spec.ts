@@ -25,7 +25,11 @@ describe("Try to accept an invitation", () => {
   authProvider.verifyInvitationToken.mockResolvedValue(true);
 
   authProvider.extractInvitationClaim.mockResolvedValue(
-    new InvitationClaimModel({ id: "an id" }),
+    new InvitationClaimModel({
+      id: "an id",
+      title: "a title",
+      owner: "a owner",
+    }),
   );
 
   const albumRepository = new MockAlbumRepository();

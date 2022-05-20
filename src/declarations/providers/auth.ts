@@ -8,6 +8,8 @@ export type IssueTokenOptions = {
 
 export type IssueInvitationTokenOptions = {
   sub: string;
+  title: string;
+  owner: string;
 };
 
 export abstract class AuthProvider {

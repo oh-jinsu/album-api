@@ -25,6 +25,8 @@ export class GetInvitationLinkAdapter extends Adapter {
         return 404;
       case 2:
         return 403;
+      case 3:
+        return 404;
       default:
         return 500;
     }

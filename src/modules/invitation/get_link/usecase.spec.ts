@@ -2,10 +2,12 @@ import { None, Some } from "src/core/enums/option";
 import { AlbumModel } from "src/declarations/models/album";
 import { ClaimModel } from "src/declarations/models/claim";
 import { FriendModel } from "src/declarations/models/friend";
+import { UserModel } from "src/declarations/models/user";
 import { MockAuthProvider } from "src/implementations/providers/auth/mock";
 import { MockLinkProvider } from "src/implementations/providers/link/mock";
 import { MockAlbumRepository } from "src/implementations/repositories/album/mock";
 import { MockFriendRepository } from "src/implementations/repositories/friend/mock";
+import { MockUserRepository } from "src/implementations/repositories/user/mock";
 import { GetInvitationLinkUseCase } from "./usecase";
 
 describe("Try to get invitation link", () => {
@@ -49,11 +51,28 @@ describe("Try to get invitation link", () => {
       ),
   );
 
+  const userRepository = new MockUserRepository();
+
+  userRepository.findOne.mockImplementation(
+    async (id) =>
+      new Some(
+        new UserModel({
+          id,
+          name: "a name",
+          email: "an email",
+          avatar: "an avatar",
+          updatedAt: new Date(),
+          createdAt: new Date(),
+        }),
+      ),
+  );
+
   const usecase = new GetInvitationLinkUseCase(
     authProvider,
     linkProvider,
     albumRepository,
     friendRepository,
+    userRepository,
   );
 
   it("should be defined", () => {
@@ -135,6 +154,24 @@ describe("Try to get invitation link", () => {
 
     expect(result.code).toBe(2);
     expect(result.message).toBe("권한이 없습니다.");
+  });
+
+  it("should fail for an absent user", async () => {
+    userRepository.findOne.mockResolvedValueOnce(new None());
+
+    const params = {
+      accessToken: "accessToken",
+      albumId: "an album id",
+    };
+
+    const result = await usecase.execute(params);
+
+    if (!result.isException()) {
+      fail();
+    }
+
+    expect(result.code).toBe(3);
+    expect(result.message).toBe("이용자를 찾지 못했습니다.");
   });
 
   it("should be ok", async () => {

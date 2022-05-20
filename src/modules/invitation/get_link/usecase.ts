@@ -10,6 +10,7 @@ import { AuthProvider } from "src/declarations/providers/auth";
 import { LinkProvider } from "src/declarations/providers/link";
 import { AlbumRepository } from "src/declarations/repositories/album";
 import { FriendRepository } from "src/declarations/repositories/friend";
+import { UserRepository } from "src/declarations/repositories/user";
 
 export interface Params {
   accessToken: string;
@@ -30,6 +31,7 @@ export class GetInvitationLinkUseCase extends AuthorizedUseCase<
     private readonly linkProvider: LinkProvider,
     private readonly albumRepository: AlbumRepository,
     private readonly friendRepository: FriendRepository,
+    private readonly userRepository: UserRepository,
   ) {
     super(authProvider);
   }
@@ -54,8 +56,16 @@ export class GetInvitationLinkUseCase extends AuthorizedUseCase<
       return new UseCaseException(2, "권한이 없습니다.");
     }
 
+    const userOption = await this.userRepository.findOne(userId);
+
+    if (!userOption.isSome()) {
+      return new UseCaseException(3, "이용자를 찾지 못했습니다.");
+    }
+
     const token = await this.authProvider.issueInvitationToken({
       sub: albumId,
+      title: albumOption.value.title,
+      owner: userOption.value.name,
     });
 
     const url = await this.linkProvider.getLink(`invitation?token=${token}`);
