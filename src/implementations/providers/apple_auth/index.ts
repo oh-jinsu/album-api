@@ -88,7 +88,7 @@ export class AppleAuthProviderImpl implements AppleAuthProvider {
         })
         .subscribe({
           next: ({ data }) => {
-            const environment = isProduction ? "Production" : "SandBox";
+            const environment = isProduction ? "Production" : "Sandbox";
 
             if (environment !== data["environment"]) {
               reject("환경이 올바르지 않습니다.");
