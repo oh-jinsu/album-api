@@ -61,10 +61,10 @@ export class RequestFilmUseCase extends AuthorizedUseCase<Params, Result> {
       await this.filmRepository.save(userId);
     }
 
-    const current = await this.filmRepository.countByUserId(userId);
+    const count = await this.filmRepository.countByUserId(userId);
 
     return new UseCaseOk({
-      count: current + amount,
+      count,
     });
   }
 }
