@@ -1,4 +1,4 @@
-import { Controller, Delete, Param } from "@nestjs/common";
+import { Controller, Delete, HttpCode, Param } from "@nestjs/common";
 import { Throttle } from "@nestjs/throttler";
 import { Adapter } from "src/core/adapter";
 import { AccessToken } from "src/core/decorators/access_token";
@@ -12,6 +12,7 @@ export class ExitAlbumAdapter extends Adapter {
   }
 
   @Delete(":id")
+  @HttpCode(204)
   async receive(
     @AccessToken() accessToken: string,
     @Param("id") albumId: string,
