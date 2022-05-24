@@ -1,6 +1,7 @@
 import { Injectable } from "@nestjs/common";
 import { OAuth2Client } from "google-auth-library";
 import { GoogleClaimModel } from "src/declarations/models/google_claim";
+import { TransactionModel } from "src/declarations/models/transaction";
 import { GoogleAuthProvider } from "src/declarations/providers/google_auth";
 
 @Injectable()
@@ -41,5 +42,9 @@ export class GoogleAuthProviderImpl implements GoogleAuthProvider {
     });
 
     return result;
+  }
+
+  findTransaction(token: string): Promise<TransactionModel> {
+    throw new Error("Method not implemented.");
   }
 }
