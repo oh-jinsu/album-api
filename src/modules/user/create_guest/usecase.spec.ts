@@ -1,4 +1,4 @@
-import { None, Some } from "src/core/enums/option";
+import { None, Some } from "src/core/types/option";
 import { ClaimModel } from "src/declarations/models/claim";
 import { FilmModel } from "src/declarations/models/film";
 import { UserModel } from "src/declarations/models/user";

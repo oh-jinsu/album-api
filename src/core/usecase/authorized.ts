@@ -1,7 +1,7 @@
 import { ClaimGrade, ClaimModel } from "src/declarations/models/claim";
 import { AuthProvider } from "src/declarations/providers/auth";
 import { UseCase } from ".";
-import { UseCaseException, UseCaseResult } from "../enums/results/usecase";
+import { UseCaseException, UseCaseResult } from "../types/results/usecase";
 
 export interface AuthorizedUseCaseParams {
   accessToken: string;

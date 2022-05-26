@@ -1,4 +1,4 @@
-import { None, Some } from "src/core/enums/option";
+import { None, Some } from "src/core/types/option";
 import { AuthModel } from "src/declarations/models/auth";
 import { ClaimModel } from "src/declarations/models/claim";
 import { GoogleClaimModel } from "src/declarations/models/google_claim";

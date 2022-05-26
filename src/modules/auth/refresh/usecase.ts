@@ -3,7 +3,7 @@ import {
   UseCaseException,
   UseCaseOk,
   UseCaseResult,
-} from "src/core/enums/results/usecase";
+} from "src/core/types/results/usecase";
 import { AuthProvider } from "src/declarations/providers/auth";
 import { HashProvider } from "src/declarations/providers/hash";
 import { AuthRepository } from "src/declarations/repositories/auth";

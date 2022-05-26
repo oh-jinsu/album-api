@@ -3,7 +3,7 @@ import {
   UseCaseException,
   UseCaseOk,
   UseCaseResult,
-} from "src/core/enums/results/usecase";
+} from "src/core/types/results/usecase";
 import { AuthorizedUseCase } from "src/core/usecase/authorized";
 import { ClaimGrade, ClaimModel } from "src/declarations/models/claim";
 import { AppleAuthProvider } from "src/declarations/providers/apple_auth";

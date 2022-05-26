@@ -1,5 +1,5 @@
 import { Injectable } from "@nestjs/common";
-import { UseCaseOk, UseCaseResult } from "src/core/enums/results/usecase";
+import { UseCaseOk, UseCaseResult } from "src/core/types/results/usecase";
 import { AuthProvider } from "src/declarations/providers/auth";
 import { HashProvider } from "src/declarations/providers/hash";
 import { AuthRepository } from "src/declarations/repositories/auth";

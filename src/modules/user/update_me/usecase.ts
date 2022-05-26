@@ -1,20 +1,36 @@
 import { Injectable } from "@nestjs/common";
 import {
+  RemovePropertyParam,
+  ReplacePropertyParam,
+} from "src/core/types/params/update";
+import {
   UseCaseException,
   UseCaseOk,
   UseCaseResult,
-} from "src/core/enums/results/usecase";
+} from "src/core/types/results/usecase";
 import { AuthorizedUseCase } from "src/core/usecase/authorized";
 import { ClaimGrade, ClaimModel } from "src/declarations/models/claim";
 import { AuthProvider } from "src/declarations/providers/auth";
 import { ImageProvider } from "src/declarations/providers/image";
 import { UserRepository } from "src/declarations/repositories/user";
 
+export type UpdateNameDto = {
+  path: "/name";
+} & ReplacePropertyParam<string>;
+
+export type UpdateEmailDto = {
+  path: "/email";
+} & (ReplacePropertyParam<string> | RemovePropertyParam);
+
+export type UpdateAvatarDto = {
+  path: "/avatar_id";
+} & (ReplacePropertyParam<string> | RemovePropertyParam);
+
+export type UpdateMeDto = UpdateNameDto | UpdateEmailDto | UpdateAvatarDto;
+
 export interface Params {
   accessToken: string;
-  name?: string;
-  email?: string;
-  avatarId?: string;
+  dtos: UpdateMeDto[];
 }
 
 export interface Result {
@@ -42,19 +58,55 @@ export class UpdateMeUseCase extends AuthorizedUseCase<Params, Result> {
 
   protected async executeWithAuth(
     { id: userId }: ClaimModel,
-    { name, email, avatarId }: Omit<Params, "accessToken">,
+    { dtos }: Omit<Params, "accessToken">,
   ): Promise<UseCaseResult<Result>> {
-    const userOption = await this.userRepository.findOne(userId);
+    const option = await this.userRepository.findOne(userId);
 
-    if (userOption.isNone()) {
+    if (option.isNone()) {
       return new UseCaseException(1, "이용자를 찾지 못했습니다.");
     }
 
-    const user = await this.userRepository.update(userId, {
-      name,
-      email,
-      avatar: avatarId,
-    });
+    await Promise.all(
+      dtos.map((dto) => {
+        if (dto.path == "/name") {
+          return this.userRepository.update(userId, {
+            name: dto.value,
+          });
+        }
+
+        if (dto.path == "/email") {
+          if (dto.op == "remove") {
+            return this.userRepository.update(userId, {
+              email: null,
+            });
+          } else {
+            return this.userRepository.update(userId, {
+              email: dto.value,
+            });
+          }
+        }
+
+        if (dto.path === "/avatar_id") {
+          if (dto.op == "remove") {
+            return this.userRepository.update(userId, {
+              avatar: null,
+            });
+          } else {
+            return this.userRepository.update(userId, {
+              avatar: dto.value,
+            });
+          }
+        }
+      }),
+    );
+
+    const userOption = await this.userRepository.findOne(userId);
+
+    if (!userOption.isSome()) {
+      return new UseCaseException(1, "이용자를 찾지 못했습니다.");
+    }
+
+    const user = userOption.value;
 
     const avatarImageUri = user.avatar
       ? await this.imageProvider.getPublicImageUri(user.avatar)

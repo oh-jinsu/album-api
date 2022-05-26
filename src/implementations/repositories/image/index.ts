@@ -11,7 +11,7 @@ import s3 from "../../storage/s3";
 import { ImageEntity } from "./entity";
 import { ImageMapper } from "./mapper";
 import * as sharp from "sharp";
-import { None, Option, Some } from "src/core/enums/option";
+import { None, Option, Some } from "src/core/types/option";
 
 @Injectable()
 export class ImageRepositoryImpl implements ImageRepository {

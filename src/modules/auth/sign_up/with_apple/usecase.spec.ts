@@ -1,4 +1,4 @@
-import { None, Some } from "src/core/enums/option";
+import { None, Some } from "src/core/types/option";
 import { AppleClaimModel } from "src/declarations/models/apple_claim";
 import { AuthModel } from "src/declarations/models/auth";
 import { ClaimModel } from "src/declarations/models/claim";

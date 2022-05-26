@@ -1,5 +1,5 @@
 import { Injectable } from "@nestjs/common";
-import { UseCaseOk, UseCaseResult } from "src/core/enums/results/usecase";
+import { UseCaseOk, UseCaseResult } from "src/core/types/results/usecase";
 import { AuthorizedUseCase } from "src/core/usecase/authorized";
 import { ClaimModel } from "src/declarations/models/claim";
 import { AppleAuthProvider } from "src/declarations/providers/apple_auth";

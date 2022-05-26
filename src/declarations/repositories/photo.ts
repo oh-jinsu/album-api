@@ -1,4 +1,4 @@
-import { Option } from "src/core/enums/option";
+import { Option } from "src/core/types/option";
 import { PhotoModel } from "../models/photo";
 
 export type SavePhotoDto = {

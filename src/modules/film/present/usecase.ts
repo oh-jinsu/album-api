@@ -1,5 +1,5 @@
 import { Injectable } from "@nestjs/common";
-import { UseCaseOk, UseCaseResult } from "src/core/enums/results/usecase";
+import { UseCaseOk, UseCaseResult } from "src/core/types/results/usecase";
 import { UseCase } from "src/core/usecase";
 import { FilmRepository } from "src/declarations/repositories/film";
 import { UserRepository } from "src/declarations/repositories/user";

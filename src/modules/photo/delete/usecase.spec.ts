@@ -1,4 +1,4 @@
-import { None, Some } from "src/core/enums/option";
+import { None, Some } from "src/core/types/option";
 import { ClaimModel } from "src/declarations/models/claim";
 import { PhotoModel } from "src/declarations/models/photo";
 import { MockAuthProvider } from "src/implementations/providers/auth/mock";

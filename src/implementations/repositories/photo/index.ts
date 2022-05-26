@@ -1,6 +1,6 @@
 import { Injectable } from "@nestjs/common";
 import { InjectRepository } from "@nestjs/typeorm";
-import { None, Option, Some } from "src/core/enums/option";
+import { None, Option, Some } from "src/core/types/option";
 import { PhotoModel } from "src/declarations/models/photo";
 import {
   PhotoRepository,
