@@ -62,7 +62,7 @@ describe("Try to update me", () => {
 
     const accessToken = "an access token";
 
-    const result = await usecase.execute({ accessToken });
+    const result = await usecase.execute({ accessToken, dtos: [] });
 
     if (!result.isException()) {
       fail();
@@ -83,7 +83,7 @@ describe("Try to update me", () => {
 
     const accessToken = "an access token";
 
-    const result = await usecase.execute({ accessToken });
+    const result = await usecase.execute({ accessToken, dtos: [] });
 
     if (!result.isException()) {
       fail();
@@ -99,7 +99,7 @@ describe("Try to update me", () => {
 
     const accessToken = "an access token";
 
-    const result = await usecase.execute({ accessToken });
+    const result = await usecase.execute({ accessToken, dtos: [] });
 
     if (!result.isException()) {
       fail();
@@ -115,9 +115,7 @@ describe("Try to update me", () => {
 
     const result = await usecase.execute({
       accessToken,
-      email: "an email",
-      name: "a name",
-      avatarId: "an avatar id",
+      dtos: [],
     });
 
     if (!result.isOk()) {

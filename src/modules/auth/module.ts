@@ -1,4 +1,5 @@
 import { Module } from "@nestjs/common";
+import { DeleteAuthModule } from "./delete/module";
 import { IssueGuestTokenModule } from "./guest/module";
 import { RefreshAuthModule } from "./refresh/module";
 import { SignInModule } from "./sign_in/module";
@@ -12,6 +13,7 @@ import { SignUpModule } from "./sign_up/module";
     RefreshAuthModule,
     SignOutModule,
     IssueGuestTokenModule,
+    DeleteAuthModule,
   ],
 })
 export class AuthModule {}
