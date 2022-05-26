@@ -54,7 +54,7 @@ export class UserRepositoryImpl implements UserRepository {
     id: string,
     dto: Partial<Omit<UserModel, "id" | "updatedAt" | "createdAt">>,
   ): Promise<UserModel> {
-    this.adaptee.update(id, dto);
+    await this.adaptee.update(id, dto);
 
     const entity = await this.adaptee.findOne({ id });
 
