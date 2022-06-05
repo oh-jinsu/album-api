@@ -35,12 +35,20 @@ export class PhotoRepositoryImpl implements PhotoRepository {
     const take = limit ? limit + (cursored ? 0 : 1) : null;
 
     const query = await this.adaptee.find({
-      where: {
-        albumId,
-        createdAt: LessThan(cursored?.createdAt || new Date()),
-      },
+      where: [
+        {
+          albumId,
+          date: LessThan(cursored?.date || new Date()),
+        },
+        {
+          albumId,
+          date: cursored?.date || new Date(),
+          createdAt: cursored ? LessThan(cursored.createdAt) : null,
+        },
+      ],
       order: {
         date: "DESC",
+        createdAt: "DESC",
       },
       take,
     });
