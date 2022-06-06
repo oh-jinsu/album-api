@@ -68,6 +68,7 @@ export class PhotoRepositoryImpl implements PhotoRepository {
         albumId,
       },
       order: {
+        date: "DESC",
         createdAt: "DESC",
       },
       take: 1,
