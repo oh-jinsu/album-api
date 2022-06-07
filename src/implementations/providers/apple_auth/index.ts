@@ -123,7 +123,7 @@ export class AppleAuthProviderImpl implements AppleAuthProvider {
             if (data.status === 21007) {
               resolve(
                 this.getTransaction(
-                  "https://buy.itunes.apple.com/verifyReceipt",
+                  "https://sandbox.itunes.apple.com/verifyReceipt",
                   token,
                 ),
               );
