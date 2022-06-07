@@ -5,7 +5,6 @@ import { AppleAuthProvider } from "src/declarations/providers/apple_auth";
 import * as NodeRSA from "node-rsa";
 import { AppleClaimModel } from "src/declarations/models/apple_claim";
 import { TransactionModel } from "src/declarations/models/transaction";
-import { isProduction } from "src/core/environment";
 
 @Injectable()
 export class AppleAuthProviderImpl implements AppleAuthProvider {
@@ -90,16 +89,15 @@ export class AppleAuthProviderImpl implements AppleAuthProvider {
           "receipt-data": token,
         })
         .subscribe({
-          next: (response) => {
-            console.log(response);
-            // resolve(
-            //   this.getTransaction(
-            //     "https://sandbox.itunes.apple.com/verifyReceipt",
-            //     token,
-            //   ),
-            // );
-
-            const { data } = response;
+          next: ({ data }) => {
+            if (data.status === 21007) {
+              resolve(
+                this.getTransaction(
+                  "https://sandbox.itunes.apple.com/verifyReceipt",
+                  token,
+                ),
+              );
+            }
 
             const receipt = data["receipt"];
 
