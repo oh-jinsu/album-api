@@ -77,11 +77,14 @@ export class AppleAuthProviderImpl implements AppleAuthProvider {
   }
 
   async findTransaction(token: string): Promise<TransactionModel> {
-    return await new Promise((resolve, reject) => {
-      const url = isProduction
-        ? "https://buy.itunes.apple.com/verifyReceipt"
-        : "https://sandbox.itunes.apple.com/verifyReceipt";
+    return this.getTransaction(
+      "https://buy.itunes.apple.com/verifyReceipt",
+      token,
+    );
+  }
 
+  getTransaction(url: string, token: string): Promise<TransactionModel> {
+    return new Promise((resolve, reject) => {
       this.httpService
         .post(url, {
           "receipt-data": token,
@@ -114,7 +117,20 @@ export class AppleAuthProviderImpl implements AppleAuthProvider {
 
             resolve(result);
           },
-          error: reject,
+          error: ({ response }) => {
+            const { data } = response;
+            console.log(response);
+            if (data.status === 21007) {
+              resolve(
+                this.getTransaction(
+                  "https://buy.itunes.apple.com/verifyReceipt",
+                  token,
+                ),
+              );
+            } else {
+              reject(data);
+            }
+          },
         });
     });
   }
