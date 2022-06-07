@@ -94,7 +94,12 @@ export class AppleAuthProviderImpl implements AppleAuthProvider {
             const environment = isProduction ? "Production" : "Sandbox";
 
             if (environment !== data["environment"]) {
-              reject("환경이 올바르지 않습니다.");
+              resolve(
+                this.getTransaction(
+                  "https://sandbox.itunes.apple.com/verifyReceipt",
+                  token,
+                ),
+              );
 
               return;
             }
@@ -117,20 +122,7 @@ export class AppleAuthProviderImpl implements AppleAuthProvider {
 
             resolve(result);
           },
-          error: ({ response }) => {
-            const { data } = response;
-            console.log(response);
-            if (data.status === 21007) {
-              resolve(
-                this.getTransaction(
-                  "https://sandbox.itunes.apple.com/verifyReceipt",
-                  token,
-                ),
-              );
-            } else {
-              reject(data);
-            }
-          },
+          error: reject,
         });
     });
   }
