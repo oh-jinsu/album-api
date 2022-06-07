@@ -90,19 +90,16 @@ export class AppleAuthProviderImpl implements AppleAuthProvider {
           "receipt-data": token,
         })
         .subscribe({
-          next: ({ data }) => {
-            const environment = isProduction ? "Production" : "Sandbox";
+          next: (response) => {
+            console.log(response);
+            // resolve(
+            //   this.getTransaction(
+            //     "https://sandbox.itunes.apple.com/verifyReceipt",
+            //     token,
+            //   ),
+            // );
 
-            if (environment !== data["environment"]) {
-              resolve(
-                this.getTransaction(
-                  "https://sandbox.itunes.apple.com/verifyReceipt",
-                  token,
-                ),
-              );
-
-              return;
-            }
+            const { data } = response;
 
             const receipt = data["receipt"];
 
