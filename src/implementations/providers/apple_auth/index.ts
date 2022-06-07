@@ -97,6 +97,8 @@ export class AppleAuthProviderImpl implements AppleAuthProvider {
                   token,
                 ),
               );
+
+              return;
             }
 
             const receipt = data["receipt"];
